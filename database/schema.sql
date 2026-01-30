@@ -125,9 +125,22 @@ BEGIN
         Status NVARCHAR(50) NOT NULL, -- Created / Approved / InProgress / Completed / Rejected
         CreatedBy BIGINT NOT NULL,
         ApprovedBy BIGINT NULL,
+        ApprovedDate DATETIME2 NULL,
+        RejectedBy BIGINT NULL,
+        RejectedDate DATETIME2 NULL,
+        RejectionReason NVARCHAR(500) NULL,
+        CompletedBy BIGINT NULL,
+        CompletedDate DATETIME2 NULL,
         SalesOrderId BIGINT NULL,
+        SourceWarehouseId BIGINT NULL, -- For Transfer requests
+        DestinationWarehouseId BIGINT NULL, -- For Transfer requests
+        ExpectedDate DATETIME2 NULL,
+        Notes NVARCHAR(500) NULL,
+        Reason NVARCHAR(100) NULL, -- For Internal Outbound
         CreatedAt DATETIME2 DEFAULT GETDATE(),
-        CONSTRAINT FK_Request_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES Users(Id)
+        CONSTRAINT FK_Request_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES Users(Id),
+        CONSTRAINT FK_Request_SourceWarehouse FOREIGN KEY (SourceWarehouseId) REFERENCES Warehouses(Id),
+        CONSTRAINT FK_Request_DestWarehouse FOREIGN KEY (DestinationWarehouseId) REFERENCES Warehouses(Id)
     );
 
     CREATE INDEX IDX_Request_Status ON Requests(Status);
@@ -142,9 +155,17 @@ BEGIN
         RequestId BIGINT NOT NULL,
         ProductId BIGINT NOT NULL,
         Quantity INT NOT NULL,
+        LocationId BIGINT NULL, -- Target location for Inbound
+        SourceLocationId BIGINT NULL, -- For Internal Movement
+        DestinationLocationId BIGINT NULL, -- For Internal Movement
+        ReceivedQuantity INT NULL, -- Actual received for Inbound
+        PickedQuantity INT NULL, -- Actual picked for Outbound
         PRIMARY KEY (RequestId, ProductId),
         CONSTRAINT FK_RequestItem_Request FOREIGN KEY (RequestId) REFERENCES Requests(Id),
-        CONSTRAINT FK_RequestItem_Product FOREIGN KEY (ProductId) REFERENCES Products(Id)
+        CONSTRAINT FK_RequestItem_Product FOREIGN KEY (ProductId) REFERENCES Products(Id),
+        CONSTRAINT FK_RequestItem_Location FOREIGN KEY (LocationId) REFERENCES Locations(Id),
+        CONSTRAINT FK_RequestItem_SourceLoc FOREIGN KEY (SourceLocationId) REFERENCES Locations(Id),
+        CONSTRAINT FK_RequestItem_DestLoc FOREIGN KEY (DestinationLocationId) REFERENCES Locations(Id)
     );
 END
 GO
@@ -176,6 +197,11 @@ BEGIN
         Status NVARCHAR(50) NOT NULL, -- Draft / Confirmed / FulfillmentRequested / Completed / Cancelled
         CreatedBy BIGINT NOT NULL,
         CreatedAt DATETIME2 DEFAULT GETDATE(),
+        ConfirmedBy BIGINT NULL,
+        ConfirmedDate DATETIME2 NULL,
+        CancelledBy BIGINT NULL,
+        CancelledDate DATETIME2 NULL,
+        CancellationReason NVARCHAR(500) NULL,
         CONSTRAINT FK_SalesOrder_Customer FOREIGN KEY (CustomerId) REFERENCES Customers(Id),
         CONSTRAINT FK_SalesOrder_User FOREIGN KEY (CreatedBy) REFERENCES Users(Id)
     );

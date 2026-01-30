@@ -15,6 +15,11 @@ public class SalesOrder implements Serializable {
     private String status; // Draft / Confirmed / FulfillmentRequested / Completed / Cancelled
     private Long createdBy;
     private LocalDateTime createdAt;
+    private Long confirmedBy;
+    private LocalDateTime confirmedDate;
+    private Long cancelledBy;
+    private LocalDateTime cancelledDate;
+    private String cancellationReason;
     
     // Default constructor
     public SalesOrder() {
@@ -77,6 +82,46 @@ public class SalesOrder implements Serializable {
     
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Long getConfirmedBy() {
+        return confirmedBy;
+    }
+
+    public void setConfirmedBy(Long confirmedBy) {
+        this.confirmedBy = confirmedBy;
+    }
+
+    public LocalDateTime getConfirmedDate() {
+        return confirmedDate;
+    }
+
+    public void setConfirmedDate(LocalDateTime confirmedDate) {
+        this.confirmedDate = confirmedDate;
+    }
+
+    public Long getCancelledBy() {
+        return cancelledBy;
+    }
+
+    public void setCancelledBy(Long cancelledBy) {
+        this.cancelledBy = cancelledBy;
+    }
+
+    public LocalDateTime getCancelledDate() {
+        return cancelledDate;
+    }
+
+    public void setCancelledDate(LocalDateTime cancelledDate) {
+        this.cancelledDate = cancelledDate;
+    }
+
+    public String getCancellationReason() {
+        return cancellationReason;
+    }
+
+    public void setCancellationReason(String cancellationReason) {
+        this.cancellationReason = cancellationReason;
     }
     
     @Override
