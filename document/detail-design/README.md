@@ -63,6 +63,62 @@ Each use case document includes:
 | UC-MOV-001 | Create Internal Movement | [UC-MOV-001-Create-Internal-Movement.md](UC-MOV-001-Create-Internal-Movement.md) |
 | UC-MOV-002 | Execute Internal Movement | [UC-MOV-002-Execute-Internal-Movement.md](UC-MOV-002-Execute-Internal-Movement.md) |
 
+### Warehouse Management (UC-WH)
+| ID | Name | File |
+|----|------|------|
+| UC-WH-001 | Create Warehouse | [UC-WH-001-Create-Warehouse.md](UC-WH-001-Create-Warehouse.md) |
+| UC-WH-002 | Update Warehouse | [UC-WH-002-Update-Warehouse.md](UC-WH-002-Update-Warehouse.md) |
+| UC-WH-003 | View Warehouse List | [UC-WH-003-View-Warehouse-List.md](UC-WH-003-View-Warehouse-List.md) |
+
+### Location Management (UC-LOC)
+| ID | Name | File |
+|----|------|------|
+| UC-LOC-001 | Create Location | [UC-LOC-001-Create-Location.md](UC-LOC-001-Create-Location.md) |
+| UC-LOC-002 | Update Location | [UC-LOC-002-Update-Location.md](UC-LOC-002-Update-Location.md) |
+| UC-LOC-003 | Toggle Location Status | [UC-LOC-003-Toggle-Location-Status.md](UC-LOC-003-Toggle-Location-Status.md) |
+| UC-LOC-004 | View Location List | [UC-LOC-004-View-Location-List.md](UC-LOC-004-View-Location-List.md) |
+
+### Category Management (UC-CAT)
+| ID | Name | File |
+|----|------|------|
+| UC-CAT-001 | Create Category | [UC-CAT-001-Create-Category.md](UC-CAT-001-Create-Category.md) |
+| UC-CAT-002 | Update Category | [UC-CAT-002-Update-Category.md](UC-CAT-002-Update-Category.md) |
+| UC-CAT-003 | Delete Category | [UC-CAT-003-Delete-Category.md](UC-CAT-003-Delete-Category.md) |
+| UC-CAT-004 | View Category List | [UC-CAT-004-View-Category-List.md](UC-CAT-004-View-Category-List.md) |
+
+### Product Management (UC-PRD)
+| ID | Name | File |
+|----|------|------|
+| UC-PRD-001 | Create Product | [UC-PRD-001-Create-Product.md](UC-PRD-001-Create-Product.md) |
+| UC-PRD-002 | Update Product | [UC-PRD-002-Update-Product.md](UC-PRD-002-Update-Product.md) |
+| UC-PRD-003 | Toggle Product Status | [UC-PRD-003-Toggle-Product-Status.md](UC-PRD-003-Toggle-Product-Status.md) |
+| UC-PRD-004 | View Product List | [UC-PRD-004-View-Product-List.md](UC-PRD-004-View-Product-List.md) |
+| UC-PRD-005 | View Product Details | [UC-PRD-005-View-Product-Details.md](UC-PRD-005-View-Product-Details.md) |
+
+### Customer Management (UC-CUS)
+| ID | Name | File |
+|----|------|------|
+| UC-CUS-001 | Create Customer | [UC-CUS-001-Create-Customer.md](UC-CUS-001-Create-Customer.md) |
+| UC-CUS-002 | Update Customer | [UC-CUS-002-Update-Customer.md](UC-CUS-002-Update-Customer.md) |
+| UC-CUS-003 | Toggle Customer Status | [UC-CUS-003-Toggle-Customer-Status.md](UC-CUS-003-Toggle-Customer-Status.md) |
+| UC-CUS-004 | View Customer List | [UC-CUS-004-View-Customer-List.md](UC-CUS-004-View-Customer-List.md) |
+
+### User Management (UC-USER)
+| ID | Name | File |
+|----|------|------|
+| UC-USER-001 | Create User | [UC-USER-001-Create-User.md](UC-USER-001-Create-User.md) |
+| UC-USER-002 | Update User | [UC-USER-002-Update-User.md](UC-USER-002-Update-User.md) |
+| UC-USER-003 | Toggle User Status | [UC-USER-003-Toggle-User-Status.md](UC-USER-003-Toggle-User-Status.md) |
+| UC-USER-004 | View User List | [UC-USER-004-View-User-List.md](UC-USER-004-View-User-List.md) |
+| UC-USER-005 | Assign User to Warehouse | [UC-USER-005-Assign-User-Warehouse.md](UC-USER-005-Assign-User-Warehouse.md) |
+
+### Inventory Management (UC-INV)
+| ID | Name | File |
+|----|------|------|
+| UC-INV-001 | View Inventory by Warehouse | [UC-INV-001-View-Inventory-By-Warehouse.md](UC-INV-001-View-Inventory-By-Warehouse.md) |
+| UC-INV-002 | View Inventory by Product | [UC-INV-002-View-Inventory-By-Product.md](UC-INV-002-View-Inventory-By-Product.md) |
+| UC-INV-003 | Search Inventory | [UC-INV-003-Search-Inventory.md](UC-INV-003-Search-Inventory.md) |
+
 ## State Models Reference
 
 ### Request Lifecycle

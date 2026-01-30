@@ -185,6 +185,115 @@ Smart WMS is a standalone academic system. Sales and warehouse operations are lo
 
 ---
 
+### 3.7 Warehouse Management
+
+**Description:** Manage warehouse facilities and configuration.
+
+**Primary Actor:** Admin
+
+**Functional Requirements:**
+
+* Admin shall create new warehouses with name and location.
+* Admin shall update warehouse information.
+* Admin shall view list of all warehouses.
+* System shall display warehouse inventory summary.
+
+---
+
+### 3.8 Location Management
+
+**Description:** Manage storage locations (bins) within warehouses.
+
+**Primary Actor:** Admin, Manager
+
+**Functional Requirements:**
+
+* Admin/Manager shall create locations within a warehouse.
+* Admin/Manager shall update location details (code, type).
+* Admin/Manager shall activate or deactivate locations.
+* Location types include: Storage, Picking, Staging.
+* System shall prevent deactivation of locations with inventory.
+
+---
+
+### 3.9 Category Management
+
+**Description:** Manage product categories for classification.
+
+**Primary Actor:** Admin, Manager
+
+**Functional Requirements:**
+
+* Admin/Manager shall create product categories.
+* Admin/Manager shall update category details.
+* Admin/Manager shall delete unused categories.
+* System shall prevent deletion of categories with associated products.
+
+---
+
+### 3.10 Product Management
+
+**Description:** Manage product master data.
+
+**Primary Actor:** Admin, Manager
+
+**Functional Requirements:**
+
+* Admin/Manager shall create products with SKU, name, unit, and category.
+* Admin/Manager shall update product information.
+* Admin/Manager shall activate or deactivate products.
+* Staff and Sales shall view product information (read-only).
+* SKU must be unique across the system.
+
+---
+
+### 3.11 Customer Management
+
+**Description:** Manage customer master data for sales orders.
+
+**Primary Actor:** Sales, Manager, Admin
+
+**Functional Requirements:**
+
+* Sales/Manager/Admin shall create customers with code, name, and contact info.
+* Sales/Manager/Admin shall update customer information.
+* Admin shall activate or deactivate customers.
+* Customer code must be unique across the system.
+
+---
+
+### 3.12 User Management
+
+**Description:** Manage system users and their access.
+
+**Primary Actor:** Admin
+
+**Functional Requirements:**
+
+* Admin shall create new users with role assignment.
+* Admin shall update user information.
+* Admin shall activate or deactivate user accounts.
+* Admin shall assign users to warehouses.
+* Admin shall view list of all users.
+
+---
+
+### 3.13 Inventory Viewing
+
+**Description:** View and search inventory across warehouses and locations.
+
+**Primary Actor:** Admin, Manager, Staff
+
+**Functional Requirements:**
+
+* Users shall view inventory by warehouse.
+* Users shall view inventory by product.
+* Users shall view inventory by location.
+* Users shall search inventory by product SKU or name.
+* System shall display real-time quantity information.
+
+---
+
 ## 4. Business Rules
 
 * **Authentication is mandatory** - All users must login to access the system.
