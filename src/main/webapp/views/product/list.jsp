@@ -1,140 +1,224 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<c:set var="pageTitle" value="Product List" scope="request"/>
-<c:set var="currentPage" value="product-list" scope="request"/>
-<jsp:include page="../layout/header.jsp"/>
-<jsp:include page="../layout/sidebar.jsp"/>
+<%@ page import="vn.edu.fpt.swp.model.User" %>
+<%
+    HttpSession userSession = request.getSession(false);
+    if (userSession == null || userSession.getAttribute("user") == null) {
+        response.sendRedirect(request.getContextPath() + "/auth?action=login");
+        return;
+    }
+    User user = (User) userSession.getAttribute("user");
+    String userRole = user.getRole();
+    
+    String error = (String) request.getAttribute("error");
+    String success = (String) request.getAttribute("success");
+    String search = (String) request.getAttribute("search");
+    String selectedCategoryId = (String) request.getAttribute("selectedCategoryId");
+    String selectedStatus = (String) request.getAttribute("selectedStatus");
+    if (search == null) search = "";
+    if (selectedCategoryId == null) selectedCategoryId = "";
+    if (selectedStatus == null) selectedStatus = "";
+%>
 
-<!-- Layout container -->
+<c:set var="pageTitle" value="Products" />
+<%@ include file="/views/layout/header.jsp" %>
+
+<!-- Menu -->
+<%@ include file="/views/layout/sidebar.jsp" %>
+
+<!-- Layout page -->
 <div class="layout-page">
-    <jsp:include page="../layout/navbar.jsp"/>
+    <!-- Navbar -->
+    <%@ include file="/views/layout/navbar.jsp" %>
 
     <!-- Content wrapper -->
     <div class="content-wrapper">
         <!-- Content -->
         <div class="container-xxl flex-grow-1 container-p-y">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="fw-bold"><span class="text-muted fw-light">Management /</span> Product List</h4>
-                <a href="${pageContext.request.contextPath}/product?action=create" class="btn btn-primary">
-                    <i class="bx bx-plus me-1"></i> Add New Product
-                </a>
+            <!-- Page header -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h4 class="fw-bold">Products</h4>
+                    <p class="text-muted">Manage product inventory</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <% if (userRole.equals("Admin") || userRole.equals("Manager")) { %>
+                    <a href="${pageContext.request.contextPath}/product?action=create" class="btn btn-primary">
+                        <span class="tf-icons bx bx-plus"></span> Add Product
+                    </a>
+                    <% } %>
+                </div>
             </div>
 
             <!-- Alerts -->
-            <c:if test="${param.success == 'created'}">
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <strong>Success!</strong> Product created successfully!
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </c:if>
-            <c:if test="${param.success == 'updated'}">
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <strong>Success!</strong> Product updated successfully!
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </c:if>
-            <c:if test="${param.success == 'deleted'}">
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <strong>Success!</strong> Product deleted successfully!
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </c:if>
-            <c:if test="${param.error != null}">
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Error!</strong> ${param.error}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            </c:if>
+            <% if (error != null) { %>
+            <div class="alert alert-danger alert-dismissible" role="alert">
+                <%= error %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <% } %>
+            
+            <% if (success != null) { %>
+            <div class="alert alert-success alert-dismissible" role="alert">
+                <%= success %>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <% } %>
 
-            <!-- Product List Card -->
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Products</h5>
-                    <form action="${pageContext.request.contextPath}/product" method="get" class="d-flex gap-2">
-                        <input type="hidden" name="action" value="search">
-                        <input type="text" name="keyword" class="form-control" placeholder="Search products..." value="${keyword}" style="width: 300px;">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bx bx-search"></i> Search
-                        </button>
-                        <a href="${pageContext.request.contextPath}/product" class="btn btn-secondary">
-                            <i class="bx bx-reset"></i> Reset
-                        </a>
+            <!-- Filters -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="get" action="${pageContext.request.contextPath}/product?action=list" class="row g-3">
+                        <div class="col-md-4">
+                            <label for="search" class="form-label">Search</label>
+                            <input type="text" id="search" name="search" class="form-control" 
+                                   placeholder="Search by SKU or name" value="<%= search %>" />
+                        </div>
+                        <div class="col-md-3">
+                            <label for="categoryId" class="form-label">Category</label>
+                            <select id="categoryId" name="categoryId" class="form-select">
+                                <option value="">All Categories</option>
+                                <c:forEach var="category" items="${categories}">
+                                    <option value="${category.id}" <%= selectedCategoryId.equals(String.valueOf(category.getId())) ? "selected" : "" %>>
+                                        ${category.name}
+                                    </option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select id="status" name="status" class="form-select">
+                                <option value="">All Products</option>
+                                <option value="active" <%= selectedStatus.equals("active") ? "selected" : "" %>>Active</option>
+                                <option value="inactive" <%= selectedStatus.equals("inactive") ? "selected" : "" %>>Inactive</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label>&nbsp;</label>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <span class="tf-icons bx bx-search"></span> Filter
+                            </button>
+                        </div>
                     </form>
                 </div>
-                <div class="card-body">
-                    <c:choose>
-                        <c:when test="${empty products}">
-                            <div class="text-center py-5">
-                                <i class="bx bx-package bx-lg text-muted"></i>
-                                <p class="mt-2 text-muted">No products found.</p>
-                            </div>
-                        </c:when>
-                        <c:otherwise>
-                            <div class="table-responsive text-nowrap">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Name</th>
-                                            <th>Category</th>
-                                            <th>Price</th>
-                                            <th>Quantity</th>
-                                            <th>Status</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="table-border-bottom-0">
-                                        <c:forEach var="product" items="${products}">
-                                            <tr>
-                                                <td><strong>#${product.id}</strong></td>
-                                                <td>${product.name}</td>
-                                                <td><span class="badge bg-label-info">${product.category}</span></td>
-                                                <td><fmt:formatNumber value="${product.price}" type="currency" currencySymbol="$"/></td>
-                                                <td>
-                                                    <span class="badge ${product.quantity > 10 ? 'bg-label-success' : product.quantity > 0 ? 'bg-label-warning' : 'bg-label-danger'}">
-                                                        ${product.quantity}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <c:choose>
-                                                        <c:when test="${product.active}">
-                                                            <span class="badge bg-label-success">Active</span>
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            <span class="badge bg-label-secondary">Inactive</span>
-                                                        </c:otherwise>
-                                                    </c:choose>
-                                                </td>
-                                                <td>
-                                                    <div class="dropdown">
-                                                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                                                            <i class="bx bx-dots-vertical-rounded"></i>
-                                                        </button>
-                                                        <div class="dropdown-menu">
-                                                            <a class="dropdown-item" href="${pageContext.request.contextPath}/product?action=view&id=${product.id}">
-                                                                <i class="bx bx-show me-1"></i> View
-                                                            </a>
-                                                            <a class="dropdown-item" href="${pageContext.request.contextPath}/product?action=edit&id=${product.id}">
-                                                                <i class="bx bx-edit-alt me-1"></i> Edit
-                                                            </a>
-                                                            <a class="dropdown-item text-danger" href="${pageContext.request.contextPath}/product?action=delete&id=${product.id}" 
-                                                               onclick="return confirm('Are you sure you want to delete this product?')">
+            </div>
+
+            <!-- Products Table -->
+            <div class="card">
+                <div class="table-responsive text-nowrap">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>SKU</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Unit</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <% if (userRole.equals("Admin") || userRole.equals("Manager")) { %>
+                                <th>Actions</th>
+                                <% } %>
+                            </tr>
+                        </thead>
+                        <tbody class="table-border-bottom-0">
+                            <c:choose>
+                                <c:when test="${empty products}">
+                                    <tr>
+                                        <td colspan="<%= userRole.equals("Admin") || userRole.equals("Manager") ? "7" : "6" %>" class="text-center text-muted py-4">
+                                            No products found
+                                        </td>
+                                    </tr>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:forEach var="product" items="${products}">
+                                        <tr style="<%= !((c.core_rt.PageContext)pageContext).getAttribute("product").getClass().getMethod("isActive").invoke(((c.core_rt.PageContext)pageContext).getAttribute("product")) != null && !(boolean)((c.core_rt.PageContext)pageContext).getAttribute("product").getClass().getMethod("isActive").invoke(((c.core_rt.PageContext)pageContext).getAttribute("product")) ? "opacity: 0.6;" : "" %>">
+                                            <td>
+                                                <strong>${product.sku}</strong>
+                                            </td>
+                                            <td>
+                                                <a href="${pageContext.request.contextPath}/product?action=details&id=${product.id}">
+                                                    ${product.name}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <c:forEach var="category" items="${categories}">
+                                                    <c:if test="${category.id == product.categoryId}">
+                                                        ${category.name}
+                                                    </c:if>
+                                                </c:forEach>
+                                            </td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${empty product.unit}">
+                                                        <span class="text-muted">-</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        ${product.unit}
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-info">
+                                                    <%= request.getAttribute("totalStock_" + ((c.core_rt.PageContext)pageContext).getAttribute("product").getId()) %>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-<%= ((c.core_rt.PageContext)pageContext).getAttribute("product").getClass().getMethod("isActive").invoke(((c.core_rt.PageContext)pageContext).getAttribute("product")) != null && (boolean)((c.core_rt.PageContext)pageContext).getAttribute("product").getClass().getMethod("isActive").invoke(((c.core_rt.PageContext)pageContext).getAttribute("product")) ? "success" : "secondary" %>">
+                                                    <%= ((c.core_rt.PageContext)pageContext).getAttribute("product").getClass().getMethod("isActive").invoke(((c.core_rt.PageContext)pageContext).getAttribute("product")) != null && (boolean)((c.core_rt.PageContext)pageContext).getAttribute("product").getClass().getMethod("isActive").invoke(((c.core_rt.PageContext)pageContext).getAttribute("product")) ? "Active" : "Inactive" %>
+                                                </span>
+                                            </td>
+                                            <% if (userRole.equals("Admin") || userRole.equals("Manager")) { %>
+                                            <td>
+                                                <div class="dropdown">
+                                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                                        <i class="bx bx-dots-vertical-rounded"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu">
+                                                        <a class="dropdown-item" href="${pageContext.request.contextPath}/product?action=edit&id=${product.id}">
+                                                            <i class="bx bx-edit-alt me-1"></i> Edit
+                                                        </a>
+                                                        <form method="post" style="display:inline;" 
+                                                              onsubmit="return confirm('Toggle product status?');">
+                                                            <input type="hidden" name="action" value="toggleStatus" />
+                                                            <input type="hidden" name="id" value="${product.id}" />
+                                                            <button type="submit" class="dropdown-item">
+                                                                <i class="bx bx-toggle-left me-1"></i> Toggle Status
+                                                            </button>
+                                                        </form>
+                                                        <form method="post" style="display:inline;" 
+                                                              onsubmit="return confirm('Delete this product?');">
+                                                            <input type="hidden" name="action" value="delete" />
+                                                            <input type="hidden" name="id" value="${product.id}" />
+                                                            <button type="submit" class="dropdown-item text-danger">
                                                                 <i class="bx bx-trash me-1"></i> Delete
-                                                            </a>
-                                                        </div>
+                                                            </button>
+                                                        </form>
                                                     </div>
-                                                </td>
-                                            </tr>
-                                        </c:forEach>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </c:otherwise>
-                    </c:choose>
+                                                </div>
+                                            </td>
+                                            <% } %>
+                                        </tr>
+                                    </c:forEach>
+                                </c:otherwise>
+                            </c:choose>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
         <!-- / Content -->
 
-        <jsp:include page="../layout/footer.jsp"/>
+        <!-- Footer -->
+        <%@ include file="/views/layout/footer.jsp" %>
+    </div>
+</div>
+<!-- / Layout page -->
+
+<script src="${pageContext.request.contextPath}/assets/vendor/libs/jquery/jquery.js"></script>
+<script src="${pageContext.request.contextPath}/assets/vendor/libs/popper/popper.js"></script>
+<script src="${pageContext.request.contextPath}/assets/vendor/js/bootstrap.js"></script>
+<script src="${pageContext.request.contextPath}/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+<script src="${pageContext.request.contextPath}/assets/vendor/js/menu.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
+</body>
+</html>

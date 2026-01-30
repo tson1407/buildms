@@ -1,4 +1,4 @@
-# UC-USER-001: Create User
+# UC-USER-001: Create User (Not need to implement because already implemented in UC-AUTH-002-User-Registration)
 
 ## 1. Use Case Overview
 
