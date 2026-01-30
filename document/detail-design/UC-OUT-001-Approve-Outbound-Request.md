@@ -111,8 +111,7 @@
 | BR-APO-002 | Only "Created" requests can be approved |
 | BR-APO-003 | Rejection requires a reason |
 | BR-APO-004 | Inventory check is displayed but not enforced |
-| BR-APO-005 | Approver and timestamp recorded for audit |
-| BR-APO-006 | Rejected sales-driven requests revert SO status |
+| BR-APO-005 | Rejected sales-driven requests revert SO status |
 
 ---
 
@@ -142,11 +141,3 @@ Created → Rejected (Manager rejects)
 - Confirmation dialog before approval
 - Rejection reason is mandatory
 - Visual inventory warnings
-
----
-
-## Audit Trail
-- Record approver/rejector user ID
-- Record approval/rejection timestamp
-- Record rejection reason if rejected
-- Log decisions made with insufficient inventory

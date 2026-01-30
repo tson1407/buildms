@@ -15,7 +15,6 @@ Each use case document includes:
 5. **Access Control** - Role-based permissions
 6. **State Transitions** - State changes triggered by the use case
 7. **UI Requirements** - Interface considerations
-8. **Audit Trail** - What is logged for traceability
 
 ## Use Case Index
 

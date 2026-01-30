@@ -72,22 +72,19 @@
 - **Trigger:** No user exists with provided username
 - **Steps:**
   1. System displays error message: "Invalid username or password"
-  2. System logs failed login attempt (username, timestamp, IP)
-  3. Return to Step 1
+  2. Return to Step 1
 
 ### A3: User Account Inactive
 - **Trigger:** User status is Inactive
 - **Steps:**
   1. System displays error message: "Your account has been deactivated. Please contact administrator"
-  2. System logs failed login attempt
-  3. Return to Step 1
+  2. Return to Step 1
 
 ### A4: Password Incorrect
 - **Trigger:** Password hash does not match stored hash
 - **Steps:**
   1. System displays error message: "Invalid username or password"
-  2. System logs failed login attempt
-  3. Return to Step 1
+  2. Return to Step 1
 
 ---
 
@@ -107,11 +104,3 @@
 - Password field must mask input
 - "Forgot Password" link available
 - "Register" link for new users
-
----
-
-## Security Considerations
-- Use HTTPS for all login requests
-- Implement rate limiting for failed login attempts
-- Do not store plain text passwords
-- Clear sensitive data from memory after authentication

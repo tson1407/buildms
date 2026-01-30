@@ -116,7 +116,6 @@
 | BR-MXE-002 | Total warehouse inventory unchanged |
 | BR-MXE-003 | Only location quantities change |
 | BR-MXE-004 | Movement history recorded for traceability |
-| BR-MXE-005 | Executor recorded for audit trail |
 
 ---
 
@@ -162,13 +161,3 @@ In Progress → Completed (Staff completes)
 - Notes field
 - Complete button with confirmation
 - Movement history visible
-
----
-
-## Audit Trail
-- Executor user ID
-- Timestamps (start, complete)
-- Source and destination locations
-- Actual quantities moved
-- Discrepancy notes if any
-- Full transaction history

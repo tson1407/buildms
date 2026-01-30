@@ -92,7 +92,6 @@
 | BR-APR-002 | Only requests with status "Created" can be approved |
 | BR-APR-003 | Rejection requires a reason |
 | BR-APR-004 | Approver must be different from creator (optional rule) |
-| BR-APR-005 | Approver and timestamp are recorded for audit |
 
 ---
 
@@ -121,10 +120,3 @@ Created → Rejected (Manager rejects)
 - Rejection reason is mandatory with text area
 - Visual indication of current status
 - History of status changes (if available)
-
----
-
-## Audit Trail
-- Record approver/rejector user ID
-- Record approval/rejection timestamp
-- Record rejection reason

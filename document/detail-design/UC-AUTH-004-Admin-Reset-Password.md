@@ -88,7 +88,6 @@
 | BR-RST-001 | Only Admin role can reset other users' passwords |
 | BR-RST-002 | Reset password must meet minimum 6 character requirement |
 | BR-RST-003 | All active sessions for user must be invalidated after reset |
-| BR-RST-004 | Password reset action must be logged for audit |
 
 ---
 
@@ -108,11 +107,3 @@
 - Option to generate random secure password
 - Copy to clipboard for generated passwords
 - Confirmation dialog before executing reset
-
----
-
-## Security Considerations
-- Log all password reset actions with Admin ID and timestamp
-- Invalidate all user sessions after reset
-- Generated passwords should be cryptographically random
-- Consider requiring user to change password on first login after reset

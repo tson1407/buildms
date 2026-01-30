@@ -113,8 +113,7 @@
 | BR-EXE-002 | Only "Approved" requests can be executed |
 | BR-EXE-003 | Inventory increases only upon completion |
 | BR-EXE-004 | All inventory changes through Request execution |
-| BR-EXE-005 | Executor is recorded for audit trail |
-| BR-EXE-006 | Staff cannot manually adjust inventory quantities |
+| BR-EXE-005 | Staff cannot manually adjust inventory quantities |
 
 ---
 
@@ -151,12 +150,3 @@ In Progress → Completed (Staff completes all items)
 - Progress indicator for multi-item requests
 - Complete button with confirmation
 - Summary of changes before completion
-
----
-
-## Audit Trail
-- Record executor user ID
-- Record execution timestamps (start, complete)
-- Record actual quantities received
-- Record discrepancy notes
-- Full inventory transaction history

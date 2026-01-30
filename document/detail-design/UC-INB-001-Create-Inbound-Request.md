@@ -104,7 +104,6 @@
 | BR-INB-002 | Request must have at least one item |
 | BR-INB-003 | All quantities must be positive integers |
 | BR-INB-004 | Request is created with status "Created" |
-| BR-INB-005 | Creator is recorded for audit trail |
 
 ---
 
@@ -125,10 +124,3 @@
 - Quantity input with increment/decrement buttons
 - Form validation feedback before submission
 - Cancel button to discard and return to list
-
----
-
-## Audit Trail
-- Record creator user ID
-- Record creation timestamp
-- All data captured for traceability

@@ -144,7 +144,6 @@
 | BR-EXO-003 | Inventory decreases only upon completion |
 | BR-EXO-004 | Picked quantity cannot exceed available inventory |
 | BR-EXO-005 | Sales Order is updated after outbound completion |
-| BR-EXO-006 | Executor is recorded for audit trail |
 
 ---
 
@@ -192,12 +191,6 @@ Partially Shipped → Completed (remaining items shipped)
 - Shipping details form
 - Complete button with confirmation
 - Link to Sales Order (if applicable)
-
----
-
-## Audit Trail
-- Record executor user ID
-- Record execution timestamps (start, complete)
 - Record actual quantities picked
 - Record discrepancy notes
 - Full inventory transaction history
