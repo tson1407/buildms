@@ -1,32 +1,31 @@
 # UC-AUTH-002: User Registration (Admin)
 
-## Status: In Progress
+## Status: Completed
 
 ## Implementation Details
 
-### Current State
-- UserController exists with create user functionality
-- AuthService has register method
-- Basic validation implemented
-- Password hashing with SHA-256
+### Completed Features
+- [x] Admin-only access control - isAdmin() check in UserController
+- [x] Username validation (3-50 alphanumeric characters) - Line 175 in UserController
+- [x] Email format validation - HTML5 email input type in create.jsp
+- [x] Password minimum 6 characters - Lines 187-196 in UserController
+- [x] Confirm password match check - Lines 199-208 in UserController
+- [x] Username uniqueness check - userDAO.usernameExists() in AuthService
+- [x] Email uniqueness check - userDAO.emailExists() in AuthService
+- [x] Password hashing with SHA-256 and random salt - PasswordUtil.hashPassword()
+- [x] User management views created:
+  - list.jsp: Display all users with actions
+  - create.jsp: Form for creating new user
 
-### Requirements Review
-- [ ] Admin-only access control verified
-- [ ] Username validation (3-50 alphanumeric characters)
-- [ ] Email format validation
-- [ ] Password minimum 6 characters
-- [ ] Confirm password match check
-- [ ] Username uniqueness check
-- [ ] Email uniqueness check
-- [ ] Password hashing with SHA-256 and random salt
-- [ ] User views exist (list, create)
+### Files
+- Controller: src/main/java/vn/edu/fpt/swp/controller/UserController.java
+- Service: src/main/java/vn/edu/fpt/swp/service/AuthService.java
+- Views: 
+  - src/main/webapp/views/user/list.jsp
+  - src/main/webapp/views/user/create.jsp
+- DAO: src/main/java/vn/edu/fpt/swp/dao/UserDAO.java
 
-### Missing Functionality
-- [ ] Need to verify user management JSP views exist
-- [ ] Need to add alphanumeric validation for username
-- [ ] Need to ensure all error messages match specifications
-
-### Notes
-- Controller logic exists in UserController
-- Need to create/verify JSP views for user management
-- Need to ensure validation matches exact specifications
+### Verification
+- All validation rules implemented
+- Error messages match specifications
+- Only Admin role can access user management

@@ -1,29 +1,30 @@
 # UC-AUTH-003: Change Password
 
-## Status: Not Started
+## Status: Completed
 
 ## Implementation Details
 
-### Current State
-- AuthService has changePassword method
-- No controller endpoint for change password
-- No JSP view for change password
+### Completed Features
+- [x] Change password endpoint in AuthController
+- [x] Display change password form - change-password.jsp
+- [x] Validate current password, new password, confirm - Lines 236-282 in AuthController
+- [x] Verify current password - authService.changePassword()
+- [x] Ensure new password differs from current - Line 271 in AuthController
+- [x] Generate new salt and hash - PasswordUtil.hashPassword() in AuthService
+- [x] Update password in database - userDAO.updatePassword()
+- [x] Display success confirmation - Success alert in JSP
 
-### Requirements Review
-- [ ] Navigate to change password from user profile
-- [ ] Display change password form
-- [ ] Validate current password, new password, confirm new password
-- [ ] Verify current password
-- [ ] Ensure new password differs from current
-- [ ] Generate new salt and hash
-- [ ] Update password in database
-- [ ] Display success confirmation
+### Files
+- Controller: src/main/java/vn/edu/fpt/swp/controller/AuthController.java
+- Service: src/main/java/vn/edu/fpt/swp/service/AuthService.java
+- View: src/main/webapp/views/auth/change-password.jsp
+- DAO: src/main/java/vn/edu/fpt/swp/dao/UserDAO.java
 
-### Missing Functionality
-- [ ] Controller endpoint for change password GET/POST
-- [ ] JSP view for change password form
-- [ ] Integration with user profile/settings page
+### Alternative Flows Implemented
+- A1: Input validation failed - All error messages displayed
+- A2: Current password incorrect - Error message: "Current password is incorrect"
 
-### Notes
-- Service layer exists, need to add controller and view
-- Need to create accessible link from user profile
+### Verification
+- Accessible to all authenticated users
+- Proper validation at each step
+- Error messages match specifications

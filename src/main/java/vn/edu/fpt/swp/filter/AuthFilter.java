@@ -37,6 +37,7 @@ public class AuthFilter implements Filter {
     static {
         // Admin has access to all resources
         ROLE_ACCESS_MAP.put("/admin", Arrays.asList("Admin"));
+        ROLE_ACCESS_MAP.put("/user", Arrays.asList("Admin"));
         
         // Manager has access to manager, warehouse, and product resources
         ROLE_ACCESS_MAP.put("/manager", Arrays.asList("Admin", "Manager"));

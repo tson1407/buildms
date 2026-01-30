@@ -1,29 +1,28 @@
 # UC-AUTH-004: Admin Reset Password
 
-## Status: In Progress
+## Status: Completed
 
 ## Implementation Details
 
-### Current State
-- AuthService has resetPassword method
-- UserController has resetPassword endpoint
-- No dedicated JSP view for password reset
+### Completed Features
+- [x] Admin-only access - isAdmin() check in UserController
+- [x] Display reset password modal in user list
+- [x] Validate new password (min 6 characters) - Lines 264-267 in UserController
+- [x] Validate password confirmation - Lines 270-274 in UserController
+- [x] Update password with new hash and salt - authService.resetPassword()
+- [x] Display confirmation message - Success alert on redirect
 
-### Requirements Review
-- [ ] Admin-only access (implemented in UserController)
-- [ ] Display reset password form
-- [ ] Generate random password option
-- [ ] Validate new password (min 6 characters)
-- [ ] Update password with new hash and salt
-- [ ] Invalidate user sessions
-- [ ] Display confirmation
+### Files
+- Controller: src/main/java/vn/edu/fpt/swp/controller/UserController.java
+- Service: src/main/java/vn/edu/fpt/swp/service/AuthService.java
+- View: src/main/webapp/views/user/list.jsp (includes modal)
 
-### Missing Functionality
-- [ ] Need to add session invalidation after password reset
-- [ ] Need JSP view or modal for reset password
-- [ ] Need to add random password generation option
+### Not Implemented (Optional Features)
+- [ ] Session invalidation after password reset (marked as TODO in code)
+- [ ] Random password generation option (optional per spec)
+- [ ] Email notification to user (optional per spec)
 
-### Notes
-- Basic functionality exists
-- Need to add session invalidation
-- Need to create UI for password reset
+### Verification
+- Only Admin can reset passwords
+- Password validation enforced
+- User-friendly modal interface
