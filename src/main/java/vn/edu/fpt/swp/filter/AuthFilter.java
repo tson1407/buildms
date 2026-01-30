@@ -45,6 +45,7 @@ public class AuthFilter implements Filter {
         ROLE_ACCESS_MAP.put("/product", Arrays.asList("Admin", "Manager", "Staff"));
         ROLE_ACCESS_MAP.put("/inventory", Arrays.asList("Admin", "Manager", "Staff"));
         ROLE_ACCESS_MAP.put("/request", Arrays.asList("Admin", "Manager", "Staff"));
+        ROLE_ACCESS_MAP.put("/inbound", Arrays.asList("Admin", "Manager", "Staff"));
         
         // Staff has access to warehouse operations
         ROLE_ACCESS_MAP.put("/staff", Arrays.asList("Admin", "Manager", "Staff"));
