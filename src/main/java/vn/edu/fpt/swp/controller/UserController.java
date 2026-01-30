@@ -152,9 +152,58 @@ public class UserController extends HttpServlet {
             throws ServletException, IOException {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
+        String confirmPassword = request.getParameter("confirmPassword");
         String name = request.getParameter("name");
         String email = request.getParameter("email");
         String role = request.getParameter("role");
+        
+        // Validate input
+        if (username == null || username.trim().isEmpty() ||
+            password == null || password.trim().isEmpty() ||
+            name == null || name.trim().isEmpty() ||
+            email == null || email.trim().isEmpty() ||
+            role == null || role.trim().isEmpty()) {
+            request.setAttribute("error", "All fields are required");
+            request.setAttribute("username", username);
+            request.setAttribute("name", name);
+            request.setAttribute("email", email);
+            request.setAttribute("role", role);
+            showCreateForm(request, response);
+            return;
+        }
+        
+        // Validate username format (3-50 alphanumeric)
+        if (!username.matches("[a-zA-Z0-9]{3,50}")) {
+            request.setAttribute("error", "Username is required and must be 3-50 alphanumeric characters");
+            request.setAttribute("username", username);
+            request.setAttribute("name", name);
+            request.setAttribute("email", email);
+            request.setAttribute("role", role);
+            showCreateForm(request, response);
+            return;
+        }
+        
+        // Validate password length
+        if (password.length() < 6) {
+            request.setAttribute("error", "Password must be at least 6 characters");
+            request.setAttribute("username", username);
+            request.setAttribute("name", name);
+            request.setAttribute("email", email);
+            request.setAttribute("role", role);
+            showCreateForm(request, response);
+            return;
+        }
+        
+        // Validate password confirmation
+        if (!password.equals(confirmPassword)) {
+            request.setAttribute("error", "Passwords do not match");
+            request.setAttribute("username", username);
+            request.setAttribute("name", name);
+            request.setAttribute("email", email);
+            request.setAttribute("role", role);
+            showCreateForm(request, response);
+            return;
+        }
         
         User user = authService.register(username, password, name, email, role);
         
@@ -209,8 +258,22 @@ public class UserController extends HttpServlet {
             throws IOException {
         Long id = Long.parseLong(request.getParameter("id"));
         String newPassword = request.getParameter("newPassword");
+        String confirmPassword = request.getParameter("confirmPassword");
+        
+        // Validate password
+        if (newPassword == null || newPassword.length() < 6) {
+            response.sendRedirect(request.getContextPath() + "/user?error=Password must be at least 6 characters");
+            return;
+        }
+        
+        // Validate password confirmation
+        if (confirmPassword == null || !newPassword.equals(confirmPassword)) {
+            response.sendRedirect(request.getContextPath() + "/user?error=Passwords do not match");
+            return;
+        }
         
         if (authService.resetPassword(id, newPassword)) {
+            // TODO: Invalidate all sessions for this user
             response.sendRedirect(request.getContextPath() + "/user?success=passwordreset");
         } else {
             response.sendRedirect(request.getContextPath() + "/user?error=passwordreset");

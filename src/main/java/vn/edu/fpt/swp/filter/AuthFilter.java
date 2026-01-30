@@ -37,6 +37,7 @@ public class AuthFilter implements Filter {
     static {
         // Admin has access to all resources
         ROLE_ACCESS_MAP.put("/admin", Arrays.asList("Admin"));
+        ROLE_ACCESS_MAP.put("/user", Arrays.asList("Admin"));
         
         // Manager has access to manager, warehouse, and product resources
         ROLE_ACCESS_MAP.put("/manager", Arrays.asList("Admin", "Manager"));
@@ -82,8 +83,15 @@ public class AuthFilter implements Filter {
         
         if (user == null) {
             // User not authenticated, redirect to login
-            httpResponse.sendRedirect(contextPath + "/auth?action=login&redirect=" + 
-                                     java.net.URLEncoder.encode(path, "UTF-8"));
+            // Check if session existed but expired
+            if (session != null) {
+                session.invalidate();
+                httpResponse.sendRedirect(contextPath + "/auth?action=login&expired=true&redirect=" + 
+                                         java.net.URLEncoder.encode(path, "UTF-8"));
+            } else {
+                httpResponse.sendRedirect(contextPath + "/auth?action=login&redirect=" + 
+                                         java.net.URLEncoder.encode(path, "UTF-8"));
+            }
             return;
         }
         

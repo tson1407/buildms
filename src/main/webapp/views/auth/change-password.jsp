@@ -6,7 +6,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>Login - Smart WMS</title>
+    <title>Change Password - Smart WMS</title>
     <meta name="description" content="" />
     
     <!-- Favicon -->
@@ -41,7 +41,7 @@
     <div class="container-xxl">
         <div class="authentication-wrapper authentication-basic container-p-y">
             <div class="authentication-inner">
-                <!-- Login Card -->
+                <!-- Change Password Card -->
                 <div class="card">
                     <div class="card-body">
                         <!-- Logo -->
@@ -52,8 +52,8 @@
                         </div>
                         <!-- /Logo -->
                         
-                        <h4 class="mb-2">Welcome to Smart WMS! 👋</h4>
-                        <p class="mb-4">Please sign-in to your account and start the adventure</p>
+                        <h4 class="mb-2">Change Password</h4>
+                        <p class="mb-4">Update your password to keep your account secure</p>
                         
                         <!-- Error Message -->
                         <c:if test="${not empty error}">
@@ -64,70 +64,59 @@
                         </c:if>
                         
                         <!-- Success Message -->
-                        <c:if test="${param.success == 'registered'}">
+                        <c:if test="${not empty success}">
                             <div class="alert alert-success alert-dismissible" role="alert">
-                                Registration successful! Please login with your credentials.
+                                ${success}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                         </c:if>
                         
-                        <c:if test="${param.success == 'logout'}">
-                            <div class="alert alert-info alert-dismissible" role="alert">
-                                You have been successfully logged out.
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        </c:if>
-                        
-                        <c:if test="${param.expired == 'true'}">
-                            <div class="alert alert-warning alert-dismissible" role="alert">
-                                Your session has expired. Please login again.
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        </c:if>
-                        
-                        <!-- Login Form -->
-                        <form id="formAuthentication" class="mb-3" action="${pageContext.request.contextPath}/auth" method="POST">
-                            <input type="hidden" name="action" value="login">
+                        <!-- Change Password Form -->
+                        <form id="formChangePassword" class="mb-3" action="${pageContext.request.contextPath}/auth" method="POST">
+                            <input type="hidden" name="action" value="changePassword">
                             
-                            <div class="mb-3">
-                                <label for="username" class="form-label">Username</label>
-                                <input type="text" class="form-control" id="username" name="username" 
-                                       value="${username}" placeholder="Enter your username" autofocus required />
+                            <div class="mb-3 form-password-toggle">
+                                <label class="form-label" for="currentPassword">Current Password</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="password" id="currentPassword" class="form-control" name="currentPassword"
+                                           placeholder="Enter current password" required />
+                                    <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                                </div>
                             </div>
                             
                             <div class="mb-3 form-password-toggle">
-                                <div class="d-flex justify-content-between">
-                                    <label class="form-label" for="password">Password</label>
-                                </div>
+                                <label class="form-label" for="newPassword">New Password</label>
                                 <div class="input-group input-group-merge">
-                                    <input type="password" id="password" class="form-control" name="password"
-                                           placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                                           aria-describedby="password" required />
+                                    <input type="password" id="newPassword" class="form-control" name="newPassword"
+                                           placeholder="Enter new password (min 6 characters)" required />
+                                    <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                                </div>
+                                <small class="text-muted">Password must be at least 6 characters long</small>
+                            </div>
+                            
+                            <div class="mb-3 form-password-toggle">
+                                <label class="form-label" for="confirmNewPassword">Confirm New Password</label>
+                                <div class="input-group input-group-merge">
+                                    <input type="password" id="confirmNewPassword" class="form-control" name="confirmNewPassword"
+                                           placeholder="Confirm new password" required />
                                     <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                                 </div>
                             </div>
                             
                             <div class="mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="remember-me" name="rememberMe" />
-                                    <label class="form-check-label" for="remember-me"> Remember Me </label>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <button class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
+                                <button class="btn btn-primary d-grid w-100" type="submit">Change Password</button>
                             </div>
                         </form>
                         
-                        <p class="text-center">
-                            <span>New on our platform?</span>
-                            <a href="${pageContext.request.contextPath}/auth?action=register">
-                                <span>Create an account</span>
+                        <div class="text-center">
+                            <a href="${pageContext.request.contextPath}/" class="d-flex align-items-center justify-content-center">
+                                <i class="bx bx-chevron-left scaleX-n1-rtl bx-sm"></i>
+                                Back to dashboard
                             </a>
-                        </p>
+                        </div>
                     </div>
                 </div>
-                <!-- /Login Card -->
+                <!-- /Change Password Card -->
             </div>
         </div>
     </div>
