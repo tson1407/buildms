@@ -82,8 +82,15 @@ public class AuthFilter implements Filter {
         
         if (user == null) {
             // User not authenticated, redirect to login
-            httpResponse.sendRedirect(contextPath + "/auth?action=login&redirect=" + 
-                                     java.net.URLEncoder.encode(path, "UTF-8"));
+            // Check if session existed but expired
+            if (session != null) {
+                session.invalidate();
+                httpResponse.sendRedirect(contextPath + "/auth?action=login&expired=true&redirect=" + 
+                                         java.net.URLEncoder.encode(path, "UTF-8"));
+            } else {
+                httpResponse.sendRedirect(contextPath + "/auth?action=login&redirect=" + 
+                                         java.net.URLEncoder.encode(path, "UTF-8"));
+            }
             return;
         }
         

@@ -42,6 +42,9 @@ public class AuthController extends HttpServlet {
             case "logout":
                 logout(request, response);
                 break;
+            case "changePassword":
+                showChangePasswordPage(request, response);
+                break;
             default:
                 showLoginPage(request, response);
                 break;
@@ -62,6 +65,9 @@ public class AuthController extends HttpServlet {
                 break;
             case "register":
                 handleRegister(request, response);
+                break;
+            case "changePassword":
+                handleChangePassword(request, response);
                 break;
             default:
                 showLoginPage(request, response);
@@ -220,6 +226,82 @@ public class AuthController extends HttpServlet {
                 return "/sales/dashboard";
             default:
                 return "/";
+        }
+    }
+    
+    /**
+     * Show change password page
+     */
+    private void showChangePasswordPage(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect(request.getContextPath() + "/auth?action=login");
+            return;
+        }
+        
+        request.setAttribute("pageTitle", "Change Password");
+        request.getRequestDispatcher("/views/auth/change-password.jsp").forward(request, response);
+    }
+    
+    /**
+     * Handle change password request
+     */
+    private void handleChangePassword(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        // Check if user is logged in
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            response.sendRedirect(request.getContextPath() + "/auth?action=login");
+            return;
+        }
+        
+        User user = (User) session.getAttribute("user");
+        String currentPassword = request.getParameter("currentPassword");
+        String newPassword = request.getParameter("newPassword");
+        String confirmNewPassword = request.getParameter("confirmNewPassword");
+        
+        // Validate input
+        if (currentPassword == null || currentPassword.trim().isEmpty()) {
+            request.setAttribute("error", "Current password is required");
+            showChangePasswordPage(request, response);
+            return;
+        }
+        
+        if (newPassword == null || newPassword.trim().isEmpty()) {
+            request.setAttribute("error", "New password is required");
+            showChangePasswordPage(request, response);
+            return;
+        }
+        
+        if (newPassword.length() < 6) {
+            request.setAttribute("error", "New password must be at least 6 characters");
+            showChangePasswordPage(request, response);
+            return;
+        }
+        
+        if (!newPassword.equals(confirmNewPassword)) {
+            request.setAttribute("error", "New passwords do not match");
+            showChangePasswordPage(request, response);
+            return;
+        }
+        
+        if (currentPassword.equals(newPassword)) {
+            request.setAttribute("error", "New password must be different from current password");
+            showChangePasswordPage(request, response);
+            return;
+        }
+        
+        // Change password
+        boolean success = authService.changePassword(user.getId(), currentPassword, newPassword);
+        
+        if (success) {
+            request.setAttribute("success", "Password changed successfully");
+            showChangePasswordPage(request, response);
+        } else {
+            request.setAttribute("error", "Current password is incorrect");
+            showChangePasswordPage(request, response);
         }
     }
 }
