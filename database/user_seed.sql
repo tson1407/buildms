@@ -39,8 +39,8 @@ GO
 IF NOT EXISTS (SELECT 1 FROM Users WHERE Username = 'manager')
 BEGIN
     INSERT INTO Users (Username, Name, Email, PasswordHash, Role, Status, WarehouseId, CreatedAt)
-    VALUES ('manager', 'Warehouse Manager', 'manager@smartwms.com', 
-            'Xs6FEB1g7cDoFK6N1lyOHw==:MP6K14N1aIidqd2OXJ/HZ46PZGv4C1NTWYsGbxc3Pzw=', 
+        VALUES ('manager', 'Warehouse Manager', 'manager@smartwms.com', 
+            'HtP9svA7PCLX+KbNSg6SLg==:GrYU4rhzbSwCeRRWVLAePvk22fZ/CyukvK0LztFHbo8=',
             'Manager', 'Active', 1, GETDATE());
     PRINT 'Created user: manager (Manager)';
 END
@@ -57,8 +57,8 @@ GO
 IF NOT EXISTS (SELECT 1 FROM Users WHERE Username = 'staff')
 BEGIN
     INSERT INTO Users (Username, Name, Email, PasswordHash, Role, Status, WarehouseId, CreatedAt)
-    VALUES ('staff', 'Warehouse Staff', 'staff@smartwms.com', 
-            'zLuQDU9qIIJx1y0ihzFCQA==:4eY4LTH2VU34b6fb0HbtNKne5iLHMO7Gv4UM7kynbsQ=', 
+        VALUES ('staff', 'Warehouse Staff', 'staff@smartwms.com', 
+            '+v2UFEWbu2OH5fjtrrg/2A==:B7gfAxygBXVOpVmuTkJQybApgOSOJVTrxE3whcIJ2Zs=',
             'Staff', 'Active', 1, GETDATE());
     PRINT 'Created user: staff (Staff)';
 END
@@ -75,8 +75,8 @@ GO
 IF NOT EXISTS (SELECT 1 FROM Users WHERE Username = 'sales')
 BEGIN
     INSERT INTO Users (Username, Name, Email, PasswordHash, Role, Status, CreatedAt)
-    VALUES ('sales', 'Sales Representative', 'sales@smartwms.com', 
-            '5M5c1E3lXXr7SUjufFOXig==:RuJ/PgoJJD5SawWW0xCcJRm/vC/axb1dJm+V50tBO24=', 
+        VALUES ('sales', 'Sales Representative', 'sales@smartwms.com', 
+            'Y+til+fcii/WiLxxWssyOg==:9kNxa9TkKpG8Hz59fOr9QX9PbCgisbbSOAtKEJJbB/U=',
             'Sales', 'Active', GETDATE());
     PRINT 'Created user: sales (Sales)';
 END
@@ -92,8 +92,8 @@ GO
 IF NOT EXISTS (SELECT 1 FROM Users WHERE Username = 'testmanager')
 BEGIN
     INSERT INTO Users (Username, Name, Email, PasswordHash, Role, Status, WarehouseId, CreatedAt)
-    VALUES ('testmanager', 'Test Manager', 'testmanager@smartwms.com', 
-            'Xs6FEB1g7cDoFK6N1lyOHw==:MP6K14N1aIidqd2OXJ/HZ46PZGv4C1NTWYsGbxc3Pzw=', 
+        VALUES ('testmanager', 'Test Manager', 'testmanager@smartwms.com', 
+            'HtP9svA7PCLX+KbNSg6SLg==:GrYU4rhzbSwCeRRWVLAePvk22fZ/CyukvK0LztFHbo8=',
             'Manager', 'Active', 2, GETDATE());
     PRINT 'Created user: testmanager (Manager)';
 END
@@ -107,8 +107,8 @@ GO
 IF NOT EXISTS (SELECT 1 FROM Users WHERE Username = 'teststaff')
 BEGIN
     INSERT INTO Users (Username, Name, Email, PasswordHash, Role, Status, WarehouseId, CreatedAt)
-    VALUES ('teststaff', 'Test Staff', 'teststaff@smartwms.com', 
-            'zLuQDU9qIIJx1y0ihzFCQA==:4eY4LTH2VU34b6fb0HbtNKne5iLHMO7Gv4UM7kynbsQ=', 
+        VALUES ('teststaff', 'Test Staff', 'teststaff@smartwms.com', 
+            '+v2UFEWbu2OH5fjtrrg/2A==:B7gfAxygBXVOpVmuTkJQybApgOSOJVTrxE3whcIJ2Zs=',
             'Staff', 'Active', 2, GETDATE());
     PRINT 'Created user: teststaff (Staff)';
 END
