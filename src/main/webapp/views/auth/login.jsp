@@ -4,7 +4,7 @@
     // Redirect if already logged in
     HttpSession userSession = request.getSession(false);
     if (userSession != null && userSession.getAttribute("user") != null) {
-        response.sendRedirect(request.getContextPath() + "/dashboard");
+        response.sendRedirect(request.getContextPath() + "/index.jsp");
         return;
     }
     

@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<c:set var="userRole" value="${sessionScope.user.role}" />
 <!-- Menu -->
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
     <div class="app-brand demo">
@@ -40,7 +41,7 @@
                     </svg>
                 </span>
             </span>
-            <span class="app-brand-text demo menu-text fw-bold ms-2">Build MS</span>
+            <span class="app-brand-text demo menu-text fw-bold ms-2">Smart WMS</span>
         </a>
 
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
@@ -60,80 +61,233 @@
             </a>
         </li>
 
-        <!-- Product Management -->
-        <li class="menu-header small text-uppercase"><span class="menu-header-text">Management</span></li>
-        
-        <li class="menu-item ${currentPage == 'products' ? 'active open' : ''}">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-package"></i>
-                <div class="text-truncate" data-i18n="Products">Products</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item ${currentPage == 'product-list' ? 'active' : ''}">
-                    <a href="${pageContext.request.contextPath}/product" class="menu-link">
-                        <div class="text-truncate" data-i18n="Product List">Product List</div>
-                    </a>
-                </li>
-                <li class="menu-item ${currentPage == 'product-create' ? 'active' : ''}">
-                    <a href="${pageContext.request.contextPath}/product?action=create" class="menu-link">
-                        <div class="text-truncate" data-i18n="Add Product">Add Product</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
+        <!-- Master Data Section (Admin, Manager) -->
+        <c:if test="${userRole == 'Admin' || userRole == 'Manager'}">
+            <li class="menu-header small text-uppercase"><span class="menu-header-text">Master Data</span></li>
+            
+            <!-- Product Management (Admin, Manager) -->
+            <li class="menu-item ${currentPage == 'products' ? 'active open' : ''}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-package"></i>
+                    <div class="text-truncate" data-i18n="Products">Products</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item ${currentPage == 'product-list' ? 'active' : ''}">
+                        <a href="${pageContext.request.contextPath}/product" class="menu-link">
+                            <div class="text-truncate" data-i18n="Product List">Product List</div>
+                        </a>
+                    </li>
+                    <li class="menu-item ${currentPage == 'product-create' ? 'active' : ''}">
+                        <a href="${pageContext.request.contextPath}/product?action=create" class="menu-link">
+                            <div class="text-truncate" data-i18n="Add Product">Add Product</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
-        <!-- Forms & Tables -->
-        <li class="menu-header small text-uppercase"><span class="menu-header-text">Components</span></li>
-        
-        <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-detail"></i>
-                <div class="text-truncate" data-i18n="Forms">Forms</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item">
-                    <a href="${pageContext.request.contextPath}/html/forms-basic-inputs.html" class="menu-link">
-                        <div class="text-truncate" data-i18n="Basic Inputs">Basic Inputs</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="${pageContext.request.contextPath}/html/form-layouts-vertical.html" class="menu-link">
-                        <div class="text-truncate" data-i18n="Form Layouts">Form Layouts</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
+            <!-- Category Management (Admin, Manager) -->
+            <li class="menu-item ${currentPage == 'categories' ? 'active open' : ''}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-category"></i>
+                    <div class="text-truncate" data-i18n="Categories">Categories</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item ${currentPage == 'category-list' ? 'active' : ''}">
+                        <a href="${pageContext.request.contextPath}/category" class="menu-link">
+                            <div class="text-truncate" data-i18n="Category List">Category List</div>
+                        </a>
+                    </li>
+                    <li class="menu-item ${currentPage == 'category-create' ? 'active' : ''}">
+                        <a href="${pageContext.request.contextPath}/category?action=create" class="menu-link">
+                            <div class="text-truncate" data-i18n="Add Category">Add Category</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
 
-        <li class="menu-item">
-            <a href="${pageContext.request.contextPath}/html/tables-basic.html" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-table"></i>
-                <div class="text-truncate" data-i18n="Tables">Tables</div>
-            </a>
-        </li>
+            <!-- Warehouse Management (Admin, Manager) -->
+            <li class="menu-item ${currentPage == 'warehouses' ? 'active open' : ''}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-building"></i>
+                    <div class="text-truncate" data-i18n="Warehouses">Warehouses</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item ${currentPage == 'warehouse-list' ? 'active' : ''}">
+                        <a href="${pageContext.request.contextPath}/warehouse" class="menu-link">
+                            <div class="text-truncate" data-i18n="Warehouse List">Warehouse List</div>
+                        </a>
+                    </li>
+                    <li class="menu-item ${currentPage == 'warehouse-create' ? 'active' : ''}">
+                        <a href="${pageContext.request.contextPath}/warehouse?action=create" class="menu-link">
+                            <div class="text-truncate" data-i18n="Add Warehouse">Add Warehouse</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </c:if>
 
-        <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-box"></i>
-                <div class="text-truncate" data-i18n="UI Components">UI Components</div>
-            </a>
-            <ul class="menu-sub">
-                <li class="menu-item">
-                    <a href="${pageContext.request.contextPath}/html/ui-alerts.html" class="menu-link">
-                        <div class="text-truncate" data-i18n="Alerts">Alerts</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="${pageContext.request.contextPath}/html/ui-buttons.html" class="menu-link">
-                        <div class="text-truncate" data-i18n="Buttons">Buttons</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="${pageContext.request.contextPath}/html/ui-modals.html" class="menu-link">
-                        <div class="text-truncate" data-i18n="Modals">Modals</div>
-                    </a>
-                </li>
-            </ul>
-        </li>
+        <!-- Location Management (Admin, Manager, Staff) -->
+        <c:if test="${userRole == 'Admin' || userRole == 'Manager' || userRole == 'Staff'}">
+            <li class="menu-item ${currentPage == 'locations' ? 'active open' : ''}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-map"></i>
+                    <div class="text-truncate" data-i18n="Locations">Locations</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item ${currentPage == 'location-list' ? 'active' : ''}">
+                        <a href="${pageContext.request.contextPath}/location" class="menu-link">
+                            <div class="text-truncate" data-i18n="Location List">Location List</div>
+                        </a>
+                    </li>
+                    <c:if test="${userRole == 'Admin' || userRole == 'Manager'}">
+                        <li class="menu-item ${currentPage == 'location-create' ? 'active' : ''}">
+                            <a href="${pageContext.request.contextPath}/location?action=create" class="menu-link">
+                                <div class="text-truncate" data-i18n="Add Location">Add Location</div>
+                            </a>
+                        </li>
+                    </c:if>
+                </ul>
+            </li>
+        </c:if>
+
+        <!-- Customer Management (Admin, Manager, Sales) -->
+        <c:if test="${userRole == 'Admin' || userRole == 'Manager' || userRole == 'Sales'}">
+            <li class="menu-item ${currentPage == 'customers' ? 'active open' : ''}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-group"></i>
+                    <div class="text-truncate" data-i18n="Customers">Customers</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item ${currentPage == 'customer-list' ? 'active' : ''}">
+                        <a href="${pageContext.request.contextPath}/customer" class="menu-link">
+                            <div class="text-truncate" data-i18n="Customer List">Customer List</div>
+                        </a>
+                    </li>
+                    <li class="menu-item ${currentPage == 'customer-create' ? 'active' : ''}">
+                        <a href="${pageContext.request.contextPath}/customer?action=create" class="menu-link">
+                            <div class="text-truncate" data-i18n="Add Customer">Add Customer</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </c:if>
+
+        <!-- Operations Section -->
+        <c:if test="${userRole == 'Admin' || userRole == 'Manager' || userRole == 'Staff'}">
+            <li class="menu-header small text-uppercase"><span class="menu-header-text">Operations</span></li>
+            
+            <!-- Inventory Management (Admin, Manager, Staff) -->
+            <li class="menu-item ${currentPage == 'inventory' ? 'active open' : ''}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-box"></i>
+                    <div class="text-truncate" data-i18n="Inventory">Inventory</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item ${currentPage == 'inventory-by-warehouse' ? 'active' : ''}">
+                        <a href="${pageContext.request.contextPath}/inventory?view=warehouse" class="menu-link">
+                            <div class="text-truncate" data-i18n="By Warehouse">By Warehouse</div>
+                        </a>
+                    </li>
+                    <li class="menu-item ${currentPage == 'inventory-by-product' ? 'active' : ''}">
+                        <a href="${pageContext.request.contextPath}/inventory?view=product" class="menu-link">
+                            <div class="text-truncate" data-i18n="By Product">By Product</div>
+                        </a>
+                    </li>
+                    <li class="menu-item ${currentPage == 'inventory-search' ? 'active' : ''}">
+                        <a href="${pageContext.request.contextPath}/inventory?action=search" class="menu-link">
+                            <div class="text-truncate" data-i18n="Search Inventory">Search Inventory</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <!-- Request Management (Admin, Manager, Staff) -->
+            <li class="menu-item ${currentPage == 'requests' ? 'active open' : ''}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-spreadsheet"></i>
+                    <div class="text-truncate" data-i18n="Requests">Requests</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item ${currentPage == 'request-list' ? 'active' : ''}">
+                        <a href="${pageContext.request.contextPath}/request" class="menu-link">
+                            <div class="text-truncate" data-i18n="All Requests">All Requests</div>
+                        </a>
+                    </li>
+                    <c:if test="${userRole == 'Admin' || userRole == 'Manager'}">
+                        <li class="menu-item ${currentPage == 'inbound-create' ? 'active' : ''}">
+                            <a href="${pageContext.request.contextPath}/request?action=create&type=inbound" class="menu-link">
+                                <div class="text-truncate" data-i18n="Create Inbound">Create Inbound</div>
+                            </a>
+                        </li>
+                        <li class="menu-item ${currentPage == 'outbound-create' ? 'active' : ''}">
+                            <a href="${pageContext.request.contextPath}/request?action=create&type=outbound" class="menu-link">
+                                <div class="text-truncate" data-i18n="Create Outbound">Create Outbound</div>
+                            </a>
+                        </li>
+                        <li class="menu-item ${currentPage == 'transfer-create' ? 'active' : ''}">
+                            <a href="${pageContext.request.contextPath}/request?action=create&type=transfer" class="menu-link">
+                                <div class="text-truncate" data-i18n="Create Transfer">Create Transfer</div>
+                            </a>
+                        </li>
+                        <li class="menu-item ${currentPage == 'movement-create' ? 'active' : ''}">
+                            <a href="${pageContext.request.contextPath}/request?action=create&type=internal" class="menu-link">
+                                <div class="text-truncate" data-i18n="Create Internal Movement">Internal Movement</div>
+                            </a>
+                        </li>
+                    </c:if>
+                </ul>
+            </li>
+        </c:if>
+
+        <!-- Sales Section (Admin, Manager, Sales) -->
+        <c:if test="${userRole == 'Admin' || userRole == 'Manager' || userRole == 'Sales'}">
+            <li class="menu-header small text-uppercase"><span class="menu-header-text">Sales</span></li>
+            
+            <!-- Sales Order Management -->
+            <li class="menu-item ${currentPage == 'sales-orders' ? 'active open' : ''}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-cart"></i>
+                    <div class="text-truncate" data-i18n="Sales Orders">Sales Orders</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item ${currentPage == 'sales-order-list' ? 'active' : ''}">
+                        <a href="${pageContext.request.contextPath}/sales-order" class="menu-link">
+                            <div class="text-truncate" data-i18n="Order List">Order List</div>
+                        </a>
+                    </li>
+                    <li class="menu-item ${currentPage == 'sales-order-create' ? 'active' : ''}">
+                        <a href="${pageContext.request.contextPath}/sales-order?action=create" class="menu-link">
+                            <div class="text-truncate" data-i18n="Create Order">Create Order</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </c:if>
+
+        <!-- System Administration (Admin Only) -->
+        <c:if test="${userRole == 'Admin'}">
+            <li class="menu-header small text-uppercase"><span class="menu-header-text">System</span></li>
+            
+            <!-- User Management -->
+            <li class="menu-item ${currentPage == 'users' ? 'active open' : ''}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-user"></i>
+                    <div class="text-truncate" data-i18n="Users">Users</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item ${currentPage == 'user-list' ? 'active' : ''}">
+                        <a href="${pageContext.request.contextPath}/user" class="menu-link">
+                            <div class="text-truncate" data-i18n="User List">User List</div>
+                        </a>
+                    </li>
+                    <li class="menu-item ${currentPage == 'user-create' ? 'active' : ''}">
+                        <a href="${pageContext.request.contextPath}/user?action=create" class="menu-link">
+                            <div class="text-truncate" data-i18n="Add User">Add User</div>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        </c:if>
     </ul>
 </aside>
 <!-- / Menu -->

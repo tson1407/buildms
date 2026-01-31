@@ -1,5 +1,16 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="vn.edu.fpt.swp.model.User" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%
+    // Check if user is logged in
+    HttpSession userSession = request.getSession(false);
+    if (userSession == null || userSession.getAttribute("user") == null) {
+        response.sendRedirect(request.getContextPath() + "/auth?action=login");
+        return;
+    }
+    
+    User currentUser = (User) userSession.getAttribute("user");
+%>
 <c:set var="pageTitle" value="Dashboard" scope="request"/>
 <c:set var="currentPage" value="dashboard" scope="request"/>
 <jsp:include page="views/layout/header.jsp"/>
@@ -19,9 +30,15 @@
                         <div class="d-flex align-items-end row">
                             <div class="col-sm-7">
                                 <div class="card-body">
-                                    <h5 class="card-title text-primary">Welcome to Build MS! 🎉</h5>
+                                    <h5 class="card-title text-primary">Welcome to Smart WMS! 🎉</h5>
+                                    <p class="mb-2">
+                                        Hello, <strong><%= currentUser.getName() != null ? currentUser.getName() : currentUser.getUsername() %></strong>
+                                    </p>
+                                    <p class="mb-3">
+                                        Role: <span class="badge bg-primary"><%= currentUser.getRole() %></span>
+                                    </p>
                                     <p class="mb-4">
-                                        Your comprehensive <span class="fw-bold">Building Material Management System</span>. 
+                                        Your comprehensive <span class="fw-bold">Warehouse Management System</span>. 
                                         Start managing your products, inventory, and more.
                                     </p>
 
@@ -122,13 +139,20 @@
                                     </a>
                                 </div>
                                 <div class="col-md-3 mb-3">
-                                    <a href="#" class="btn btn-success w-100">
-                                        <i class="bx bx-file me-1"></i> Generate Report
+                                    <a href="${pageContext.request.contextPath}/auth?action=change-password" class="btn btn-success w-100">
+                                        <i class="bx bx-lock me-1"></i> Change Password
                                     </a>
                                 </div>
+                                <% if ("Admin".equals(currentUser.getRole())) { %>
                                 <div class="col-md-3 mb-3">
-                                    <a href="#" class="btn btn-warning w-100">
-                                        <i class="bx bx-cog me-1"></i> Settings
+                                    <a href="${pageContext.request.contextPath}/auth?action=register" class="btn btn-warning w-100">
+                                        <i class="bx bx-user-plus me-1"></i> Create New User
+                                    </a>
+                                </div>
+                                <% } %>
+                                <div class="col-md-3 mb-3">
+                                    <a href="${pageContext.request.contextPath}/auth?action=logout" class="btn btn-danger w-100">
+                                        <i class="bx bx-log-out me-1"></i> Logout
                                     </a>
                                 </div>
                             </div>

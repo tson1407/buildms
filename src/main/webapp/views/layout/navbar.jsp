@@ -36,8 +36,8 @@
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <h6 class="mb-0">${sessionScope.userName != null ? sessionScope.userName : 'Admin User'}</h6>
-                                    <small class="text-muted">Administrator</small>
+                                    <h6 class="mb-0">${sessionScope.user.name != null ? sessionScope.user.name : sessionScope.user.username}</h6>
+                                    <small class="text-muted">${sessionScope.user.role}</small>
                                 </div>
                             </div>
                         </a>
@@ -46,20 +46,15 @@
                         <div class="dropdown-divider my-1"></div>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="#">
-                            <i class="bx bx-user bx-md me-3"></i><span>My Profile</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="#">
-                            <i class="bx bx-cog bx-md me-3"></i><span>Settings</span>
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/auth?action=change-password">
+                            <i class="bx bx-key bx-md me-3"></i><span>Change Password</span>
                         </a>
                     </li>
                     <li>
                         <div class="dropdown-divider my-1"></div>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="${pageContext.request.contextPath}/logout">
+                        <a class="dropdown-item" href="${pageContext.request.contextPath}/auth?action=logout">
                             <i class="bx bx-power-off bx-md me-3"></i><span>Log Out</span>
                         </a>
                     </li>

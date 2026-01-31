@@ -122,7 +122,7 @@
                             </div>
                             
                             <div class="text-center">
-                                <a href="<%= request.getContextPath() %>/dashboard" class="btn btn-outline-secondary">
+                                <a href="<%= request.getContextPath() %>/index.jsp" class="btn btn-outline-secondary">
                                     Cancel
                                 </a>
                             </div>

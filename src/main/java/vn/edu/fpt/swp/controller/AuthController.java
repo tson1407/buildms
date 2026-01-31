@@ -117,11 +117,12 @@ public class AuthController extends HttpServlet {
         session.setAttribute("userId", user.getId());
         session.setAttribute("username", user.getUsername());
         session.setAttribute("role", user.getRole());
+        session.setAttribute("lastAccessTime", System.currentTimeMillis());
         session.setMaxInactiveInterval(30 * 60); // 30 minutes
         
-        // Redirect to dashboard
+        // Redirect to index page
         request.setAttribute("success", "Login successful");
-        response.sendRedirect(request.getContextPath() + "/dashboard");
+        response.sendRedirect(request.getContextPath() + "/index.jsp");
     }
     
     /**
@@ -138,7 +139,7 @@ public class AuthController extends HttpServlet {
         
         User currentUser = (User) session.getAttribute("user");
         if (!"Admin".equals(currentUser.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/error/403.jsp");
+            response.sendRedirect(request.getContextPath() + "/views/error/403.jsp");
             return;
         }
         
@@ -159,7 +160,7 @@ public class AuthController extends HttpServlet {
         
         User currentUser = (User) session.getAttribute("user");
         if (!"Admin".equals(currentUser.getRole())) {
-            response.sendRedirect(request.getContextPath() + "/error/403.jsp");
+            response.sendRedirect(request.getContextPath() + "/views/error/403.jsp");
             return;
         }
         

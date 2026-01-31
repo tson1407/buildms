@@ -117,7 +117,7 @@ public class AuthFilter implements Filter {
         String userRole = user.getRole();
         
         if (!hasAccess(path, userRole)) {
-            response.sendRedirect(request.getContextPath() + "/error/403.jsp");
+            response.sendRedirect(request.getContextPath() + "/views/error/403.jsp");
             return;
         }
         
