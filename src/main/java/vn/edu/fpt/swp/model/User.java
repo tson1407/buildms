@@ -60,6 +60,15 @@ public class User implements Serializable {
         this.name = name;
     }
     
+    // Backwards compatible accessor used in JSPs and views that expect `fullName`
+    public String getFullName() {
+        return this.name;
+    }
+
+    public void setFullName(String fullName) {
+        this.name = fullName;
+    }
+    
     public String getEmail() {
         return email;
     }

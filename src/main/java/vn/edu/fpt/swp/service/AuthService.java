@@ -55,6 +55,30 @@ public class AuthService {
     }
     
     /**
+     * Find user by username (for status check)
+     * @param username Username to search
+     * @return User object if found, null otherwise
+     */
+    public User findByUsername(String username) {
+        if (username == null || username.trim().isEmpty()) {
+            return null;
+        }
+        return userDAO.findByUsername(username.trim());
+    }
+    
+    /**
+     * Find user by ID
+     * @param userId User ID to search
+     * @return User object if found, null otherwise
+     */
+    public User findById(Long userId) {
+        if (userId == null) {
+            return null;
+        }
+        return userDAO.findById(userId);
+    }
+    
+    /**
      * Register new user (Admin only)
      * @param user User object with plain text password
      * @param plainPassword Plain text password

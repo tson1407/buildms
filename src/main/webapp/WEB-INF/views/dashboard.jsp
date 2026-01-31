@@ -43,7 +43,7 @@
                                         <div class="col-sm-7">
                                             <div class="card-body">
                                                 <h5 class="card-title text-primary mb-3">
-                                                    Welcome back, ${sessionScope.user.fullName != null ? sessionScope.user.fullName : sessionScope.user.username}! 👋
+                                                    Welcome back, ${sessionScope.user.name != null ? sessionScope.user.name : sessionScope.user.username}! 👋
                                                 </h5>
                                                 <p class="mb-6">
                                                     You are logged in as <strong>${sessionScope.user.role}</strong>.<br />

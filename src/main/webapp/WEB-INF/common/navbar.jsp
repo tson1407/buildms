@@ -81,8 +81,8 @@
                     <div class="avatar avatar-online">
                         <span class="avatar-initial rounded-circle bg-label-primary">
                             <c:choose>
-                                <c:when test="${not empty currentUser.fullName}">
-                                    ${currentUser.fullName.substring(0,1).toUpperCase()}
+                                <c:when test="${not empty currentUser.name}">
+                                    ${currentUser.name.substring(0,1).toUpperCase()}
                                 </c:when>
                                 <c:otherwise>
                                     ${currentUser.username.substring(0,1).toUpperCase()}
@@ -99,8 +99,8 @@
                                     <div class="avatar avatar-online">
                                         <span class="avatar-initial rounded-circle bg-label-primary">
                                             <c:choose>
-                                                <c:when test="${not empty currentUser.fullName}">
-                                                    ${currentUser.fullName.substring(0,1).toUpperCase()}
+                                                <c:when test="${not empty currentUser.name}">
+                                                    ${currentUser.name.substring(0,1).toUpperCase()}
                                                 </c:when>
                                                 <c:otherwise>
                                                     ${currentUser.username.substring(0,1).toUpperCase()}
@@ -112,8 +112,8 @@
                                 <div class="flex-grow-1">
                                     <h6 class="mb-0">
                                         <c:choose>
-                                            <c:when test="${not empty currentUser.fullName}">
-                                                ${currentUser.fullName}
+                                            <c:when test="${not empty currentUser.name}">
+                                                ${currentUser.name}
                                             </c:when>
                                             <c:otherwise>
                                                 ${currentUser.username}
