@@ -79,7 +79,7 @@
                             <select id="categoryId" name="categoryId" class="form-select">
                                 <option value="">All Categories</option>
                                 <c:forEach var="category" items="${categories}">
-                                    <option value="${category.id}" <%= selectedCategoryId.equals(String.valueOf(category.getId())) ? "selected" : "" %>>
+                                    <option value="${category.id}" ${selectedCategoryId == category.id ? 'selected' : ''}>
                                         ${category.name}
                                     </option>
                                 </c:forEach>
@@ -131,7 +131,7 @@
                                 </c:when>
                                 <c:otherwise>
                                     <c:forEach var="product" items="${products}">
-                                        <tr style="<%= !((c.core_rt.PageContext)pageContext).getAttribute("product").getClass().getMethod("isActive").invoke(((c.core_rt.PageContext)pageContext).getAttribute("product")) != null && !(boolean)((c.core_rt.PageContext)pageContext).getAttribute("product").getClass().getMethod("isActive").invoke(((c.core_rt.PageContext)pageContext).getAttribute("product")) ? "opacity: 0.6;" : "" %>">
+                                        <tr style="${product.status == 'Inactive' ? 'opacity: 0.6;' : ''}">
                                             <td>
                                                 <strong>${product.sku}</strong>
                                             </td>
@@ -159,12 +159,12 @@
                                             </td>
                                             <td>
                                                 <span class="badge bg-info">
-                                                    <%= request.getAttribute("totalStock_" + ((c.core_rt.PageContext)pageContext).getAttribute("product").getId()) %>
+                                                    ${requestScope["totalStock_".concat(product.id)]}
                                                 </span>
                                             </td>
                                             <td>
-                                                <span class="badge bg-<%= ((c.core_rt.PageContext)pageContext).getAttribute("product").getClass().getMethod("isActive").invoke(((c.core_rt.PageContext)pageContext).getAttribute("product")) != null && (boolean)((c.core_rt.PageContext)pageContext).getAttribute("product").getClass().getMethod("isActive").invoke(((c.core_rt.PageContext)pageContext).getAttribute("product")) ? "success" : "secondary" %>">
-                                                    <%= ((c.core_rt.PageContext)pageContext).getAttribute("product").getClass().getMethod("isActive").invoke(((c.core_rt.PageContext)pageContext).getAttribute("product")) != null && (boolean)((c.core_rt.PageContext)pageContext).getAttribute("product").getClass().getMethod("isActive").invoke(((c.core_rt.PageContext)pageContext).getAttribute("product")) ? "Active" : "Inactive" %>
+                                                <span class="badge bg-${product.status == 'Active' ? 'success' : 'secondary'}">
+                                                    ${product.status}
                                                 </span>
                                             </td>
                                             <% if (userRole.equals("Admin") || userRole.equals("Manager")) { %>

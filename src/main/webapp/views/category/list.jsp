@@ -121,7 +121,7 @@
                                             </td>
                                             <td>
                                                 <span class="badge bg-primary">
-                                                    <%= request.getAttribute("productCount_" + ((c.core_rt.PageContext)pageContext).getAttribute("category").getId()) %>
+                                                    ${requestScope["productCount_".concat(category.id)]}
                                                 </span>
                                             </td>
                                             <% if (userRole.equals("Admin") || userRole.equals("Manager")) { %>

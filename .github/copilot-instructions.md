@@ -50,6 +50,50 @@ Roles: `Admin`, `Manager`, `Staff`, `Sales`
 - Session attributes: `user` (User object), `userId`, `role`
 - Get session: `request.getSession(false)` (returns null if none exists)
 
+### JSP Views (JSTL + EL Only)
+**CRITICAL: NO SCRIPTLETS ALLOWED**
+- Use **JSTL tags** and **EL (Expression Language)** exclusively in all JSP files
+- **NEVER use scriptlets**: `<% %>`, `<%= %>`, `<%! %>`
+- Always include JSTL core taglib: `<%@ taglib prefix="c" uri="jakarta.tags.core" %>`
+
+**Common JSTL Patterns:**
+```jsp
+<!-- Iterate over lists -->
+<c:forEach var="item" items="${itemList}">
+    ${item.name}
+</c:forEach>
+
+<!-- Conditional rendering -->
+<c:if test="${not empty errorMessage}">
+    <div class="alert">${errorMessage}</div>
+</c:if>
+
+<c:choose>
+    <c:when test="${user.role == 'Admin'}">Admin Panel</c:when>
+    <c:when test="${user.role == 'Manager'}">Manager Panel</c:when>
+    <c:otherwise>User Panel</c:otherwise>
+</c:choose>
+
+<!-- URL construction -->
+<c:url var="deleteUrl" value="/category">
+    <c:param name="action" value="delete"/>
+    <c:param name="id" value="${category.categoryId}"/>
+</c:url>
+
+<!-- Set variables -->
+<c:set var="contextPath" value="${pageContext.request.contextPath}"/>
+```
+
+**EL Expression Examples:**
+```jsp
+${user.username}                    <!-- Property access -->
+${product.price * quantity}         <!-- Arithmetic -->
+${status == 'Active'}              <!-- Comparison -->
+${not empty errorMessage}          <!-- Logical operators -->
+${sessionScope.user.role}          <!-- Scope specification -->
+${param.action}                    <!-- Request parameters -->
+```
+
 ## Developer Workflow
 
 ### Build & Run
