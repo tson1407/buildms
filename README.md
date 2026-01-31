@@ -139,9 +139,8 @@ This project follows the **MVC (Model-View-Controller)** pattern:
 - **SHA-256** (Password hashing with salt)
 - **Bootstrap 5** (Frontend UI framework)
 
-## F🔐 Authentication & Authorization
+## 🔐 Authentication & Authorization
 - **Secure Login**: Username/password with SHA-256 hashing
-- **User Registration**: Self-service account creation
 - **Role-Based Access**: Admin, Manager, Staff, Sales roles
 - **Session Management**: 30-minute inactivity timeout
 - **Protected Routes**: Authorization filter for all resources

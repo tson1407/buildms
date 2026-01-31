@@ -22,7 +22,6 @@ Each use case document includes:
 | ID | Name | File |
 |----|------|------|
 | UC-AUTH-001 | User Login | [UC-AUTH-001-User-Login.md](UC-AUTH-001-User-Login.md) |
-| UC-AUTH-002 | User Registration | [UC-AUTH-002-User-Registration.md](UC-AUTH-002-User-Registration.md) |
 | UC-AUTH-003 | Change Password | [UC-AUTH-003-Change-Password.md](UC-AUTH-003-Change-Password.md) |
 | UC-AUTH-004 | Admin Reset Password | [UC-AUTH-004-Admin-Reset-Password.md](UC-AUTH-004-Admin-Reset-Password.md) |
 | UC-AUTH-005 | User Logout | [UC-AUTH-005-User-Logout.md](UC-AUTH-005-User-Logout.md) |
