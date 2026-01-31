@@ -1,16 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="vn.edu.fpt.swp.model.User" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%
-    // Check if user is logged in
-    HttpSession userSession = request.getSession(false);
-    if (userSession == null || userSession.getAttribute("user") == null) {
-        response.sendRedirect(request.getContextPath() + "/auth?action=login");
-        return;
-    }
-    
-    User currentUser = (User) userSession.getAttribute("user");
-%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<c:if test="${empty sessionScope.user}">
+    <c:redirect url="${pageContext.request.contextPath}/auth?action=login"/>
+</c:if>
 <c:set var="pageTitle" value="Dashboard" scope="request"/>
 <c:set var="currentPage" value="dashboard" scope="request"/>
 <jsp:include page="views/layout/header.jsp"/>
@@ -32,10 +24,10 @@
                                 <div class="card-body">
                                     <h5 class="card-title text-primary">Welcome to Smart WMS! 🎉</h5>
                                     <p class="mb-2">
-                                        Hello, <strong><%= currentUser.getName() != null ? currentUser.getName() : currentUser.getUsername() %></strong>
+                                        Hello, <strong>${not empty sessionScope.user.name ? sessionScope.user.name : sessionScope.user.username}</strong>
                                     </p>
                                     <p class="mb-3">
-                                        Role: <span class="badge bg-primary"><%= currentUser.getRole() %></span>
+                                        Role: <span class="badge bg-primary">${sessionScope.user.role}</span>
                                     </p>
                                     <p class="mb-4">
                                         Your comprehensive <span class="fw-bold">Warehouse Management System</span>. 
@@ -143,13 +135,13 @@
                                         <i class="bx bx-lock me-1"></i> Change Password
                                     </a>
                                 </div>
-                                <% if ("Admin".equals(currentUser.getRole())) { %>
+                                <c:if test="${sessionScope.user.role eq 'Admin'}">
                                 <div class="col-md-3 mb-3">
                                     <a href="${pageContext.request.contextPath}/auth?action=register" class="btn btn-warning w-100">
                                         <i class="bx bx-user-plus me-1"></i> Create New User
                                     </a>
                                 </div>
-                                <% } %>
+                                </c:if>
                                 <div class="col-md-3 mb-3">
                                     <a href="${pageContext.request.contextPath}/auth?action=logout" class="btn btn-danger w-100">
                                         <i class="bx bx-log-out me-1"></i> Logout
