@@ -15,21 +15,8 @@
 <c:set var="unit" value="${not empty requestScope.unit ? requestScope.unit : (isEdit ? product.unit : '')}"/>
 <c:set var="categoryId" value="${not empty requestScope.categoryId ? requestScope.categoryId : (isEdit ? product.categoryId : '')}"/>
 
-<%@ include file="/views/layout/header.jsp" %>
-
-<!-- Menu -->
-<%@ include file="/views/layout/sidebar.jsp" %>
-
-<!-- Layout page -->
-<div class="layout-page">
-    <!-- Navbar -->
-    <%@ include file="/views/layout/navbar.jsp" %>
-
-    <!-- Content wrapper -->
-    <div class="content-wrapper">
-        <!-- Content -->
-        <div class="container-xxl flex-grow-1 container-p-y">
-            <!-- Page header -->
+<!-- Content -->
+<!-- Page header -->
             <div class="row mb-4">
                 <div class="col-md-12">
                     <h4 class="fw-bold">${pageTitle}</h4>
@@ -158,20 +145,4 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- / Content -->
-
-        <!-- Footer -->
-        <%@ include file="/views/layout/footer.jsp" %>
-    </div>
-</div>
-<!-- / Layout page -->
-
-<script src="${pageContext.request.contextPath}/assets/vendor/libs/jquery/jquery.js"></script>
-<script src="${pageContext.request.contextPath}/assets/vendor/libs/popper/popper.js"></script>
-<script src="${pageContext.request.contextPath}/assets/vendor/js/bootstrap.js"></script>
-<script src="${pageContext.request.contextPath}/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
-<script src="${pageContext.request.contextPath}/assets/vendor/js/menu.js"></script>
-<script src="${pageContext.request.contextPath}/assets/js/main.js"></script>
-</body>
-</html>
+<!-- / Content -->
