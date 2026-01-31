@@ -237,7 +237,7 @@
                                                                     <a href="${contextPath}/location?action=edit&id=${location.id}" 
                                                                        class="btn btn-sm btn-outline-primary" 
                                                                        data-bs-toggle="tooltip" title="Edit">
-                                                                        <i class="bx bx-edit-alt"></i>
+                                                                        <i class="bx bx-edit-alt" aria-hidden="true"></i>
                                                                     </a>
                                                                     <c:choose>
                                                                         <c:when test="${location.active && inventoryCount > 0}">
@@ -246,7 +246,7 @@
                                                                                     disabled
                                                                                     data-bs-toggle="tooltip" 
                                                                                     title="Cannot deactivate - has inventory">
-                                                                                <i class="bx bx-block"></i>
+                                                                                <i class="bx bx-block" aria-hidden="true"></i>
                                                                             </button>
                                                                         </c:when>
                                                                         <c:otherwise>

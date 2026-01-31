@@ -176,7 +176,7 @@
                                                         <td>
                                                             <a href="${contextPath}/movement?action=details&id=${req.id}" 
                                                                class="btn btn-sm btn-outline-primary" title="View Details">
-                                                                <i class="bx bx-show"></i>
+                                                                <i class="bx bx-show" aria-hidden="true"></i>
                                                             </a>
                                                             <c:if test="${req.status == 'Created' || req.status == 'InProgress'}">
                                                                 <a href="${contextPath}/movement?action=execute&id=${req.id}" 

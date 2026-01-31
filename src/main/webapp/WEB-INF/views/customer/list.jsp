@@ -196,8 +196,9 @@
                                                             <div class="d-flex gap-2">
                                                                 <a href="${contextPath}/customer?action=edit&id=${customer.id}" 
                                                                    class="btn btn-sm btn-outline-primary" 
-                                                                   data-bs-toggle="tooltip" title="Edit">
-                                                                    <i class="bx bx-edit-alt"></i>
+                                                                   data-bs-toggle="tooltip" title="Edit"
+                                                                   aria-label="Edit customer">
+                                                                    <i class="bx bx-edit-alt" aria-hidden="true"></i>
                                                                 </a>
                                                                 <c:if test="${currentUser.role == 'Admin'}">
                                                                     <button type="button" 
@@ -207,8 +208,9 @@
                                                                             data-customer-id="${customer.id}"
                                                                             data-customer-name="${customer.name}"
                                                                             data-customer-status="${customer.status}"
-                                                                            title="${customer.status == 'Active' ? 'Deactivate' : 'Activate'}">
-                                                                        <i class="bx ${customer.status == 'Active' ? 'bx-block' : 'bx-check'}"></i>
+                                                                            title="${customer.status == 'Active' ? 'Deactivate' : 'Activate'}"
+                                                                            aria-label="${customer.status == 'Active' ? 'Deactivate customer' : 'Activate customer'}">
+                                                                        <i class="bx ${customer.status == 'Active' ? 'bx-block' : 'bx-check'}" aria-hidden="true"></i></i>
                                                                     </button>
                                                                 </c:if>
                                                             </div>

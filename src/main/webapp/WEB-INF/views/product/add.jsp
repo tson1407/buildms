@@ -98,7 +98,7 @@
                                                     Product Name <span class="text-danger">*</span>
                                                 </label>
                                                 <div class="input-group">
-                                                    <span class="input-group-text"><i class="bx bx-package"></i></span>
+                                                    <span class="input-group-text"><i class="bx bx-package" aria-hidden="true"></i></span>
                                                     <input type="text" class="form-control" id="name" name="name" 
                                                            value="${name}" placeholder="Enter product name"
                                                            required maxlength="255" />
