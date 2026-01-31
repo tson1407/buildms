@@ -1,32 +1,18 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page import="vn.edu.fpt.swp.model.User, vn.edu.fpt.swp.model.Category" %>
-<%
-    HttpSession userSession = request.getSession(false);
-    if (userSession == null || userSession.getAttribute("user") == null) {
-        response.sendRedirect(request.getContextPath() + "/auth?action=login");
-        return;
-    }
-    
-    Category category = (Category) request.getAttribute("category");
-    String error = (String) request.getAttribute("error");
-    String name = (String) request.getAttribute("name");
-    String description = (String) request.getAttribute("description");
-    
-    boolean isEdit = (category != null);
-    String pageTitle = isEdit ? "Edit Category" : "Create Category";
-    String formAction = isEdit ? "update" : "save";
-    
-    if (isEdit) {
-        if (name == null) name = category.getName();
-        if (description == null) description = category.getDescription();
-    } else {
-        if (name == null) name = "";
-        if (description == null) description = "";
-    }
-%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<c:if test="${empty sessionScope.user}">
+    <c:redirect url="${pageContext.request.contextPath}/auth?action=login"/>
+</c:if>
 
-<c:set var="pageTitle" value="<%= pageTitle %>" />
+<c:set var="category" value="${requestScope.category}"/>
+<c:set var="error" value="${requestScope.error}"/>
+<c:set var="isEdit" value="${not empty category}"/>
+<c:set var="pageTitle" value="${isEdit ? 'Edit Category' : 'Create Category'}"/>
+<c:set var="formAction" value="${isEdit ? 'update' : 'save'}"/>
+
+<c:set var="name" value="${not empty requestScope.name ? requestScope.name : (isEdit ? category.name : '')}"/>
+<c:set var="description" value="${not empty requestScope.description ? requestScope.description : (isEdit ? category.description : '')}"/>
+
 <%@ include file="/views/layout/header.jsp" %>
 
 <!-- Menu -->
@@ -44,8 +30,8 @@
             <!-- Page header -->
             <div class="row mb-4">
                 <div class="col-md-12">
-                    <h4 class="fw-bold"><%= pageTitle %></h4>
-                    <p class="text-muted"><%= isEdit ? "Update category information" : "Create a new product category" %></p>
+                    <h4 class="fw-bold">${pageTitle}</h4>
+                    <p class="text-muted">${isEdit ? 'Update category information' : 'Create a new product category'}</p>
                 </div>
             </div>
 
@@ -54,24 +40,24 @@
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-body">
-                            <% if (error != null) { %>
+                            <c:if test="${not empty error}">
                             <div class="alert alert-danger alert-dismissible" role="alert">
-                                <%= error %>
+                                ${error}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
-                            <% } %>
+                            </c:if>
 
                             <form method="post" action="${pageContext.request.contextPath}/category">
-                                <input type="hidden" name="action" value="<%= formAction %>" />
-                                <% if (isEdit) { %>
-                                <input type="hidden" name="id" value="<%= category.getId() %>" />
-                                <% } %>
+                                <input type="hidden" name="action" value="${formAction}" />
+                                <c:if test="${isEdit}">
+                                <input type="hidden" name="id" value="${category.id}" />
+                                </c:if>
 
                                 <!-- Category Name -->
                                 <div class="mb-4">
                                     <label for="name" class="form-label">Category Name <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control" id="name" name="name" 
-                                           placeholder="Enter category name" value="<%= name %>"
+                                           placeholder="Enter category name" value="${name}"
                                            maxlength="255" required />
                                     <small class="form-text text-muted">Maximum 255 characters</small>
                                 </div>
@@ -81,14 +67,14 @@
                                     <label for="description" class="form-label">Description</label>
                                     <textarea class="form-control" id="description" name="description" 
                                               placeholder="Enter category description (optional)" 
-                                              rows="4" maxlength="500"><%= description != null ? description : "" %></textarea>
+                                              rows="4" maxlength="500">${description}</textarea>
                                     <small class="form-text text-muted">Maximum 500 characters</small>
                                 </div>
 
                                 <!-- Buttons -->
                                 <div class="mb-3">
                                     <button type="submit" class="btn btn-primary">
-                                        <span class="tf-icons bx bx-save"></span> <%= isEdit ? "Update" : "Create" %>
+                                        <span class="tf-icons bx bx-save"></span> ${isEdit ? 'Update' : 'Create'}
                                     </button>
                                     <a href="${pageContext.request.contextPath}/category" class="btn btn-secondary">
                                         <span class="tf-icons bx bx-arrow-back"></span> Cancel
@@ -114,12 +100,12 @@
                                 <h6 class="mb-2">Description</h6>
                                 <p class="text-muted small">Optional details about the category to help identify it</p>
                             </div>
-                            <% if (isEdit) { %>
+                            <c:if test="${isEdit}">
                             <div class="mb-3">
                                 <h6 class="mb-2">Category ID</h6>
-                                <p class="text-muted small"><%= category.getId() %></p>
+                                <p class="text-muted small">${category.id}</p>
                             </div>
-                            <% } %>
+                            </c:if>
                         </div>
                     </div>
                 </div>

@@ -1,24 +1,14 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page import="vn.edu.fpt.swp.model.User" %>
-<%
-    HttpSession userSession = request.getSession(false);
-    if (userSession == null || userSession.getAttribute("user") == null) {
-        response.sendRedirect(request.getContextPath() + "/auth?action=login");
-        return;
-    }
-    User user = (User) userSession.getAttribute("user");
-    String userRole = user.getRole();
-    
-    String error = (String) request.getAttribute("error");
-    String success = (String) request.getAttribute("success");
-    String search = (String) request.getAttribute("search");
-    String selectedCategoryId = (String) request.getAttribute("selectedCategoryId");
-    String selectedStatus = (String) request.getAttribute("selectedStatus");
-    if (search == null) search = "";
-    if (selectedCategoryId == null) selectedCategoryId = "";
-    if (selectedStatus == null) selectedStatus = "";
-%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<c:if test="${empty sessionScope.user}">
+    <c:redirect url="${pageContext.request.contextPath}/auth?action=login"/>
+</c:if>
+<c:set var="userRole" value="${sessionScope.user.role}"/>
+<c:set var="error" value="${requestScope.error}"/>
+<c:set var="success" value="${requestScope.success}"/>
+<c:set var="search" value="${not empty requestScope.search ? requestScope.search : ''}"/>
+<c:set var="selectedCategoryId" value="${not empty requestScope.selectedCategoryId ? requestScope.selectedCategoryId : ''}"/>
+<c:set var="selectedStatus" value="${not empty requestScope.selectedStatus ? requestScope.selectedStatus : ''}"/>
 
 <c:set var="pageTitle" value="Products" />
 <%@ include file="/views/layout/header.jsp" %>
@@ -42,28 +32,28 @@
                     <p class="text-muted">Manage product inventory</p>
                 </div>
                 <div class="col-md-6 text-end">
-                    <% if (userRole.equals("Admin") || userRole.equals("Manager")) { %>
+                    <c:if test="${userRole eq 'Admin' || userRole eq 'Manager'}">
                     <a href="${pageContext.request.contextPath}/product?action=create" class="btn btn-primary">
                         <span class="tf-icons bx bx-plus"></span> Add Product
                     </a>
-                    <% } %>
+                    </c:if>
                 </div>
             </div>
 
             <!-- Alerts -->
-            <% if (error != null) { %>
+            <c:if test="${not empty error}">
             <div class="alert alert-danger alert-dismissible" role="alert">
-                <%= error %>
+                ${error}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-            <% } %>
+            </c:if>
             
-            <% if (success != null) { %>
+            <c:if test="${not empty success}">
             <div class="alert alert-success alert-dismissible" role="alert">
-                <%= success %>
+                ${success}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-            <% } %>
+            </c:if>
 
             <!-- Filters -->
             <div class="card mb-4">
@@ -72,14 +62,14 @@
                         <div class="col-md-4">
                             <label for="search" class="form-label">Search</label>
                             <input type="text" id="search" name="search" class="form-control" 
-                                   placeholder="Search by SKU or name" value="<%= search %>" />
+                                   placeholder="Search by SKU or name" value="${search}" />
                         </div>
                         <div class="col-md-3">
                             <label for="categoryId" class="form-label">Category</label>
                             <select id="categoryId" name="categoryId" class="form-select">
                                 <option value="">All Categories</option>
                                 <c:forEach var="category" items="${categories}">
-                                    <option value="${category.id}" ${selectedCategoryId == category.id ? 'selected' : ''}>
+                                    <option value="${category.id}" ${selectedCategoryId eq category.id ? 'selected' : ''}>
                                         ${category.name}
                                     </option>
                                 </c:forEach>
@@ -89,8 +79,8 @@
                             <label for="status" class="form-label">Status</label>
                             <select id="status" name="status" class="form-select">
                                 <option value="">All Products</option>
-                                <option value="active" <%= selectedStatus.equals("active") ? "selected" : "" %>>Active</option>
-                                <option value="inactive" <%= selectedStatus.equals("inactive") ? "selected" : "" %>>Inactive</option>
+                                <option value="active" ${selectedStatus eq 'active' ? 'selected' : ''}>Active</option>
+                                <option value="inactive" ${selectedStatus eq 'inactive' ? 'selected' : ''}>Inactive</option>
                             </select>
                         </div>
                         <div class="col-md-2">
@@ -115,16 +105,17 @@
                                 <th>Unit</th>
                                 <th>Stock</th>
                                 <th>Status</th>
-                                <% if (userRole.equals("Admin") || userRole.equals("Manager")) { %>
+                                <c:if test="${userRole eq 'Admin' || userRole eq 'Manager'}">
                                 <th>Actions</th>
-                                <% } %>
+                                </c:if>
                             </tr>
                         </thead>
                         <tbody class="table-border-bottom-0">
                             <c:choose>
                                 <c:when test="${empty products}">
                                     <tr>
-                                        <td colspan="<%= userRole.equals("Admin") || userRole.equals("Manager") ? "7" : "6" %>" class="text-center text-muted py-4">
+                                        <c:set var="colspan" value="${userRole eq 'Admin' || userRole eq 'Manager' ? '7' : '6'}"/>
+                                        <td colspan="${colspan}" class="text-center text-muted py-4">
                                             No products found
                                         </td>
                                     </tr>
@@ -167,7 +158,7 @@
                                                     ${product.status}
                                                 </span>
                                             </td>
-                                            <% if (userRole.equals("Admin") || userRole.equals("Manager")) { %>
+                                            <c:if test="${userRole eq 'Admin' || userRole eq 'Manager'}">
                                             <td>
                                                 <div class="dropdown">
                                                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
@@ -196,7 +187,7 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <% } %>
+                                            </c:if>
                                         </tr>
                                     </c:forEach>
                                 </c:otherwise>

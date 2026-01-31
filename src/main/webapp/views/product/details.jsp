@@ -1,15 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page import="vn.edu.fpt.swp.model.User" %>
-<%
-    HttpSession userSession = request.getSession(false);
-    if (userSession == null || userSession.getAttribute("user") == null) {
-        response.sendRedirect(request.getContextPath() + "/auth?action=login");
-        return;
-    }
-    User user = (User) userSession.getAttribute("user");
-    String userRole = user.getRole();
-%>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<c:if test="${empty sessionScope.user}">
+    <c:redirect url="${pageContext.request.contextPath}/auth?action=login"/>
+</c:if>
+<c:set var="userRole" value="${sessionScope.user.role}"/>
 
 <c:set var="pageTitle" value="Product Details" />
 <%@ include file="/views/layout/header.jsp" %>
@@ -36,11 +30,11 @@
                     <a href="${pageContext.request.contextPath}/product" class="btn btn-secondary">
                         <span class="tf-icons bx bx-arrow-back"></span> Back to List
                     </a>
-                    <% if (userRole.equals("Admin") || userRole.equals("Manager")) { %>
+                    <c:if test="${userRole eq 'Admin' || userRole eq 'Manager'}">
                     <a href="${pageContext.request.contextPath}/product?action=edit&id=${product.id}" class="btn btn-primary">
                         <span class="tf-icons bx bx-edit-alt"></span> Edit
                     </a>
-                    <% } %>
+                    </c:if>
                 </div>
             </div>
 
@@ -62,8 +56,8 @@
                                 <div class="col-md-6">
                                     <h6 class="mb-2">Status</h6>
                                     <p>
-                                        <span class="badge bg-<%= ((c.core_rt.PageContext)pageContext).getAttribute("product").getClass().getMethod("isActive").invoke(((c.core_rt.PageContext)pageContext).getAttribute("product")) != null && (boolean)((c.core_rt.PageContext)pageContext).getAttribute("product").getClass().getMethod("isActive").invoke(((c.core_rt.PageContext)pageContext).getAttribute("product")) ? "success" : "secondary" %>">
-                                            <%= ((c.core_rt.PageContext)pageContext).getAttribute("product").getClass().getMethod("isActive").invoke(((c.core_rt.PageContext)pageContext).getAttribute("product")) != null && (boolean)((c.core_rt.PageContext)pageContext).getAttribute("product").getClass().getMethod("isActive").invoke(((c.core_rt.PageContext)pageContext).getAttribute("product")) ? "Active" : "Inactive" %>
+                                        <span class="badge bg-${product.status == 'Active' ? 'success' : 'secondary'}">
+                                            ${product.status}
                                         </span>
                                     </p>
                                 </div>
@@ -128,7 +122,7 @@
             </div>
 
             <!-- Inventory By Location (Admin/Manager/Staff Only) -->
-            <% if (userRole.equals("Admin") || userRole.equals("Manager") || userRole.equals("Staff")) { %>
+            <c:if test="${userRole eq 'Admin' || userRole eq 'Manager' || userRole eq 'Staff'}">
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
@@ -156,7 +150,7 @@
                     </div>
                 </div>
             </div>
-            <% } %>
+            </c:if>
         </div>
         <!-- / Content -->
 
