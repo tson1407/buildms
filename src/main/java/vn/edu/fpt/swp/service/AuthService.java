@@ -15,14 +15,14 @@ public class AuthService {
     }
     
     /**
-     * Authenticate user with username and password
-     * @param username Username
+     * Authenticate user with username or email and password
+     * @param identifier Username or email
      * @param password Plain text password
      * @return User object if authentication successful, null otherwise
      */
-    public User authenticate(String username, String password) {
+    public User authenticate(String identifier, String password) {
         // Validate input
-        if (username == null || username.trim().isEmpty()) {
+        if (identifier == null || identifier.trim().isEmpty()) {
             return null;
         }
         
@@ -30,8 +30,12 @@ public class AuthService {
             return null;
         }
         
-        // Find user by username
-        User user = userDAO.findByUsername(username.trim());
+        // Try to find user by username first, then by email
+        String id = identifier.trim();
+        User user = userDAO.findByUsername(id);
+        if (user == null) {
+            user = userDAO.findByEmail(id);
+        }
         
         // Check if user exists
         if (user == null) {
@@ -51,6 +55,23 @@ public class AuthService {
         // Update last login timestamp
         userDAO.updateLastLogin(user.getId());
         
+        return user;
+    }
+    
+    /**
+     * Find user by username or email (helper)
+     * @param identifier Username or email
+     * @return User object if found, null otherwise
+     */
+    public User findByIdentifier(String identifier) {
+        if (identifier == null || identifier.trim().isEmpty()) {
+            return null;
+        }
+        String id = identifier.trim();
+        User user = userDAO.findByUsername(id);
+        if (user == null) {
+            user = userDAO.findByEmail(id);
+        }
         return user;
     }
     

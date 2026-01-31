@@ -129,7 +129,7 @@
                             </c:otherwise>
                         </c:choose>
                         
-                    </div>
+                    </main>
                     <!-- / Content -->
                     
                     <!-- Footer -->
@@ -161,7 +161,7 @@
             // Products data
             const products = [
                 <c:forEach var="product" items="${products}" varStatus="status">
-                    {id: ${product.id}, name: "${product.name}", sku: "${product.sku}"}<c:if test="${!status.last}">,</c:if>
+                    {id: ${product.id}, name: '<c:out value="${product.name}" escapeXml="true"/>', sku: '<c:out value="${product.sku}" escapeXml="true"/>'}<c:if test="${!status.last}">,</c:if>
                 </c:forEach>
             ];
             
@@ -180,7 +180,6 @@
                         <label class="form-label">Product <span class="text-danger">*</span></label>
                         <select name="productId[]" class="form-select product-select" required>
                             <option value="">Select Product</option>
-                            ${products.map(p => `<option value="${p.id}">${p.name} (${p.sku})</option>`).join('')}
                         </select>
                     </div>
                     <div class="col-md-3">
@@ -193,6 +192,15 @@
                         </button>
                     </div>
                 `;
+                
+                // Populate product dropdown safely
+                const productSelect = row.querySelector('.product-select');
+                products.forEach(p => {
+                    const option = document.createElement('option');
+                    option.value = p.id;
+                    option.textContent = p.name + ' (' + p.sku + ')';
+                    productSelect.appendChild(option);
+                });
                 
                 // Add remove event
                 row.querySelector('.remove-item-btn').addEventListener('click', function() {

@@ -6,7 +6,7 @@
 | **Use Case ID** | UC-AUTH-001 |
 | **Use Case Name** | User Login |
 | **Primary Actor** | All Users (Admin, Manager, Staff, Sales) |
-| **Description** | Authenticate a user using username and password to access the system |
+| **Description** | Authenticate a user using username or email and password to access the system |
 | **Preconditions** | User account exists and is Active |
 | **Postconditions** | User session is created; user is redirected to dashboard |
 
@@ -16,22 +16,22 @@
 
 ### Step 1: Display Login Form
 - System displays login form with fields:
-  - Username (text input, required)
+  - Username or email (text input, required)
   - Password (password input, required)
   - Submit button
 
 ### Step 2: User Submits Credentials
-- User enters username and password
+- User enters username or email and password
 - User clicks submit button
 
 ### Step 3: Validate Input Fields
 - **Validation Rules:**
-  - Username must not be empty
+  - Username or email must not be empty
   - Password must not be empty
 - If validation fails → **Alternative Flow A1**
 
 ### Step 4: Authenticate User
-- System retrieves user record by username
+- System retrieves user record by username or email
 - If user not found → **Alternative Flow A2**
 - If user status is Inactive → **Alternative Flow A3**
 
@@ -64,12 +64,12 @@
 ### A1: Input Validation Failed
 - **Trigger:** Username or password field is empty
 - **Steps:**
-  1. System displays error message: "Username and password are required"
+  1. System displays error message: "Username or email and password are required"
   2. System highlights empty fields
-  3. Return to Step 1 (form retains entered username)
+  3. Return to Step 1 (form retains entered username/email)
 
 ### A2: User Not Found
-- **Trigger:** No user exists with provided username
+- **Trigger:** No user exists with provided username or email
 - **Steps:**
   1. System displays error message: "Invalid username or password"
   2. Return to Step 1

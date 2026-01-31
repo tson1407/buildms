@@ -110,8 +110,8 @@ public class AuthController extends HttpServlet {
         if (username == null || username.trim().isEmpty() || 
             password == null || password.trim().isEmpty()) {
             // A1: Input Validation Failed
-            request.setAttribute("errorMessage", "Username and password are required");
-            request.setAttribute("username", username); // Retain username
+            request.setAttribute("errorMessage", "Username or email and password are required");
+            request.setAttribute("username", username); // Retain username/email
             request.getRequestDispatcher("/WEB-INF/views/auth/login.jsp").forward(request, response);
             return;
         }
@@ -121,7 +121,7 @@ public class AuthController extends HttpServlet {
         
         if (user == null) {
             // Check if user exists but is inactive (for specific error message)
-            User existingUser = authService.findByUsername(username.trim());
+            User existingUser = authService.findByIdentifier(username.trim());
             if (existingUser != null && !"Active".equals(existingUser.getStatus())) {
                 // A3: User Account Inactive
                 request.setAttribute("errorMessage", "Your account has been deactivated. Please contact administrator");

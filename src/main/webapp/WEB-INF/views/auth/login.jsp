@@ -127,13 +127,13 @@
                             <input type="hidden" name="action" value="login" />
                             
                             <div class="mb-6">
-                                <label for="username" class="form-label">Username</label>
+                                <label for="username" class="form-label">Username or email</label>
                                 <input type="text" 
                                        class="form-control" 
                                        id="username" 
                                        name="username" 
                                        value="${username}"
-                                       placeholder="Enter your username" 
+                                       placeholder="Enter your username or email" 
                                        autofocus 
                                        required />
                             </div>
