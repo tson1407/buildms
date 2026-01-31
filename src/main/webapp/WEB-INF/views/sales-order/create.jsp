@@ -189,7 +189,7 @@
                     </div>
                     <div class="col-md-3">
                         <button type="button" class="btn btn-outline-danger remove-item-btn">
-                            <i class="bx bx-trash"></i> Remove
+                            <i class="bx bx-trash" aria-hidden="true"></i> Remove
                         </button>
                     </div>
                 `;

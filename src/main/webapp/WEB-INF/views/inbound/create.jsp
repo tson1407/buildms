@@ -222,8 +222,8 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start mb-3">
                             <h6 class="mb-0">Item #\${itemCount}</h6>
-                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeItem(\${itemCount})">
-                                <i class="bx bx-trash"></i>
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeItem(\${itemCount})" aria-label="Remove item">
+                                <i class="bx bx-trash" aria-hidden="true"></i>
                             </button>
                         </div>
                         <div class="row">

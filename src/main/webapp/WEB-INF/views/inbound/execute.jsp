@@ -166,8 +166,8 @@
                                                             </div>
                                                             
                                                             <div class="col-md-2">
-                                                                <button type="submit" class="btn btn-outline-primary w-100">
-                                                                    <i class="bx bx-save"></i>
+                                                                <button type="submit" class="btn btn-outline-primary w-100" aria-label="Save quantity">
+                                                                    <i class="bx bx-save" aria-hidden="true"></i>
                                                                 </button>
                                                             </div>
                                                         </form>
