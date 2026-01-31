@@ -385,6 +385,33 @@ public class RequestDAO {
     }
     
     /**
+     * Update request status to a specific value
+     * @param requestId Request ID
+     * @param newStatus New status value
+     * @return true if successful
+     */
+    public boolean updateStatus(Long requestId, String newStatus) {
+        if (requestId == null || newStatus == null) {
+            return false;
+        }
+        
+        String sql = "UPDATE Requests SET Status = ? WHERE Id = ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, newStatus);
+            stmt.setLong(2, requestId);
+            
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return false;
+    }
+    
+    /**
      * Update request fields
      * @param request Request with updated values
      * @return true if successful
