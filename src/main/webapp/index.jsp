@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <c:if test="${empty sessionScope.user}">
     <c:redirect url="${pageContext.request.contextPath}/auth?action=login"/>
@@ -39,9 +39,9 @@
                             </div>
                             <div class="col-sm-5 text-center text-sm-left">
                                 <div class="card-body pb-0 px-0 px-md-4">
-                                    <img src="${pageContext.request.contextPath}/assets/img/illustrations/man-with-laptop.png" 
-                                         height="180" alt="View Badge User" 
-                                         data-app-dark-img="illustrations/man-with-laptop-dark.png" 
+                                    <img src="${pageContext.request.contextPath}/assets/img/illustrations/man-with-laptop.png"
+                                         height="182" alt="View Badge User"
+                                         data-app-dark-img="illustrations/man-with-laptop-dark.png"
                                          data-app-light-img="illustrations/man-with-laptop.png"/>
                                 </div>
                             </div>

@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <c:if test="${empty sessionScope.user}">
     <c:redirect url="${pageContext.request.contextPath}/auth?action=login"/>
