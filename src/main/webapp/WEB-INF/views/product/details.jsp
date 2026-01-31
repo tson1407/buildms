@@ -32,7 +32,7 @@
                 <!-- Content wrapper -->
                 <div class="content-wrapper">
                     <!-- Content -->
-                    <div class="container-xxl flex-grow-1 container-p-y">
+                    <main class="container-xxl flex-grow-1 container-p-y" role="main">
                         
                         <!-- Breadcrumb -->
                         <nav aria-label="breadcrumb">
@@ -51,7 +51,7 @@
                         <div class="d-flex justify-content-between align-items-center mb-6">
                             <div>
                                 <h4 class="mb-1">
-                                    <i class="bx bx-package me-2"></i>${product.name}
+                                    <i class="bx bx-package" aria-hidden="true me-2"></i>${product.name}
                                 </h4>
                                 <span class="text-muted">SKU: ${product.sku}</span>
                             </div>

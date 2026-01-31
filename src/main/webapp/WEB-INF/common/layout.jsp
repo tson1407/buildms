@@ -28,7 +28,7 @@
                 <!-- Content wrapper -->
                 <div class="content-wrapper">
                     <!-- Content -->
-                    <div class="container-xxl flex-grow-1 container-p-y">
+                    <main class="container-xxl flex-grow-1 container-p-y" role="main">
                         
                         <!-- Breadcrumb -->
                         <c:if test="${not empty param.breadcrumb}">
@@ -78,7 +78,7 @@
                         <!-- Page Content - To be included by child pages -->
                         <jsp:include page="${param.contentPage}" />
                         
-                    </div>
+                    </main>
                     <!-- / Content -->
                     
                     <!-- Footer -->

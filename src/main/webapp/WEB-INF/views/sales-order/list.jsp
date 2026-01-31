@@ -33,7 +33,7 @@
                 <!-- Content wrapper -->
                 <div class="content-wrapper">
                     <!-- Content -->
-                    <div class="container-xxl flex-grow-1 container-p-y">
+                    <main class="container-xxl flex-grow-1 container-p-y" role="main">
                         
                         <!-- Breadcrumb -->
                         <nav aria-label="breadcrumb">
@@ -162,8 +162,8 @@
                                                         </td>
                                                         <td>
                                                             <div class="dropdown">
-                                                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                                                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown" aria-label="More actions">
+                                                                    <i class="bx bx-dots-vertical-rounded" aria-hidden="true"></i>
                                                                 </button>
                                                                 <div class="dropdown-menu">
                                                                     <a class="dropdown-item" href="${contextPath}/sales-order?action=view&id=${orderData.order.id}">

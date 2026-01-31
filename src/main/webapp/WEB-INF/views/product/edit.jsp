@@ -32,7 +32,7 @@
                 <!-- Content wrapper -->
                 <div class="content-wrapper">
                     <!-- Content -->
-                    <div class="container-xxl flex-grow-1 container-p-y">
+                    <main class="container-xxl flex-grow-1 container-p-y" role="main">
                         
                         <!-- Breadcrumb -->
                         <nav aria-label="breadcrumb">
@@ -114,7 +114,7 @@
                                                     Product Name <span class="text-danger">*</span>
                                                 </label>
                                                 <div class="input-group">
-                                                    <span class="input-group-text"><i class="bx bx-package"></i></span>
+                                                    <span class="input-group-text"><i class="bx bx-package" aria-hidden="true"></i></span>
                                                     <input type="text" class="form-control" id="name" name="name" 
                                                            value="${product.name}" placeholder="Enter product name"
                                                            required maxlength="255" />

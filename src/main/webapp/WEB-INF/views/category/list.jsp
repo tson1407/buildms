@@ -32,7 +32,7 @@
                 <!-- Content wrapper -->
                 <div class="content-wrapper">
                     <!-- Content -->
-                    <div class="container-xxl flex-grow-1 container-p-y">
+                    <main class="container-xxl flex-grow-1 container-p-y" role="main">
                         
                         <!-- Breadcrumb -->
                         <nav aria-label="breadcrumb">
@@ -154,7 +154,7 @@
                                                         </td>
                                                         <td>
                                                             <span class="badge bg-label-info">
-                                                                <i class="bx bx-package me-1"></i>${productCount} product(s)
+                                                                <i class="bx bx-package" aria-hidden="true me-1"></i>${productCount} product(s)
                                                             </span>
                                                         </td>
                                                         <c:if test="${currentUser.role == 'Admin' || currentUser.role == 'Manager'}">
@@ -162,8 +162,9 @@
                                                                 <div class="d-flex gap-2">
                                                                     <a href="${contextPath}/category?action=edit&id=${category.id}" 
                                                                        class="btn btn-sm btn-outline-primary" 
-                                                                       data-bs-toggle="tooltip" title="Edit">
-                                                                        <i class="bx bx-edit-alt"></i>
+                                                                       data-bs-toggle="tooltip" title="Edit"
+                                                                       aria-label="Edit category">
+                                                                        <i class="bx bx-edit-alt" aria-hidden="true"></i>
                                                                     </a>
                                                                     <c:choose>
                                                                         <c:when test="${productCount > 0}">
@@ -171,8 +172,9 @@
                                                                                     class="btn btn-sm btn-outline-secondary" 
                                                                                     disabled
                                                                                     data-bs-toggle="tooltip" 
-                                                                                    title="Cannot delete - has ${productCount} product(s)">
-                                                                                <i class="bx bx-trash"></i>
+                                                                                    title="Cannot delete - has ${productCount} product(s)"
+                                                                                    aria-label="Cannot delete category - has products">
+                                                                                <i class="bx bx-trash" aria-hidden="true"></i>
                                                                             </button>
                                                                         </c:when>
                                                                         <c:otherwise>
@@ -182,8 +184,9 @@
                                                                                     data-bs-target="#deleteModal"
                                                                                     data-category-id="${category.id}"
                                                                                     data-category-name="${category.name}"
-                                                                                    title="Delete">
-                                                                                <i class="bx bx-trash"></i>
+                                                                                    title="Delete"
+                                                                                    aria-label="Delete category">
+                                                                                <i class="bx bx-trash" aria-hidden="true"></i>
                                                                             </button>
                                                                         </c:otherwise>
                                                                     </c:choose>

@@ -33,7 +33,7 @@
                 <!-- Content wrapper -->
                 <div class="content-wrapper">
                     <!-- Content -->
-                    <div class="container-xxl flex-grow-1 container-p-y">
+                    <main class="container-xxl flex-grow-1 container-p-y" role="main">
                         
                         <!-- Breadcrumb -->
                         <nav aria-label="breadcrumb">
@@ -242,8 +242,8 @@
                 <div class="movement-item border rounded p-3 mb-3" id="item_${itemCounter}">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <h6 class="mb-0">Item #${itemCounter}</h6>
-                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeItem(${itemCounter})">
-                            <i class="bx bx-trash"></i>
+                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeItem(${itemCounter})" aria-label="Remove item">
+                            <i class="bx bx-trash" aria-hidden="true"></i>
                         </button>
                     </div>
                     <div class="row g-3">

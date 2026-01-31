@@ -32,7 +32,7 @@
                 <!-- Content wrapper -->
                 <div class="content-wrapper">
                     <!-- Content -->
-                    <div class="container-xxl flex-grow-1 container-p-y">
+                    <main class="container-xxl flex-grow-1 container-p-y" role="main">
                         
                         <!-- Breadcrumb -->
                         <nav aria-label="breadcrumb">
@@ -166,8 +166,8 @@
                                                             </div>
                                                             
                                                             <div class="col-md-2">
-                                                                <button type="submit" class="btn btn-outline-primary w-100">
-                                                                    <i class="bx bx-save"></i>
+                                                                <button type="submit" class="btn btn-outline-primary w-100" aria-label="Save quantity">
+                                                                    <i class="bx bx-save" aria-hidden="true"></i>
                                                                 </button>
                                                             </div>
                                                         </form>

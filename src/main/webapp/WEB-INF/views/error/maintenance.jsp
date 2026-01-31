@@ -40,7 +40,7 @@
 </head>
 <body>
     <!-- Content -->
-    <div class="container-xxl container-p-y">
+    <main class="container-xxl container-p-y" role="main">
         <div class="misc-wrapper">
             <h3 class="mb-2 mx-2">Under Maintenance! 🚧</h3>
             <p class="mb-6 mx-2">Sorry for the inconvenience. We're performing scheduled maintenance.</p>
@@ -51,7 +51,7 @@
                      alt="Under Maintenance" width="500" class="img-fluid" />
             </div>
         </div>
-    </div>
+    </main>
     <!-- /Content -->
 
     <!-- Core JS -->

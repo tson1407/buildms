@@ -42,7 +42,7 @@
 </head>
 <body>
     <!-- Content -->
-    <div class="container-xxl">
+    <main class="container-xxl" role="main">
         <div class="authentication-wrapper authentication-basic container-p-y">
             <div class="authentication-inner">
                 <!-- Login Card -->
@@ -98,7 +98,7 @@
                         <!-- Logout Success Message -->
                         <c:if test="${param.logout == 'success'}">
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                <i class="bx bx-check-circle me-2"></i>
+                                <i class="bx bx-check-circle me-2" aria-hidden="true"></i>
                                 You have been logged out successfully
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
@@ -107,7 +107,7 @@
                         <!-- Session Expired Message -->
                         <c:if test="${param.expired == 'true'}">
                             <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                <i class="bx bx-error me-2"></i>
+                                <i class="bx bx-error me-2" aria-hidden="true"></i>
                                 Your session has expired. Please login again.
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
@@ -116,7 +116,7 @@
                         <!-- Error Message -->
                         <c:if test="${not empty errorMessage}">
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <i class="bx bx-error-circle me-2"></i>
+                                <i class="bx bx-error-circle me-2" aria-hidden="true"></i>
                                 ${errorMessage}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
@@ -149,7 +149,7 @@
                                            aria-describedby="password" 
                                            required />
                                     <span class="input-group-text cursor-pointer" id="togglePassword">
-                                        <i class="icon-base bx bx-hide"></i>
+                                        <i class="icon-base bx bx-hide" aria-hidden="true"></i>
                                     </span>
                                 </div>
                             </div>
@@ -176,7 +176,7 @@
                 <!-- /Login Card -->
             </div>
         </div>
-    </div>
+    </main>
     <!-- / Content -->
     
     <!-- Core JS -->

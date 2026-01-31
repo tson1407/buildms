@@ -33,7 +33,7 @@
                 <!-- Content wrapper -->
                 <div class="content-wrapper">
                     <!-- Content -->
-                    <div class="container-xxl flex-grow-1 container-p-y">
+                    <main class="container-xxl flex-grow-1 container-p-y" role="main">
                         
                         <!-- Breadcrumb -->
                         <nav aria-label="breadcrumb">
@@ -239,8 +239,8 @@
                         <input type="text" class="form-control available-display" readonly value="-">
                     </div>
                     <div class="col-md-2">
-                        <button type="button" class="btn btn-outline-danger remove-item-btn">
-                            <i class="bx bx-trash"></i>
+                        <button type="button" class="btn btn-outline-danger remove-item-btn" aria-label="Remove item">
+                            <i class="bx bx-trash" aria-hidden="true"></i>
                         </button>
                     </div>
                 `;

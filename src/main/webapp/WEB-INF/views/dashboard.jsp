@@ -30,7 +30,7 @@
                 <!-- Content wrapper -->
                 <div class="content-wrapper">
                     <!-- Content -->
-                    <div class="container-xxl flex-grow-1 container-p-y">
+                    <main class="container-xxl flex-grow-1 container-p-y" role="main">
                         
                         <!-- Alerts -->
                         <jsp:include page="/WEB-INF/common/alerts.jsp" />
@@ -245,7 +245,7 @@
                             </div>
                         </div>
                         
-                    </div>
+                    </main>
                     <!-- / Content -->
                     
                     <!-- Footer -->

@@ -32,7 +32,7 @@
                 <!-- Content wrapper -->
                 <div class="content-wrapper">
                     <!-- Content -->
-                    <div class="container-xxl flex-grow-1 container-p-y">
+                    <main class="container-xxl flex-grow-1 container-p-y" role="main">
                         
                         <!-- Breadcrumb -->
                         <nav aria-label="breadcrumb">
@@ -177,7 +177,7 @@
                                                                     <a href="${contextPath}/warehouse?action=edit&id=${warehouse.id}" 
                                                                        class="btn btn-sm btn-outline-primary" 
                                                                        data-bs-toggle="tooltip" title="Edit">
-                                                                        <i class="bx bx-edit-alt"></i>
+                                                                        <i class="bx bx-edit-alt" aria-hidden="true"></i>
                                                                     </a>
                                                                     <a href="${contextPath}/location?action=list&warehouseId=${warehouse.id}" 
                                                                        class="btn btn-sm btn-outline-info" 

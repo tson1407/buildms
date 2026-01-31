@@ -33,7 +33,7 @@
                 <!-- Content wrapper -->
                 <div class="content-wrapper">
                     <!-- Content -->
-                    <div class="container-xxl flex-grow-1 container-p-y">
+                    <main class="container-xxl flex-grow-1 container-p-y" role="main">
                         
                         <!-- Breadcrumb -->
                         <nav aria-label="breadcrumb">
@@ -189,7 +189,7 @@
                     </div>
                     <div class="col-md-3">
                         <button type="button" class="btn btn-outline-danger remove-item-btn">
-                            <i class="bx bx-trash"></i> Remove
+                            <i class="bx bx-trash" aria-hidden="true"></i> Remove
                         </button>
                     </div>
                 `;

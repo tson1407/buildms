@@ -32,7 +32,7 @@
                 <!-- Content wrapper -->
                 <div class="content-wrapper">
                     <!-- Content -->
-                    <div class="container-xxl flex-grow-1 container-p-y">
+                    <main class="container-xxl flex-grow-1 container-p-y" role="main">
                         
                         <!-- Breadcrumb -->
                         <nav aria-label="breadcrumb">
@@ -75,7 +75,7 @@
                         <!-- Page Header -->
                         <div class="d-flex justify-content-between align-items-center mb-6">
                             <h4 class="mb-0">
-                                <i class="bx bx-package me-2"></i>Product Management
+                                <i class="bx bx-package" aria-hidden="true me-2"></i>Product Management
                             </h4>
                             <c:if test="${currentUser.role == 'Admin' || currentUser.role == 'Manager'}">
                                 <a href="${contextPath}/product?action=add" class="btn btn-primary">
@@ -158,7 +158,7 @@
                                                     <td colspan="${(currentUser.role == 'Admin' || currentUser.role == 'Manager') ? 8 : 7}" 
                                                         class="text-center py-5">
                                                         <div class="text-muted">
-                                                            <i class="bx bx-package bx-lg mb-3 d-block"></i>
+                                                            <i class="bx bx-package" aria-hidden="true bx-lg mb-3 d-block"></i>
                                                             <p class="mb-0">No products found</p>
                                                             <c:if test="${currentUser.role == 'Admin' || currentUser.role == 'Manager'}">
                                                                 <a href="${contextPath}/product?action=add" class="btn btn-primary btn-sm mt-3">
@@ -222,13 +222,15 @@
                                                                 <div class="d-flex gap-2">
                                                                     <a href="${contextPath}/product?action=details&id=${product.id}" 
                                                                        class="btn btn-sm btn-outline-info" 
-                                                                       data-bs-toggle="tooltip" title="View Details">
-                                                                        <i class="bx bx-show"></i>
+                                                                       data-bs-toggle="tooltip" title="View Details"
+                                                                       aria-label="View product details">
+                                                                        <i class="bx bx-show" aria-hidden="true"></i>
                                                                     </a>
                                                                     <a href="${contextPath}/product?action=edit&id=${product.id}" 
                                                                        class="btn btn-sm btn-outline-primary" 
-                                                                       data-bs-toggle="tooltip" title="Edit">
-                                                                        <i class="bx bx-edit-alt"></i>
+                                                                       data-bs-toggle="tooltip" title="Edit"
+                                                                       aria-label="Edit product">
+                                                                        <i class="bx bx-edit-alt" aria-hidden="true"></i>
                                                                     </a>
                                                                     <button type="button" 
                                                                             class="btn btn-sm ${product.active ? 'btn-outline-warning' : 'btn-outline-success'}" 
@@ -237,8 +239,9 @@
                                                                             data-product-id="${product.id}"
                                                                             data-product-name="${product.name}"
                                                                             data-product-active="${product.active}"
-                                                                            title="${product.active ? 'Deactivate' : 'Activate'}">
-                                                                        <i class="bx ${product.active ? 'bx-block' : 'bx-check'}"></i>
+                                                                            title="${product.active ? 'Deactivate' : 'Activate'}"
+                                                                            aria-label="${product.active ? 'Deactivate product' : 'Activate product'}">
+                                                                        <i class="bx ${product.active ? 'bx-block' : 'bx-check'}" aria-hidden="true"></i>
                                                                     </button>
                                                                 </div>
                                                             </td>
