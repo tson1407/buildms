@@ -4,7 +4,7 @@
 <c:set var="currentUser" value="${sessionScope.user}" />
 
 <!-- Menu -->
-<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme" role="navigation" aria-label="Main navigation">
     <div class="app-brand demo">
         <a href="${contextPath}/dashboard" class="app-brand-link">
             <span class="app-brand-logo demo">
@@ -46,8 +46,8 @@
             <span class="app-brand-text demo menu-text fw-bold ms-2">Smart WMS</span>
         </a>
 
-        <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
-            <i class="bx bx-chevron-left d-block d-xl-none align-middle"></i>
+        <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto" aria-label="Toggle menu">
+            <i class="bx bx-chevron-left d-block d-xl-none align-middle" aria-hidden="true"></i>
         </a>
     </div>
 

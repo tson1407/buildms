@@ -6,8 +6,8 @@
 <!-- Navbar -->
 <nav class="layout-navbar container-xxl navbar-detached navbar navbar-expand-xl align-items-center bg-navbar-theme" id="layout-navbar">
     <div class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0 d-xl-none">
-        <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)">
-            <i class="icon-base bx bx-menu icon-md"></i>
+        <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)" aria-label="Toggle navigation menu">
+            <i class="icon-base bx bx-menu icon-md" aria-hidden="true"></i>
         </a>
     </div>
 
@@ -15,9 +15,12 @@
         <!-- Search -->
         <div class="navbar-nav align-items-center me-auto">
             <div class="nav-item d-flex align-items-center">
-                <span class="w-px-22 h-px-22"><i class="icon-base bx bx-search icon-md"></i></span>
+                <label for="global-search" class="w-px-22 h-px-22">
+                    <i class="icon-base bx bx-search icon-md" aria-hidden="true"></i>
+                    <span class="visually-hidden">Search</span>
+                </label>
                 <input type="text" class="form-control border-0 shadow-none ps-1 ps-sm-2 d-md-block d-none" 
-                       placeholder="Search..." aria-label="Search..." id="global-search" />
+                       placeholder="Search..." aria-label="Search the warehouse management system" id="global-search" />
             </div>
         </div>
         <!-- /Search -->
@@ -26,10 +29,10 @@
             <!-- Notifications -->
             <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-2">
                 <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown" 
-                   data-bs-auto-close="outside" aria-expanded="false">
+                   data-bs-auto-close="outside" aria-expanded="false" aria-label="View notifications">
                     <span class="position-relative">
-                        <i class="icon-base bx bx-bell icon-md"></i>
-                        <span class="badge rounded-pill bg-danger badge-dot badge-notifications border"></span>
+                        <i class="icon-base bx bx-bell icon-md" aria-hidden="true"></i>
+                        <span class="badge rounded-pill bg-danger badge-dot badge-notifications border" aria-label="New notifications"></span>
                     </span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end p-0">
@@ -39,8 +42,8 @@
                             <div class="d-flex align-items-center h6 mb-0">
                                 <span class="badge bg-label-primary me-2">0 New</span>
                                 <a href="javascript:void(0)" class="dropdown-notifications-all p-2" data-bs-toggle="tooltip" 
-                                   data-bs-placement="top" title="Mark all as read">
-                                    <i class="icon-base bx bx-envelope-open text-heading icon-md"></i>
+                                   data-bs-placement="top" title="Mark all as read" aria-label="Mark all notifications as read">
+                                    <i class="icon-base bx bx-envelope-open text-heading icon-md" aria-hidden="true"></i>
                                 </a>
                             </div>
                         </div>
@@ -77,7 +80,7 @@
 
             <!-- User -->
             <li class="nav-item navbar-dropdown dropdown-user dropdown">
-                <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
+                <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown" aria-label="Open user menu">
                     <div class="avatar avatar-online">
                         <span class="avatar-initial rounded-circle bg-label-primary">
                             <c:choose>
