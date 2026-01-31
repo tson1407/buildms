@@ -66,12 +66,14 @@ sqlcmd -S localhost -d smartwms_db -i database/auth_migration.sql  # Add test us
 ```
 
 ### Database Connection
-Edit `src/main/java/vn/edu/fpt/swp/util/DBConnection.java`:
-```java
-private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=smartwms_db;...";
-private static final String USERNAME = "your_username";
-private static final String PASSWORD = "your_password";
+Edit `src/main/resources/db.properties`:
+```properties
+db.url=jdbc:sqlserver://localhost;databaseName=smartwms_db;encrypt=true;trustServerCertificate=true
+db.username=your_username
+db.password=your_password
+db.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver
 ```
+Configuration is automatically loaded by `DBConnection.java` at startup.
 
 ### Test Credentials
 | Username | Password | Role |

@@ -171,12 +171,18 @@ sqlcmd -S localhost -d smartwms_db -i database/auth_migration.sql
 ```
 
 ### 2. Configure Database Connection
-Edit `src/main/java/vn/edu/fpt/swp/util/DBConnection.java`:
-```java
-private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=smartwms_db;...";
-private static final String USERNAME = "your_username";
-private static final String PASSWORD = "your_password";
+Edit `src/main/resources/db.properties`:
+```properties
+db.url=jdbc:sqlserver://localhost;databaseName=smartwms_db;encrypt=true;trustServerCertificate=true
+db.username=your_username
+db.password=your_password
+db.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver
 ```
+
+**Benefits of Properties File:**
+- No need to recompile when changing database credentials
+- Easy to configure different environments (dev/staging/prod)
+- Keeps sensitive data separate from source code
 
 ### 3. Build Project
 ```bash
