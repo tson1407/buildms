@@ -1,9 +1,9 @@
-# UC-AUTH-006: Session Timeout
+# UC-AUTH-005: Session Timeout
 
 ## Use Case Overview
 | Attribute | Description |
 |-----------|-------------|
-| **Use Case ID** | UC-AUTH-006 |
+| **Use Case ID** | UC-AUTH-005 |
 | **Use Case Name** | Session Timeout |
 | **Primary Actor** | System |
 | **Secondary Actor** | Authenticated User |

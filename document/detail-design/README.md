@@ -22,10 +22,10 @@ Each use case document includes:
 | ID | Name | File |
 |----|------|------|
 | UC-AUTH-001 | User Login | [UC-AUTH-001-User-Login.md](UC-AUTH-001-User-Login.md) |
-| UC-AUTH-003 | Change Password | [UC-AUTH-003-Change-Password.md](UC-AUTH-003-Change-Password.md) |
-| UC-AUTH-004 | Admin Reset Password | [UC-AUTH-004-Admin-Reset-Password.md](UC-AUTH-004-Admin-Reset-Password.md) |
-| UC-AUTH-005 | User Logout | [UC-AUTH-005-User-Logout.md](UC-AUTH-005-User-Logout.md) |
-| UC-AUTH-006 | Session Timeout | [UC-AUTH-006-Session-Timeout.md](UC-AUTH-006-Session-Timeout.md) |
+| UC-AUTH-002 | Change Password | [UC-AUTH-002-Change-Password.md](UC-AUTH-002-Change-Password.md) |
+| UC-AUTH-003 | Admin Reset Password | [UC-AUTH-003-Admin-Reset-Password.md](UC-AUTH-003-Admin-Reset-Password.md) |
+| UC-AUTH-004 | User Logout | [UC-AUTH-004-User-Logout.md](UC-AUTH-004-User-Logout.md) |
+| UC-AUTH-005 | Session Timeout | [UC-AUTH-005-Session-Timeout.md](UC-AUTH-005-Session-Timeout.md) |
 
 ### Inbound Management (UC-INB)
 | ID | Name | File |

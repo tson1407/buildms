@@ -1,9 +1,9 @@
-# UC-AUTH-005: User Logout
+# UC-AUTH-004: User Logout
 
 ## Use Case Overview
 | Attribute | Description |
 |-----------|-------------|
-| **Use Case ID** | UC-AUTH-005 |
+| **Use Case ID** | UC-AUTH-004 |
 | **Use Case Name** | User Logout |
 | **Primary Actor** | Authenticated User (All Roles) |
 | **Description** | Terminate user session and log out of the system |

@@ -1,9 +1,9 @@
-# UC-AUTH-004: Admin Reset Password
+# UC-AUTH-003: Admin Reset Password
 
 ## Use Case Overview
 | Attribute | Description |
 |-----------|-------------|
-| **Use Case ID** | UC-AUTH-004 |
+| **Use Case ID** | UC-AUTH-003 |
 | **Use Case Name** | Admin Reset Password |
 | **Primary Actor** | Admin |
 | **Description** | Admin resets a user's password when user cannot access their account |

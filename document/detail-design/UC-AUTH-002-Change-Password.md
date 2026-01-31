@@ -1,9 +1,9 @@
-# UC-AUTH-003: Change Password
+# UC-AUTH-002: Change Password
 
 ## Use Case Overview
 | Attribute | Description |
 |-----------|-------------|
-| **Use Case ID** | UC-AUTH-003 |
+| **Use Case ID** | UC-AUTH-002 |
 | **Use Case Name** | Change Password |
 | **Primary Actor** | Authenticated User (All Roles) |
 | **Description** | Allow authenticated user to change their own password |
