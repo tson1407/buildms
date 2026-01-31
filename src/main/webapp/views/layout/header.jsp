@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8"  %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!doctype html>
 <html lang="en" class="layout-menu-fixed layout-compact" data-assets-path="${pageContext.request.contextPath}/" data-template="vertical-menu-template-free">

@@ -129,7 +129,7 @@ session.getAttribute("role");      // String
 ### 10. Typical Page Structure
 
 ```jsp
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8"  %>
 <%@ page import="vn.edu.fpt.swp.model.User" %>
 <%
     // Session check
