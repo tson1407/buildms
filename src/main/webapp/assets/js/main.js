@@ -4,8 +4,11 @@
 
 'use strict';
 
-let menu,
-  animate;
+// Use window-scoped fallback variables to avoid redeclaration when script is loaded multiple times
+var menu = window.__smartwms_menu || null;
+var animate = window.__smartwms_animate || false;
+window.__smartwms_menu = menu;
+window.__smartwms_animate = animate;
 document.addEventListener('DOMContentLoaded', function () {
   // class for ios specific styles
   if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
@@ -25,7 +28,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     // Change parameter to true if you want scroll animation
     window.Helpers.scrollToActive((animate = false));
+    window.__smartwms_animate = animate;
     window.Helpers.mainMenu = menu;
+    window.__smartwms_menu = menu;
   });
 
   // Initialize menu togglers and bind click on each
