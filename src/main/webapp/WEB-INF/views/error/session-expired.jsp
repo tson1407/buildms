@@ -40,7 +40,7 @@
 </head>
 <body>
     <!-- Content -->
-    <div class="container-xxl container-p-y">
+    <main class="container-xxl container-p-y" role="main">
         <div class="misc-wrapper">
             <h1 class="mb-2 mx-2" style="font-size: 4rem">
                 <i class="bx bx-time-five text-warning"></i>
@@ -55,7 +55,7 @@
                      alt="Session Expired" width="500" class="img-fluid" />
             </div>
         </div>
-    </div>
+    </main>
     <!-- /Content -->
 
     <!-- Core JS -->

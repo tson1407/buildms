@@ -40,7 +40,7 @@
 </head>
 <body>
     <!-- Content -->
-    <div class="container-xxl container-p-y">
+    <main class="container-xxl container-p-y" role="main">
         <div class="misc-wrapper">
             <h1 class="mb-2 mx-2" style="line-height: 6rem; font-size: 6rem">500</h1>
             <h4 class="mb-2 mx-2">Internal Server Error 🔧</h4>
@@ -69,7 +69,7 @@
                 </div>
             </c:if>
         </div>
-    </div>
+    </main>
     <!-- /Content -->
 
     <!-- Core JS -->
