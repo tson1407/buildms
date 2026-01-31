@@ -1,10 +1,20 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<c:if test="${empty sessionScope.user}">
-    <c:redirect url="${pageContext.request.contextPath}/auth?action=login"/>
-</c:if>
+<%--
+    Smart WMS - Index Page
+    
+    This is the entry point of the application.
+    - If user is logged in: redirect to dashboard
+    - If user is not logged in: redirect to login page
+--%>
 
-<%-- Set layout attributes and forward to layout --%>
-<c:set var="pageTitle" value="Dashboard" scope="request"/>
-<c:set var="contentPage" value="/views/dashboard/content.jsp" scope="request"/>
-<jsp:forward page="/WEB-INF/views/common/layout.jsp"/>
+<c:choose>
+    <c:when test="${not empty sessionScope.user}">
+        <%-- User is logged in, redirect to dashboard --%>
+        <c:redirect url="/dashboard" />
+    </c:when>
+    <c:otherwise>
+        <%-- User is not logged in, redirect to login page --%>
+        <c:redirect url="/auth?action=login" />
+    </c:otherwise>
+</c:choose>

@@ -7,7 +7,7 @@ Smart WMS is a **Java 21 + Jakarta EE 10** web application for warehouse managem
 ```
 Controller (Servlets) → Service → DAO → SQL Server
      ↓
-   JSP Views (views/)
+   JSP Views (WEB-INF/views/)
 ```
 
 - **Controllers** (`controller/`): Handle HTTP via `@WebServlet`, route to services, forward to JSP
@@ -15,7 +15,34 @@ Controller (Servlets) → Service → DAO → SQL Server
 - **DAOs** (`dao/`): Direct JDBC operations using `DBConnection.getConnection()`
 - **Models** (`model/`): Plain Java POJOs implementing `Serializable`
 - **Filters** (`filter/`): `AuthFilter` intercepts all requests for auth/authorization
-- **Views** (`webapp/views/`): JSP pages organized by feature (auth/, product/, error/)
+- **Views** (`webapp/WEB-INF/views/`): JSP pages organized by feature, protected under WEB-INF
+- **Common Components** (`webapp/WEB-INF/common/`): Shared layout components (header, footer, sidebar, etc.)
+
+## View Layer Structure
+```
+webapp/
+├── index.jsp                    # Entry point - redirects to login or dashboard
+├── assets/                      # Static assets (CSS, JS, images, fonts)
+└── WEB-INF/
+    ├── web.xml                  # Jakarta EE 10 configuration
+    ├── common/                  # Reusable layout components
+    │   ├── head.jsp             # HTML head (meta, CSS, fonts)
+    │   ├── sidebar.jsp          # Left navigation menu (role-based)
+    │   ├── navbar.jsp           # Top navigation bar with user dropdown
+    │   ├── footer.jsp           # Page footer
+    │   ├── scripts.jsp          # Common JavaScript includes
+    │   ├── alerts.jsp           # Alert messages component
+    │   ├── pagination.jsp       # Pagination component
+    │   └── delete-modal.jsp     # Delete confirmation modal
+    └── views/
+        ├── auth/                # Authentication pages (login, register)
+        ├── dashboard.jsp        # Main dashboard
+        ├── product/             # Product management
+        ├── category/            # Category management
+        ├── inventory/           # Inventory views
+        ├── error/               # Error pages (404, 403, 500, etc.)
+        └── [feature]/           # Other feature modules
+```
 
 ## Key Patterns & Conventions
 
@@ -23,7 +50,7 @@ Controller (Servlets) → Service → DAO → SQL Server
 - Use `@WebServlet("/path")` annotation (no web.xml mapping)
 - Route via `action` parameter: `?action=login`, `?action=register`
 - Initialize services in `init()` method
-- Forward to JSP: `request.getRequestDispatcher("/views/feature/page.jsp").forward(request, response)`
+- Forward to JSP in WEB-INF: `request.getRequestDispatcher("/WEB-INF/views/feature/page.jsp").forward(request, response)`
 
 ### DAO Pattern
 ```java
@@ -55,6 +82,68 @@ Roles: `Admin`, `Manager`, `Staff`, `Sales`
 - Use **JSTL tags** and **EL (Expression Language)** exclusively in all JSP files
 - **NEVER use scriptlets**: `<% %>`, `<%= %>`, `<%! %>`
 - Always include JSTL core taglib: `<%@ taglib prefix="c" uri="jakarta.tags.core" %>`
+
+### Using Common Layout Components
+All pages with sidebar/navbar must include the common components:
+
+```jsp
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<c:set var="contextPath" value="${pageContext.request.contextPath}" />
+
+<!DOCTYPE html>
+<html lang="en" class="layout-menu-fixed layout-compact" 
+      data-assets-path="${contextPath}/assets/">
+<head>
+    <jsp:include page="/WEB-INF/common/head.jsp">
+        <jsp:param name="pageTitle" value="Page Title" />
+    </jsp:include>
+</head>
+<body>
+    <div class="layout-wrapper layout-content-navbar">
+        <div class="layout-container">
+            
+            <!-- Sidebar with active menu -->
+            <jsp:include page="/WEB-INF/common/sidebar.jsp">
+                <jsp:param name="activeMenu" value="products" />
+                <jsp:param name="activeSubMenu" value="product-list" />
+            </jsp:include>
+            
+            <div class="layout-page">
+                <jsp:include page="/WEB-INF/common/navbar.jsp" />
+                
+                <div class="content-wrapper">
+                    <div class="container-xxl flex-grow-1 container-p-y">
+                        <!-- Include alerts -->
+                        <jsp:include page="/WEB-INF/common/alerts.jsp" />
+                        
+                        <!-- Page content here -->
+                    </div>
+                    
+                    <jsp:include page="/WEB-INF/common/footer.jsp" />
+                    <div class="content-backdrop fade"></div>
+                </div>
+            </div>
+        </div>
+        <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+    
+    <jsp:include page="/WEB-INF/common/scripts.jsp" />
+</body>
+</html>
+```
+
+### Alert Messages
+Set these request attributes in servlets to show alerts:
+- `successMessage` - Green success alert
+- `errorMessage` - Red error alert
+- `warningMessage` - Yellow warning alert
+- `infoMessage` - Blue info alert
+
+```java
+request.setAttribute("successMessage", "Product created successfully!");
+request.getRequestDispatcher("/WEB-INF/views/product/list.jsp").forward(request, response);
+```
 
 **Common JSTL Patterns:**
 ```jsp
@@ -165,6 +254,16 @@ Requests follow: `Created → Approved → InProgress → Completed` (or `Reject
 3. Create DAO in `dao/` using `DBConnection` pattern
 4. Create Service in `service/` for business logic
 5. Create Controller in `controller/` with `@WebServlet`
-6. Create JSP views in `webapp/views/feature/` **using templates from `template/html/`**
+6. Create JSP views in `webapp/WEB-INF/views/feature/` **using layout components from `WEB-INF/common/`**
 7. Update `AuthFilter.ROLE_ACCESS_MAP` if new protected routes
 8. Verify implementation matches all flows in the detail design document
+
+## Sidebar Menu Configuration
+The sidebar (`WEB-INF/common/sidebar.jsp`) uses parameters to highlight active menu items:
+
+| Parameter | Values |
+|-----------|--------|
+| `activeMenu` | `dashboard`, `products`, `categories`, `inventory`, `warehouses`, `locations`, `inbound`, `outbound`, `movement`, `customers`, `sales-orders`, `users`, `suppliers`, `profile`, `change-password` |
+| `activeSubMenu` | `product-list`, `product-add`, `category-list`, `category-add`, `inbound-list`, `inbound-create`, etc. |
+
+Menu items are role-based and automatically show/hide based on `sessionScope.user.role`.

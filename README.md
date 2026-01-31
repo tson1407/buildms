@@ -32,48 +32,67 @@ buildms/
 │   ├── main/
 │   │   ├── java/
 │   │   │   └── vn/edu/fpt/swp/
-│   │   │       ├── controller/      # Servlet controllers
-│   │   │       │   ├── AuthController.java    # Login/Logout/Register
-│   │   │       │   ├── UserController.java    # User management
+│   │   │       ├── controller/
+│   │   │       │   ├── AuthController.java
+│   │   │       │   ├── UserController.java
 │   │   │       │   └── ProductController.java
-│   │   │       ├── dao/             # Data Access Objects
-│   │   │       │   ├── UserDAO.java           # User database operations
+│   │   │       ├── dao/
+│   │   │       │   ├── UserDAO.java
 │   │   │       │   └── ProductDAO.java
-│   │   │       ├── model/           # Entity classes
-│   │   │       │   ├── User.java              # User entity with auth fields
+│   │   │       ├── model/
+│   │   │       │   ├── User.java
 │   │   │       │   └── Product.java
-│   │   │       ├── service/         # Business logic layer
-│   │   │       │   ├── AuthService.java       # Authentication logic
+│   │   │       ├── service/
+│   │   │       │   ├── AuthService.java
 │   │   │       │   └── ProductService.java
-│   │   │       ├── filter/          # Request filters
-│   │   │       │   └── AuthFilter.java        # Authorization filter
-│   │   │       └── util/            # Utility classes
+│   │   │       ├── filter/
+│   │   │       │   └── AuthFilter.java
+│   │   │       │   
+│   │   │       └── util/
 │   │   │           ├── DBConnection.java
-│   │   │           ├── PasswordUtil.java      # Password hashing
-│   │   │           └── PasswordHashGenerator.java
+│   │   │           └── PasswordUtil.java
+│   │   │
 │   │   └── webapp/
-│   │       ├── views/
-│   │       │   ├── auth/            # Authentication pages
-│   │       │   │   ├── login.jsp
-│   │       │   │   └── register.jsp
-│   │       │   ├── error/           # Error pages
-│   │       │   │   └── 403.jsp
-│   │       │   └── product/         # JSP views
-│   │       │       ├── list.jsp
-│   │       │       ├── create.jsp
-│   │       │       ├── edit.jsp
-│   │       │       └── view.jsp
 │   │       ├── WEB-INF/
-│   │       │   └── web.xml          # Web deployment descriptor
-│   │       └── index.jsp            # Home page
+│   │       │   ├── views/
+│   │       │   │   ├── common/
+│   │       │   │   │   ├── header.jsp
+|   |       |   |   |   ├── navbar.jsp
+│   │       │   │   │   └── footer.jsp
+│   │       │   │   ├── auth/
+│   │       │   │   │   ├── login.jsp
+│   │       │   │   │   └── register.jsp
+│   │       │   │   ├── product/
+│   │       │   │   │   ├── list.jsp
+│   │       │   │   │   ├── create.jsp
+│   │       │   │   │   ├── edit.jsp
+│   │       │   │   │   └── view.jsp
+│   │       │   │   └── error/
+│   │       │   │       ├── 403.jsp
+│   │       │   │       ├── 404.jsp
+│   │       │   │       └── 500.jsp
+│   │       │   │
+│   │       │   └── web.xml
+│   │       │
+│   │       ├── assets/
+│   │       │   ├── css/
+│   │       │   ├── js/
+│   │       │   └── images/
+│   │       │
+│   │       └── index.jsp
+│   │
 │   └── test/
+│
 ├── database/
-│   ├── schema.sql                   # Database schema
-│   └── auth_migration.sql           # Authentication migration
+│   ├── schema.sql
+│   └── auth_migration.sql
+│
 ├── document/
-│   ├── SRS.md                       # Software Requirements Specification
-│   └── AUTHENTICATION.md            # Authentication documentation
-└── pom.xml                          # Maven configuration
+│   ├── SRS.md
+│   └── AUTHENTICATION.md
+│
+└── pom.xml
+
 ```
 
 ## Architecture
