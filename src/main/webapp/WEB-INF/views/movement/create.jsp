@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="currentUser" value="${sessionScope.user}" />
 
@@ -184,7 +185,7 @@
                             </form>
                         </c:if>
                         
-                    </div>
+                    </main>
                     <!-- / Content -->
                     
                     <jsp:include page="/WEB-INF/common/footer.jsp" />
@@ -210,8 +211,8 @@
             <c:forEach var="pi" items="${productsWithInventory}" varStatus="status">
             {
                 id: ${pi.product.id},
-                sku: '${pi.product.sku}',
-                name: '${pi.product.name}',
+                sku: '<c:out value="${pi.product.sku}" escapeXml="true"/>',
+                name: '<c:out value="${pi.product.name}" escapeXml="true"/>',
                 totalQty: ${pi.totalQuantity},
                 inventories: [
                     <c:forEach var="inv" items="${pi.inventories}" varStatus="invStatus">
@@ -225,7 +226,7 @@
         // Locations data
         const locations = [
             <c:forEach var="loc" items="${locations}" varStatus="status">
-            { id: ${loc.id}, code: '${loc.code}', type: '${loc.type}' }<c:if test="${not status.last}">,</c:if>
+            { id: ${loc.id}, code: '<c:out value="${loc.code}" escapeXml="true"/>', type: '<c:out value="${loc.type}" escapeXml="true"/>' }<c:if test="${not status.last}">,</c:if>
             </c:forEach>
         ];
         
@@ -251,7 +252,6 @@
                             <label class="form-label">Product <span class="text-danger">*</span></label>
                             <select class="form-select" name="productId" required onchange="onProductChange(${itemCounter}, this)">
                                 <option value="">-- Select Product --</option>
-                                ${productsWithInventory.map(p => `<option value="${p.id}">${p.sku} - ${p.name} (Total: ${p.totalQty})</option>`).join('')}
                             </select>
                         </div>
                         <div class="col-md-6">
@@ -271,7 +271,6 @@
                             <label class="form-label">Destination Location <span class="text-danger">*</span></label>
                             <select class="form-select" name="destinationLocationId" required id="destLocation_${itemCounter}">
                                 <option value="">-- Select Destination Location --</option>
-                                ${locations.map(l => `<option value="${l.id}">${l.code} (${l.type})</option>`).join('')}
                             </select>
                         </div>
                     </div>
@@ -279,6 +278,24 @@
             `;
             
             document.getElementById('movementItems').insertAdjacentHTML('beforeend', itemHtml);
+            
+            // Populate product dropdown
+            const productSelect = document.querySelector(`#item_${itemCounter} select[name="productId"]`);
+            productsWithInventory.forEach(p => {
+                const option = document.createElement('option');
+                option.value = p.id;
+                option.textContent = `${p.sku} - ${p.name} (Total: ${p.totalQty})`;
+                productSelect.appendChild(option);
+            });
+            
+            // Populate destination location dropdown
+            const destSelect = document.getElementById(`destLocation_${itemCounter}`);
+            locations.forEach(l => {
+                const option = document.createElement('option');
+                option.value = l.id;
+                option.textContent = `${l.code} (${l.type})`;
+                destSelect.appendChild(option);
+            });
         }
         
         function removeItem(itemId) {

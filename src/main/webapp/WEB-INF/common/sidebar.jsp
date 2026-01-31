@@ -286,12 +286,12 @@
                 </a>
                 <ul class="menu-sub">
                     <li class="menu-item ${param.activeSubMenu == 'order-list' ? 'active' : ''}">
-                        <a href="${contextPath}/order?action=list" class="menu-link">
+                        <a href="${contextPath}/sales-order?action=list" class="menu-link">
                             <div class="text-truncate">Order List</div>
                         </a>
                     </li>
                     <li class="menu-item ${param.activeSubMenu == 'order-create' ? 'active' : ''}">
-                        <a href="${contextPath}/order?action=create" class="menu-link">
+                        <a href="${contextPath}/sales-order?action=create" class="menu-link">
                             <div class="text-truncate">Create Order</div>
                         </a>
                     </li>
