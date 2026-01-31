@@ -5,6 +5,8 @@ import vn.edu.fpt.swp.util.DBConnection;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Data Access Object for User entity
@@ -179,6 +181,194 @@ public class UserDAO {
         }
         
         return null;
+    }
+    
+    /**
+     * Get all users
+     * @return List of all users
+     */
+    public List<User> getAll() {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT id, username, name, email, passwordHash, role, status, warehouseId, createdAt, lastLogin " +
+                     "FROM Users ORDER BY name";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            while (rs.next()) {
+                users.add(mapResultSetToUser(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+    
+    /**
+     * Search users with filters
+     * @param keyword Search by username or email
+     * @param role Role filter
+     * @param status Status filter
+     * @param warehouseId Warehouse filter
+     * @return Filtered list of users
+     */
+    public List<User> search(String keyword, String role, String status, Long warehouseId) {
+        List<User> users = new ArrayList<>();
+        StringBuilder sql = new StringBuilder(
+            "SELECT id, username, name, email, passwordHash, role, status, warehouseId, createdAt, lastLogin " +
+            "FROM Users WHERE 1=1"
+        );
+        List<Object> params = new ArrayList<>();
+        
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            sql.append(" AND (username LIKE ? OR email LIKE ? OR name LIKE ?)");
+            String pattern = "%" + keyword.trim() + "%";
+            params.add(pattern);
+            params.add(pattern);
+            params.add(pattern);
+        }
+        
+        if (role != null && !role.trim().isEmpty()) {
+            sql.append(" AND role = ?");
+            params.add(role);
+        }
+        
+        if (status != null && !status.trim().isEmpty()) {
+            sql.append(" AND status = ?");
+            params.add(status);
+        }
+        
+        if (warehouseId != null) {
+            sql.append(" AND warehouseId = ?");
+            params.add(warehouseId);
+        }
+        
+        sql.append(" ORDER BY name");
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+            
+            for (int i = 0; i < params.size(); i++) {
+                stmt.setObject(i + 1, params.get(i));
+            }
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    users.add(mapResultSetToUser(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+    
+    /**
+     * Get users by role
+     * @param role Role to filter
+     * @return List of users with given role
+     */
+    public List<User> findByRole(String role) {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT id, username, name, email, passwordHash, role, status, warehouseId, createdAt, lastLogin " +
+                     "FROM Users WHERE role = ? ORDER BY name";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, role);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    users.add(mapResultSetToUser(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+    
+    /**
+     * Get users by status
+     * @param status Status to filter
+     * @return List of users with given status
+     */
+    public List<User> findByStatus(String status) {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT id, username, name, email, passwordHash, role, status, warehouseId, createdAt, lastLogin " +
+                     "FROM Users WHERE status = ? ORDER BY name";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, status);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    users.add(mapResultSetToUser(rs));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+    
+    /**
+     * Update user (without password)
+     * @param user User to update
+     * @return true if successful
+     */
+    public boolean update(User user) {
+        String sql = "UPDATE Users SET username = ?, name = ?, email = ?, role = ?, warehouseId = ? WHERE id = ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, user.getUsername());
+            stmt.setString(2, user.getName());
+            stmt.setString(3, user.getEmail());
+            stmt.setString(4, user.getRole());
+            
+            if (user.getWarehouseId() != null) {
+                stmt.setLong(5, user.getWarehouseId());
+            } else {
+                stmt.setNull(5, Types.BIGINT);
+            }
+            
+            stmt.setLong(6, user.getId());
+            
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    /**
+     * Toggle user status
+     * @param id User ID
+     * @param newStatus New status (Active/Inactive)
+     * @return true if successful
+     */
+    public boolean toggleStatus(Long id, String newStatus) {
+        String sql = "UPDATE Users SET status = ? WHERE id = ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setString(1, newStatus);
+            stmt.setLong(2, id);
+            
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
     
     /**

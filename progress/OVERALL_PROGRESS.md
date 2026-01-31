@@ -92,14 +92,6 @@ This document provides a comprehensive overview of the implementation progress f
 | UC-INV-002 | View Inventory By Product | ❌ Not Started |
 | UC-INV-003 | Search Inventory | ❌ Not Started |
 
-### ❌ LOC Module (Location Management) - NOT STARTED
-| UC ID | Use Case Name | Status |
-|-------|--------------|--------|
-| UC-LOC-001 | Create Location | ❌ Not Started |
-| UC-LOC-002 | Update Location | ❌ Not Started |
-| UC-LOC-003 | Toggle Location Status | ❌ Not Started |
-| UC-LOC-004 | View Location List | ❌ Not Started |
-
 ### ❌ MOV Module (Internal Movement) - NOT STARTED
 | UC ID | Use Case Name | Status |
 |-------|--------------|--------|
@@ -137,12 +129,6 @@ This document provides a comprehensive overview of the implementation progress f
 | UC-USER-004 | View User List | ❌ Not Started |
 | UC-USER-005 | Assign User Warehouse | ❌ Not Started |
 
-### ❌ WH Module (Warehouse Management) - NOT STARTED
-| UC ID | Use Case Name | Status |
-|-------|--------------|--------|
-| UC-WH-001 | Create Warehouse | ❌ Not Started |
-| UC-WH-002 | Update Warehouse | ❌ Not Started |
-| UC-WH-003 | View Warehouse List | ❌ Not Started |
 
 ## Next Steps
 1. **Priority Modules:** Start with USER (User Management) for role-based access, then INV (Inventory) for core operations
