@@ -263,7 +263,8 @@ public class TransferService {
     }
     
     /**
-     * Complete outbound execution - deduct inventory from source
+     * Complete outbound execution - deduct inventory from source warehouse
+     * Iterates across locations at the source warehouse to fulfill each item.
      * @param requestId Request ID
      * @param completedBy User completing
      * @return true if successful
@@ -278,25 +279,55 @@ public class TransferService {
             return false;
         }
         
+        Long sourceWarehouseId = request.getSourceWarehouseId();
+        if (sourceWarehouseId == null) {
+            return false;
+        }
+        
         // Get items and deduct from source warehouse
         List<RequestItem> items = requestItemDAO.findByRequestId(requestId);
         
         for (RequestItem item : items) {
-            // Deduct from source warehouse
-            boolean success = inventoryDAO.decreaseQuantity(
-                item.getProductId(),
-                request.getSourceWarehouseId(),
-                item.getLocationId(), // Source location
-                item.getQuantity()
-            );
-            
-            if (!success) {
-                return false; // Rollback would be needed in real scenario
+            int qtyToDecrease = item.getQuantity();
+            if (qtyToDecrease <= 0) {
+                continue;
             }
+            
+            // Find inventory across locations at source warehouse
+            List<Inventory> inventories = inventoryDAO.findByProduct(item.getProductId());
+            int remainingToDecrease = qtyToDecrease;
+            
+            for (Inventory inv : inventories) {
+                if (!inv.getWarehouseId().equals(sourceWarehouseId)) {
+                    continue; // Only from source warehouse
+                }
+                if (remainingToDecrease <= 0) {
+                    break;
+                }
+                
+                int available = inv.getQuantity();
+                int toDecrease = Math.min(available, remainingToDecrease);
+                
+                if (toDecrease > 0) {
+                    boolean decreased = inventoryDAO.decreaseQuantity(
+                        item.getProductId(),
+                        sourceWarehouseId,
+                        inv.getLocationId(),
+                        toDecrease
+                    );
+                    if (decreased) {
+                        remainingToDecrease -= toDecrease;
+                    }
+                }
+            }
+            
+            // Update picked quantity on item
+            requestItemDAO.updatePickedQuantity(
+                item.getRequestId(), item.getProductId(),
+                qtyToDecrease - remainingToDecrease);
         }
         
-        // Update request to "InTransit" status to indicate outbound complete
-        // For simplicity, we'll use "InTransit" to mark outbound done
+        // Update request to "InTransit" to indicate outbound complete
         return requestDAO.updateStatus(requestId, "InTransit");
     }
     
@@ -322,14 +353,15 @@ public class TransferService {
     }
     
     /**
-     * Complete inbound execution - add inventory to destination
+     * Complete inbound execution - add inventory to destination warehouse
+     * Each item can be placed in a different location at the destination.
      * @param requestId Request ID
      * @param completedBy User completing
-     * @param destinationLocationId Destination location for all items
+     * @param itemLocationMap Map of productId to destination locationId
      * @return true if successful
      */
-    public boolean completeInboundExecution(Long requestId, Long completedBy, Long destinationLocationId) {
-        if (requestId == null || completedBy == null || destinationLocationId == null) {
+    public boolean completeInboundExecution(Long requestId, Long completedBy, Map<Long, Long> itemLocationMap) {
+        if (requestId == null || completedBy == null || itemLocationMap == null || itemLocationMap.isEmpty()) {
             return false;
         }
         
@@ -338,27 +370,38 @@ public class TransferService {
             return false;
         }
         
-        // Verify destination location belongs to destination warehouse
-        Location location = locationDAO.findById(destinationLocationId);
-        if (location == null || !request.getDestinationWarehouseId().equals(location.getWarehouseId())) {
-            return false;
-        }
-        
         // Get items and add to destination warehouse
         List<RequestItem> items = requestItemDAO.findByRequestId(requestId);
         
         for (RequestItem item : items) {
-            // Add to destination warehouse
+            Long locationId = itemLocationMap.get(item.getProductId());
+            if (locationId == null) {
+                return false; // Every item must have a destination location
+            }
+            
+            // Verify destination location belongs to destination warehouse
+            Location location = locationDAO.findById(locationId);
+            if (location == null || !request.getDestinationWarehouseId().equals(location.getWarehouseId())) {
+                return false;
+            }
+            
+            int qtyToReceive = item.getQuantity();
+            
+            // Add to destination warehouse at specified location
             boolean success = inventoryDAO.increaseQuantity(
                 item.getProductId(),
                 request.getDestinationWarehouseId(),
-                destinationLocationId,
-                item.getQuantity()
+                locationId,
+                qtyToReceive
             );
             
             if (!success) {
                 return false;
             }
+            
+            // Update received quantity on item
+            requestItemDAO.updateReceivedQuantity(
+                item.getRequestId(), item.getProductId(), qtyToReceive);
         }
         
         // Complete the transfer

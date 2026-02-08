@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.net.URLEncoder" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="currentUser" value="${sessionScope.user}" />
 
@@ -80,7 +82,7 @@
                                             <option value="">Select Source Warehouse</option>
                                             <c:forEach var="wh" items="${warehouses}">
                                                 <option value="${wh.id}" ${selectedSourceWarehouseId == wh.id ? 'selected' : ''}>
-                                                    ${wh.name} (${wh.code})
+                                                    ${wh.name}
                                                 </option>
                                             </c:forEach>
                                         </select>
@@ -117,7 +119,7 @@
                                                     <option value="">Select Destination Warehouse</option>
                                                     <c:forEach var="wh" items="${warehouses}">
                                                         <c:if test="${wh.id != selectedSourceWarehouseId}">
-                                                            <option value="${wh.id}">${wh.name} (${wh.code})</option>
+                                                            <option value="${wh.id}">${wh.name}</option>
                                                         </c:if>
                                                     </c:forEach>
                                                 </select>
@@ -209,7 +211,7 @@
             // Products with inventory
             const products = [
                 <c:forEach var="p" items="${products}" varStatus="status">
-                    {id: ${p.product.id}, name: "${p.product.name}", sku: "${p.product.sku}", available: ${p.totalQuantity}}<c:if test="${!status.last}">,</c:if>
+                {id: ${p.product.id}, name: "<c:out value='${p.product.name}'/>", sku: "<c:out value='${p.product.sku}'/>", available: ${p.totalQuantity}}<c:if test="${!status.last}">,</c:if>
                 </c:forEach>
             ];
             
@@ -219,36 +221,101 @@
                 submitBtn.disabled = items.length === 0;
             }
             
+            function getSelectedProductIds() {
+                const selectedIds = [];
+                itemsContainer.querySelectorAll('.product-select').forEach(select => {
+                    if (select.value) {
+                        selectedIds.push(parseInt(select.value));
+                    }
+                });
+                return selectedIds;
+            }
+            
+            function updateAllDropdowns() {
+                const selectedIds = getSelectedProductIds();
+                itemsContainer.querySelectorAll('.product-select').forEach(select => {
+                    const currentValue = select.value;
+                    Array.from(select.options).forEach(option => {
+                        if (option.value && option.value !== currentValue) {
+                            option.disabled = selectedIds.includes(parseInt(option.value));
+                        }
+                    });
+                });
+            }
+            
             function addItemRow() {
                 const row = document.createElement('div');
                 row.className = 'item-row row mb-3 align-items-end';
-                row.innerHTML = `
-                    <div class="col-md-5">
-                        <label class="form-label">Product <span class="text-danger">*</span></label>
-                        <select name="productId[]" class="form-select product-select" required>
-                            <option value="">Select Product</option>
-                            ${products.map(p => `<option value="${p.id}" data-available="${p.available}">${p.name} (${p.sku}) - Available: ${p.available}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Quantity <span class="text-danger">*</span></label>
-                        <input type="number" name="quantity[]" class="form-control quantity-input" min="1" value="1" required>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Available</label>
-                        <input type="text" class="form-control available-display" readonly value="-">
-                    </div>
-                    <div class="col-md-2">
-                        <button type="button" class="btn btn-outline-danger remove-item-btn" aria-label="Remove item">
-                            <i class="bx bx-trash" aria-hidden="true"></i>
-                        </button>
-                    </div>
+                
+                // Get already selected product IDs
+                const selectedIds = getSelectedProductIds();
+                
+                // Create product column
+                const colProduct = document.createElement('div');
+                colProduct.className = 'col-md-5';
+                const labelProduct = document.createElement('label');
+                labelProduct.className = 'form-label';
+                labelProduct.innerHTML = 'Product <span class="text-danger">*</span>';
+                const select = document.createElement('select');
+                select.name = 'productId[]';
+                select.className = 'form-select product-select';
+                select.required = true;
+                
+                // Add default option
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = 'Select Product';
+                select.appendChild(defaultOption);
+                
+                // Add product options (disable already selected ones)
+                products.forEach(p => {
+                    const option = document.createElement('option');
+                    option.value = p.id;
+                    option.setAttribute('data-available', p.available);
+                    option.textContent = p.name + ' (' + p.sku + ') - Available: ' + p.available;
+                    option.disabled = selectedIds.includes(p.id);
+                    select.appendChild(option);
+                });
+                
+                colProduct.appendChild(labelProduct);
+                colProduct.appendChild(select);
+                
+                // Create quantity column
+                const colQty = document.createElement('div');
+                colQty.className = 'col-md-3';
+                colQty.innerHTML = `
+                    <label class="form-label">Quantity <span class="text-danger">*</span></label>
+                    <input type="number" name="quantity[]" class="form-control quantity-input" min="1" value="1" required>
                 `;
+                
+                // Create available column
+                const colAvail = document.createElement('div');
+                colAvail.className = 'col-md-2';
+                colAvail.innerHTML = `
+                    <label class="form-label">Available</label>
+                    <input type="text" class="form-control available-display" readonly value="-">
+                `;
+                
+                // Create button column
+                const colBtn = document.createElement('div');
+                colBtn.className = 'col-md-2';
+                colBtn.innerHTML = `
+                    <label class="form-label d-block">&nbsp;</label>
+                    <button type="button" class="btn btn-outline-danger w-100 remove-item-btn">
+                        <i class="bx bx-trash"></i>
+                    </button>
+                `;
+                
+                row.appendChild(colProduct);
+                row.appendChild(colQty);
+                row.appendChild(colAvail);
+                row.appendChild(colBtn);
                 
                 // Add event listeners
                 row.querySelector('.remove-item-btn').addEventListener('click', function() {
                     row.remove();
                     updateUI();
+                    updateAllDropdowns();
                 });
                 
                 row.querySelector('.product-select').addEventListener('change', function() {
@@ -260,6 +327,8 @@
                     if (available !== '-') {
                         qtyInput.max = available;
                     }
+                    
+                    updateAllDropdowns();
                 });
                 
                 itemsContainer.appendChild(row);

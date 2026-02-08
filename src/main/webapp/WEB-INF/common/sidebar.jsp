@@ -252,6 +252,30 @@
             </ul>
         </li>
 
+        <!-- Inter-Warehouse Transfer -->
+        <c:if test="${not empty currentUser and (currentUser.role == 'Admin' or currentUser.role == 'Manager' or currentUser.role == 'Staff')}">
+            <li class="menu-item ${param.activeMenu == 'transfers' ? 'active open' : ''}">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-shuffle"></i>
+                    <div class="text-truncate">Transfers</div>
+                </a>
+                <ul class="menu-sub">
+                    <li class="menu-item ${param.activeSubMenu == 'transfer-list' ? 'active' : ''}">
+                        <a href="${contextPath}/transfer?action=list" class="menu-link">
+                            <div class="text-truncate">Transfer List</div>
+                        </a>
+                    </li>
+                    <c:if test="${currentUser.role == 'Admin' or currentUser.role == 'Manager'}">
+                        <li class="menu-item ${param.activeSubMenu == 'transfer-create' ? 'active' : ''}">
+                            <a href="${contextPath}/transfer?action=create" class="menu-link">
+                                <div class="text-truncate">Create Transfer</div>
+                            </a>
+                        </li>
+                    </c:if>
+                </ul>
+            </li>
+        </c:if>
+
         <!-- Sales -->
         <c:if test="${currentUser.role == 'Admin' || currentUser.role == 'Manager' || currentUser.role == 'Sales'}">
             <li class="menu-header small text-uppercase">

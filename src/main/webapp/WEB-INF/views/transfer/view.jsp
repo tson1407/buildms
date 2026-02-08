@@ -3,7 +3,6 @@
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="currentUser" value="${sessionScope.user}" />
-<c:set var="transfer" value="${request}" />
 
 <!DOCTYPE html>
 <html lang="en" class="layout-menu-fixed layout-compact" 
@@ -45,7 +44,7 @@
                                 <li class="breadcrumb-item">
                                     <a href="${contextPath}/transfer">Transfers</a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">${transfer.requestNumber}</li>
+                                <li class="breadcrumb-item active" aria-current="page">#${transfer.id}</li>
                             </ol>
                         </nav>
                         
@@ -56,7 +55,7 @@
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <div>
                                 <h4 class="mb-1">
-                                    <i class="bx bx-transfer me-2"></i>Transfer: ${transfer.requestNumber}
+                                    <i class="bx bx-transfer me-2"></i>Transfer #${transfer.id}
                                 </h4>
                                 <span class="badge 
                                     <c:choose>
@@ -129,8 +128,8 @@
                                     <div class="card-body">
                                         <table class="table table-borderless mb-0">
                                             <tr>
-                                                <th class="ps-0" width="40%">Request Number:</th>
-                                                <td><strong>${transfer.requestNumber}</strong></td>
+                                                <th class="ps-0" width="40%">Request ID:</th>
+                                                <td><strong>#${transfer.id}</strong></td>
                                             </tr>
                                             <tr>
                                                 <th class="ps-0">Type:</th>
@@ -155,12 +154,15 @@
                                             </tr>
                                             <tr>
                                                 <th class="ps-0">Created By:</th>
-                                                <td>${createdByUser.fullName}</td>
+                                                <td>${creator.fullName}</td>
                                             </tr>
                                             <tr>
                                                 <th class="ps-0">Created At:</th>
                                                 <td>
-                                                    <fmt:formatDate value="${transfer.createdAt}" pattern="MMM dd, yyyy HH:mm"/>
+                                                    <c:if test="${not empty transfer.createdAt}">
+                                                        <fmt:parseDate value="${transfer.createdAt}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedCreatedAt" type="both" />
+                                                        <fmt:formatDate value="${parsedCreatedAt}" pattern="MMM dd, yyyy HH:mm"/>
+                                                    </c:if>
                                                 </td>
                                             </tr>
                                             <c:if test="${not empty transfer.notes}">
@@ -188,7 +190,7 @@
                                                     <h6 class="text-muted mb-1">Source</h6>
                                                     <strong>${sourceWarehouse.name}</strong>
                                                     <br>
-                                                    <small class="text-muted">${sourceWarehouse.code}</small>
+                                                    <small class="text-muted">${sourceWarehouse.location}</small>
                                                 </div>
                                             </div>
                                             <div class="col-2 d-flex align-items-center justify-content-center">
@@ -200,7 +202,7 @@
                                                     <h6 class="text-muted mb-1">Destination</h6>
                                                     <strong>${destinationWarehouse.name}</strong>
                                                     <br>
-                                                    <small class="text-muted">${destinationWarehouse.code}</small>
+                                                    <small class="text-muted">${destinationWarehouse.location}</small>
                                                 </div>
                                             </div>
                                         </div>
@@ -231,40 +233,40 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <c:forEach var="item" items="${requestItems}" varStatus="status">
+                                        <c:forEach var="data" items="${items}" varStatus="status">
                                             <tr>
                                                 <td>${status.index + 1}</td>
                                                 <td>
                                                     <c:choose>
-                                                        <c:when test="${not empty item.product}">
-                                                            ${item.product.name}
+                                                        <c:when test="${not empty data.product}">
+                                                            ${data.product.name}
                                                         </c:when>
                                                         <c:otherwise>
-                                                            Product #${item.productId}
+                                                            Product #${data.item.productId}
                                                         </c:otherwise>
                                                     </c:choose>
                                                 </td>
                                                 <td>
-                                                    <c:if test="${not empty item.product}">
-                                                        <code>${item.product.sku}</code>
+                                                    <c:if test="${not empty data.product}">
+                                                        <code>${data.product.sku}</code>
                                                     </c:if>
                                                 </td>
                                                 <td class="text-center">
-                                                    <span class="badge bg-label-primary">${item.quantity}</span>
+                                                    <span class="badge bg-label-primary">${data.item.quantity}</span>
                                                 </td>
                                                 <c:if test="${transfer.status == 'InProgress' || transfer.status == 'InTransit' || transfer.status == 'Receiving' || transfer.status == 'Completed'}">
                                                     <td class="text-center">
-                                                        <span class="badge bg-label-info">${item.pickedQuantity != null ? item.pickedQuantity : 0}</span>
+                                                        <span class="badge bg-label-info">${data.item.pickedQuantity != null ? data.item.pickedQuantity : 0}</span>
                                                     </td>
                                                 </c:if>
                                                 <c:if test="${transfer.status == 'Receiving' || transfer.status == 'Completed'}">
                                                     <td class="text-center">
-                                                        <span class="badge bg-label-success">${item.receivedQuantity != null ? item.receivedQuantity : 0}</span>
+                                                        <span class="badge bg-label-success">${data.item.receivedQuantity != null ? data.item.receivedQuantity : 0}</span>
                                                     </td>
                                                 </c:if>
                                             </tr>
                                         </c:forEach>
-                                        <c:if test="${empty requestItems}">
+                                        <c:if test="${empty items}">
                                             <tr>
                                                 <td colspan="6" class="text-center text-muted py-4">
                                                     No items in this transfer.
@@ -276,31 +278,14 @@
                             </div>
                         </div>
                         
-                        <!-- Status Timeline -->
-                        <c:if test="${not empty statusHistory}">
+                        <!-- Rejection Info -->
+                        <c:if test="${transfer.status == 'Rejected' && not empty transfer.rejectionReason}">
                             <div class="card mt-4">
-                                <div class="card-header">
-                                    <h5 class="mb-0"><i class="bx bx-history me-2"></i>Status History</h5>
+                                <div class="card-header bg-danger text-white">
+                                    <h5 class="mb-0"><i class="bx bx-x-circle me-2"></i>Rejection Details</h5>
                                 </div>
                                 <div class="card-body">
-                                    <ul class="timeline">
-                                        <c:forEach var="history" items="${statusHistory}">
-                                            <li class="timeline-item">
-                                                <span class="timeline-point"></span>
-                                                <div class="timeline-event">
-                                                    <div class="timeline-header">
-                                                        <h6 class="mb-0">${history.status}</h6>
-                                                        <small class="text-muted">
-                                                            <fmt:formatDate value="${history.changedAt}" pattern="MMM dd, yyyy HH:mm"/>
-                                                        </small>
-                                                    </div>
-                                                    <c:if test="${not empty history.notes}">
-                                                        <p class="mb-0">${history.notes}</p>
-                                                    </c:if>
-                                                </div>
-                                            </li>
-                                        </c:forEach>
-                                    </ul>
+                                    <p class="mb-0"><strong>Reason:</strong> ${transfer.rejectionReason}</p>
                                 </div>
                             </div>
                         </c:if>
