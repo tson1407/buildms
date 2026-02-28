@@ -84,7 +84,7 @@
                                         <input type="hidden" name="action" value="create" />
                                         
                                         <c:choose>
-                                            <c:when test="${isStaff}">
+                                            <c:when test="${isWarehouseScoped}">
                                                 <p class="text-muted">You will be creating a movement in your assigned warehouse.</p>
                                                 <button type="submit" class="btn btn-primary">
                                                     <i class="bx bx-right-arrow-alt me-1"></i>Continue
@@ -128,7 +128,7 @@
                                                     <i class="bx bx-building-house me-1"></i>${selectedWarehouse.name}
                                                 </strong>
                                             </div>
-                                            <c:if test="${not isStaff}">
+                                            <c:if test="${not isWarehouseScoped}">
                                                 <a href="${contextPath}/movement?action=create" class="btn btn-sm btn-outline-secondary">
                                                     <i class="bx bx-edit me-1"></i>Change Warehouse
                                                 </a>

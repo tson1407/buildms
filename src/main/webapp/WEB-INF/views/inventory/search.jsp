@@ -85,7 +85,7 @@
                                         <div class="col-md-6">
                                             <label class="form-label">Warehouse</label>
                                             <c:choose>
-                                                <c:when test="${isStaff}">
+                                                <c:when test="${isWarehouseScoped}">
                                                     <c:forEach var="wh" items="${warehouses}">
                                                         <c:if test="${wh.id == selectedWarehouseId}">
                                                             <input type="text" class="form-control" 

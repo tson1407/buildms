@@ -205,6 +205,11 @@ public class UserService {
             throw new IllegalArgumentException("Invalid role. Must be Admin, Manager, Staff, or Sales");
         }
         
+        // Manager and Staff must have warehouse assignment
+        if (("Manager".equals(user.getRole()) || "Staff".equals(user.getRole())) && user.getWarehouseId() == null) {
+            throw new IllegalArgumentException("Warehouse assignment is required for " + user.getRole() + " role");
+        }
+        
         // Trim values
         user.setUsername(user.getUsername().trim());
         user.setName(user.getName().trim());

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Controller for Inter-Warehouse Transfer Management
@@ -106,12 +107,23 @@ public class TransferController extends HttpServlet {
     private void listTransfers(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String status = request.getParameter("status");
+        HttpSession session = request.getSession(false);
+        User currentUser = (User) session.getAttribute("user");
         
         List<Request> transfers;
         if (status != null && !status.isEmpty()) {
             transfers = transferService.getTransferRequestsByStatus(status);
         } else {
             transfers = transferService.getAllTransferRequests();
+        }
+        
+        // Manager: filter to only show transfers related to their warehouse
+        if ("Manager".equals(currentUser.getRole()) && currentUser.getWarehouseId() != null) {
+            Long managerWarehouseId = currentUser.getWarehouseId();
+            transfers = transfers.stream()
+                .filter(t -> managerWarehouseId.equals(t.getSourceWarehouseId()) 
+                          || managerWarehouseId.equals(t.getDestinationWarehouseId()))
+                .collect(Collectors.toList());
         }
         
         // Enrich with warehouse info
@@ -156,8 +168,25 @@ public class TransferController extends HttpServlet {
         List<Warehouse> warehouses = transferService.getAllWarehouses();
         request.setAttribute("warehouses", warehouses);
         
+        // Manager: pre-select and lock source warehouse to their assigned warehouse
+        boolean isManager = "Manager".equals(currentUser.getRole());
+        if (isManager) {
+            Long managerWarehouseId = currentUser.getWarehouseId();
+            if (managerWarehouseId == null) {
+                request.setAttribute("errorMessage", "You are not assigned to any warehouse.");
+                listTransfers(request, response);
+                return;
+            }
+            request.setAttribute("lockedSourceWarehouseId", managerWarehouseId);
+        }
+        request.setAttribute("isManager", isManager);
+        
         // If source warehouse selected, load products
         String sourceWarehouseIdStr = request.getParameter("sourceWarehouseId");
+        // For Manager, auto-select their assigned warehouse if not already in params
+        if (isManager && (sourceWarehouseIdStr == null || sourceWarehouseIdStr.isEmpty())) {
+            sourceWarehouseIdStr = String.valueOf(currentUser.getWarehouseId());
+        }
         if (sourceWarehouseIdStr != null && !sourceWarehouseIdStr.isEmpty()) {
             Long sourceWarehouseId = Long.parseLong(sourceWarehouseIdStr);
             List<Map<String, Object>> products = 
@@ -189,6 +218,16 @@ public class TransferController extends HttpServlet {
             Long sourceWarehouseId = Long.parseLong(request.getParameter("sourceWarehouseId"));
             Long destinationWarehouseId = Long.parseLong(request.getParameter("destinationWarehouseId"));
             String notes = request.getParameter("notes");
+            
+            // Manager can only use their assigned warehouse as source
+            if ("Manager".equals(currentUser.getRole())) {
+                Long managerWarehouseId = currentUser.getWarehouseId();
+                if (managerWarehouseId == null || !managerWarehouseId.equals(sourceWarehouseId)) {
+                    request.setAttribute("errorMessage", "You can only create transfer requests from your assigned warehouse.");
+                    showCreateForm(request, response);
+                    return;
+                }
+            }
             
             // Validate different warehouses
             if (sourceWarehouseId.equals(destinationWarehouseId)) {
@@ -256,6 +295,20 @@ public class TransferController extends HttpServlet {
                 return;
             }
             
+            // Manager can only view transfers related to their warehouse
+            HttpSession session = request.getSession(false);
+            User currentUser = (User) session.getAttribute("user");
+            if ("Manager".equals(currentUser.getRole())) {
+                Long managerWarehouseId = currentUser.getWarehouseId();
+                if (managerWarehouseId == null
+                        || (!managerWarehouseId.equals(transfer.getSourceWarehouseId())
+                            && !managerWarehouseId.equals(transfer.getDestinationWarehouseId()))) {
+                    request.setAttribute("errorMessage", "You don't have permission to view this transfer.");
+                    listTransfers(request, response);
+                    return;
+                }
+            }
+            
             Warehouse source = transferService.getWarehouseById(transfer.getSourceWarehouseId());
             Warehouse dest = transferService.getWarehouseById(transfer.getDestinationWarehouseId());
             User creator = transferService.getUserById(transfer.getCreatedBy());
@@ -299,6 +352,19 @@ public class TransferController extends HttpServlet {
         try {
             Long requestId = Long.parseLong(request.getParameter("id"));
             
+            // Manager can only approve transfers related to their warehouse
+            if ("Manager".equals(currentUser.getRole())) {
+                Request transfer = transferService.getTransferRequestById(requestId);
+                Long managerWarehouseId = currentUser.getWarehouseId();
+                if (transfer == null || managerWarehouseId == null
+                        || (!managerWarehouseId.equals(transfer.getSourceWarehouseId())
+                            && !managerWarehouseId.equals(transfer.getDestinationWarehouseId()))) {
+                    request.setAttribute("errorMessage", "You don't have permission to approve this transfer.");
+                    listTransfers(request, response);
+                    return;
+                }
+            }
+            
             boolean success = transferService.approveTransfer(requestId, currentUser.getId());
             
             if (success) {
@@ -338,6 +404,19 @@ public class TransferController extends HttpServlet {
                 request.setAttribute("errorMessage", "Rejection reason is required");
                 viewTransfer(request, response);
                 return;
+            }
+            
+            // Manager can only reject transfers related to their warehouse
+            if ("Manager".equals(currentUser.getRole())) {
+                Request transfer = transferService.getTransferRequestById(requestId);
+                Long managerWarehouseId = currentUser.getWarehouseId();
+                if (transfer == null || managerWarehouseId == null
+                        || (!managerWarehouseId.equals(transfer.getSourceWarehouseId())
+                            && !managerWarehouseId.equals(transfer.getDestinationWarehouseId()))) {
+                    request.setAttribute("errorMessage", "You don't have permission to reject this transfer.");
+                    listTransfers(request, response);
+                    return;
+                }
             }
             
             boolean success = transferService.rejectTransfer(requestId, currentUser.getId(), reason);

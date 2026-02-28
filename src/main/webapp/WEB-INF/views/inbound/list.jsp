@@ -105,14 +105,27 @@
                                     
                                     <!-- Filter by Warehouse -->
                                     <div class="col-md-4">
-                                        <select class="form-select" name="warehouseId">
-                                            <option value="">All Warehouses</option>
-                                            <c:forEach var="wh" items="${warehouses}">
-                                                <option value="${wh.id}" ${selectedWarehouseId == wh.id ? 'selected' : ''}>
-                                                    ${wh.name}
-                                                </option>
-                                            </c:forEach>
-                                        </select>
+                                        <c:choose>
+                                            <c:when test="${isManager}">
+                                                <select class="form-select" disabled>
+                                                    <c:forEach var="wh" items="${warehouses}">
+                                                        <c:if test="${wh.id == selectedWarehouseId}">
+                                                            <option selected>${wh.name}</option>
+                                                        </c:if>
+                                                    </c:forEach>
+                                                </select>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <select class="form-select" name="warehouseId">
+                                                    <option value="">All Warehouses</option>
+                                                    <c:forEach var="wh" items="${warehouses}">
+                                                        <option value="${wh.id}" ${selectedWarehouseId == wh.id ? 'selected' : ''}>
+                                                            ${wh.name}
+                                                        </option>
+                                                    </c:forEach>
+                                                </select>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </div>
                                     
                                     <div class="col-md-4">

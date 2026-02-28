@@ -118,19 +118,21 @@ public class MovementController extends HttpServlet {
     }
     
     /**
-     * Check if user is Staff (restricted to assigned warehouse)
+     * Check if user is warehouse-scoped (Staff or Manager — restricted to assigned warehouse)
      */
-    private boolean isStaff(HttpServletRequest request) {
+    private boolean isWarehouseScoped(HttpServletRequest request) {
         User user = getCurrentUser(request);
-        return user != null && "Staff".equals(user.getRole());
+        if (user == null) return false;
+        String role = user.getRole();
+        return "Staff".equals(role) || "Manager".equals(role);
     }
     
     /**
-     * Get Staff's assigned warehouse ID
+     * Get the user's assigned warehouse ID (for Staff and Manager)
      */
-    private Long getStaffWarehouseId(HttpServletRequest request) {
+    private Long getAssignedWarehouseId(HttpServletRequest request) {
         User user = getCurrentUser(request);
-        if (user != null && "Staff".equals(user.getRole())) {
+        if (user != null && ("Staff".equals(user.getRole()) || "Manager".equals(user.getRole()))) {
             return user.getWarehouseId();
         }
         return null;
@@ -152,8 +154,8 @@ public class MovementController extends HttpServlet {
         String warehouseIdStr = request.getParameter("warehouseId");
         
         Long warehouseId = null;
-        if (isStaff(request)) {
-            warehouseId = getStaffWarehouseId(request);
+        if (isWarehouseScoped(request)) {
+            warehouseId = getAssignedWarehouseId(request);
         } else if (warehouseIdStr != null && !warehouseIdStr.trim().isEmpty()) {
             try {
                 warehouseId = Long.parseLong(warehouseIdStr.trim());
@@ -187,7 +189,7 @@ public class MovementController extends HttpServlet {
         request.setAttribute("warehouses", warehouses);
         request.setAttribute("selectedStatus", status);
         request.setAttribute("selectedWarehouseId", warehouseId);
-        request.setAttribute("isStaff", isStaff(request));
+        request.setAttribute("isWarehouseScoped", isWarehouseScoped(request));
         
         request.getRequestDispatcher("/WEB-INF/views/movement/list.jsp").forward(request, response);
     }
@@ -208,8 +210,8 @@ public class MovementController extends HttpServlet {
         Long warehouseId = null;
         String warehouseIdStr = request.getParameter("warehouseId");
         
-        if (isStaff(request)) {
-            warehouseId = getStaffWarehouseId(request);
+        if (isWarehouseScoped(request)) {
+            warehouseId = getAssignedWarehouseId(request);
             if (warehouseId == null) {
                 request.getSession().setAttribute("errorMessage", "You are not assigned to any warehouse.");
                 response.sendRedirect(request.getContextPath() + "/movement");
@@ -226,7 +228,7 @@ public class MovementController extends HttpServlet {
         // Get warehouses for dropdown
         List<Warehouse> warehouses = movementService.getAllWarehouses();
         request.setAttribute("warehouses", warehouses);
-        request.setAttribute("isStaff", isStaff(request));
+        request.setAttribute("isWarehouseScoped", isWarehouseScoped(request));
         
         if (warehouseId != null) {
             Warehouse selectedWarehouse = movementService.getWarehouseById(warehouseId);
@@ -267,8 +269,8 @@ public class MovementController extends HttpServlet {
         // Parse warehouse ID
         Long warehouseId = null;
         String warehouseIdStr = request.getParameter("warehouseId");
-        if (isStaff(request)) {
-            warehouseId = getStaffWarehouseId(request);
+        if (isWarehouseScoped(request)) {
+            warehouseId = getAssignedWarehouseId(request);
         } else if (warehouseIdStr != null && !warehouseIdStr.trim().isEmpty()) {
             try {
                 warehouseId = Long.parseLong(warehouseIdStr.trim());

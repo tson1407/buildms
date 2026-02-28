@@ -74,7 +74,7 @@
                                     <input type="hidden" name="action" value="byWarehouse" />
                                     
                                     <c:choose>
-                                        <c:when test="${isStaff}">
+                                        <c:when test="${isWarehouseScoped}">
                                             <div class="col-md-6">
                                                 <label class="form-label">Warehouse</label>
                                                 <input type="text" class="form-control" 

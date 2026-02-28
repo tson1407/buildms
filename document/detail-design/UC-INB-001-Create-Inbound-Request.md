@@ -25,12 +25,15 @@
 ### Step 3: Display Creation Form
 - System displays form with fields:
   - Destination Warehouse (dropdown, required)
+    - **If Manager:** Auto-selected to Manager's assigned warehouse (read-only)
+    - **If Admin:** All active warehouses shown
   - Expected Delivery Date (date picker, optional)
   - Notes/Description (text area, optional)
   - Request Items section (add products)
 
 ### Step 4: Select Destination Warehouse
-- Manager selects target warehouse from dropdown
+- **If Manager:** Warehouse is pre-selected and locked to their assigned warehouse
+- **If Admin:** Manager selects target warehouse from dropdown
 - System validates warehouse is active
 
 ### Step 5: Add Request Items
@@ -100,10 +103,12 @@
 ## Business Rules
 | Rule ID | Description |
 |---------|-------------|
-| BR-INB-001 | Only Manager can create inbound requests |
+| BR-INB-001 | Only Admin and Manager can create inbound requests |
 | BR-INB-002 | Request must have at least one item |
 | BR-INB-003 | All quantities must be positive integers |
 | BR-INB-004 | Request is created with status "Created" |
+| BR-INB-005 | Manager can only create inbound requests for their assigned warehouse |
+| BR-INB-006 | Manager can only view/list inbound requests for their assigned warehouse |
 
 ---
 

@@ -1,7 +1,11 @@
 # Smart WMS - Copilot Instructions
 
 ## Project Overview
-Smart WMS is a **Java 21 + Jakarta EE 10** web application for warehouse management. It runs on **Apache Tomcat 10+** with **SQL Server** as the database. This is an academic project demonstrating warehouse operations with role-based access control—no financial processing.
+Smart WMS is a **Java 17 + Jakarta Servlet 6.0** web application for warehouse management. It runs on **Apache Tomcat 10+** with **SQL Server** as the database. This is an academic FPT University SWP project demonstrating warehouse operations with role-based access control—no financial processing.
+
+**Base package:** `vn.edu.fpt.swp`  
+**WAR artifact:** `buildms.war`  
+**All 48 use cases across 13 modules are fully implemented.**
 
 ## Architecture (MVC Layered)
 ```
@@ -15,42 +19,116 @@ Controller (Servlets) → Service → DAO → SQL Server
 - **DAOs** (`dao/`): Direct JDBC operations using `DBConnection.getConnection()`
 - **Models** (`model/`): Plain Java POJOs implementing `Serializable`
 - **Filters** (`filter/`): `AuthFilter` intercepts all requests for auth/authorization
+- **Utilities** (`util/`): `DBConnection` (JDBC helper), `PasswordUtil` (SHA-256 hashing)
 - **Views** (`webapp/WEB-INF/views/`): JSP pages organized by feature, protected under WEB-INF
 - **Common Components** (`webapp/WEB-INF/common/`): Shared layout components (header, footer, sidebar, etc.)
+
+## Source Code Inventory
+
+### Models (`model/`)
+| Model | Key Fields | Notes |
+|-------|-----------|-------|
+| `User` | id, username, name, email, passwordHash, role, status, warehouseId, createdAt, lastLogin | Has `getFullName()`/`setFullName()` aliases for `name` |
+| `Product` | id, sku, name, unit, categoryId, isActive, createdAt | |
+| `Category` | id, name, description | |
+| `Warehouse` | id, name, location, createdAt | |
+| `Location` | id, warehouseId, code, type (Storage/Picking/Staging), isActive | |
+| `Inventory` | productId, warehouseId, locationId, quantity | Composite PK: (productId, warehouseId, locationId) |
+| `Customer` | id, code, name, contactInfo, status | |
+| `Request` | id, type, status, createdBy, approvedBy, rejectedBy, completedBy, salesOrderId, sourceWarehouseId, destinationWarehouseId, expectedDate, notes, reason, createdAt | Shared by Inbound/Outbound/Transfer/Internal |
+| `RequestItem` | requestId, productId, quantity, locationId, sourceLocationId, destinationLocationId, receivedQuantity, pickedQuantity | Composite PK: (requestId, productId) |
+| `SalesOrder` | id, orderNo, customerId, status, createdBy, confirmedBy, cancelledBy, cancellationReason, createdAt | |
+| `SalesOrderItem` | salesOrderId, productId, quantity | Composite PK: (salesOrderId, productId) |
+
+### DAOs (`dao/`)
+`CategoryDAO`, `CustomerDAO`, `InventoryDAO`, `LocationDAO`, `ProductDAO`, `RequestDAO`, `RequestItemDAO`, `SalesOrderDAO`, `SalesOrderItemDAO`, `UserDAO`, `WarehouseDAO`
+
+### Services (`service/`)
+`AuthService`, `CategoryService`, `CustomerService`, `InboundService`, `InventoryService`, `LocationService`, `MovementService`, `OutboundService`, `ProductService`, `SalesOrderService`, `TransferService`, `UserService`, `WarehouseService`
+
+### Controllers (`controller/`) — Servlet URL Mappings
+| Controller | URL | Modules |
+|-----------|-----|---------|
+| `AuthController` | `/auth` | Login, Logout, Change Password |
+| `DashboardController` | `/dashboard` | Main dashboard |
+| `ProductController` | `/product` | CRUD + toggle status + details |
+| `CategoryController` | `/category` | CRUD + delete |
+| `WarehouseController` | `/warehouse` | CRUD |
+| `LocationController` | `/location` | CRUD + toggle status |
+| `UserController` | `/user` | CRUD + toggle status + assign warehouse |
+| `CustomerController` | `/customer` | CRUD + toggle status |
+| `InboundController` | `/inbound` | Create, Approve/Reject, Execute |
+| `OutboundController` | `/outbound` | Create internal, Approve/Reject, Execute |
+| `MovementController` | `/movement` | Create, Execute |
+| `TransferController` | `/transfer` | Create, Approve/Reject, Execute outbound, Execute inbound |
+| `SalesOrderController` | `/sales-order` | Create, Confirm, Generate outbound, Cancel |
+| `InventoryController` | `/inventory` | View by warehouse, by product, search |
 
 ## View Layer Structure
 ```
 webapp/
-├── index.jsp                    # Entry point - redirects to login or dashboard
-├── assets/                      # Static assets (CSS, JS, images, fonts)
+├── index.jsp                    # Entry point — redirects to login or dashboard
+├── assets/                      # Static assets (CSS, JS, images, vendor libs)
+├── dist/                        # Distribution files
+├── fonts/                       # Font files
+├── js/                          # Application JavaScript
+├── libs/                        # Third-party libraries
 └── WEB-INF/
-    ├── web.xml                  # Jakarta EE 10 configuration
+    ├── web.xml                  # Jakarta Servlet 6.0 configuration
     ├── common/                  # Reusable layout components
-    │   ├── head.jsp             # HTML head (meta, CSS, fonts)
-    │   ├── sidebar.jsp          # Left navigation menu (role-based)
+    │   ├── head.jsp             # HTML head (meta, CSS, fonts) — param: pageTitle, pageCss
+    │   ├── sidebar.jsp          # Left navigation menu (role-based) — params: activeMenu, activeSubMenu
     │   ├── navbar.jsp           # Top navigation bar with user dropdown
     │   ├── footer.jsp           # Page footer
-    │   ├── scripts.jsp          # Common JavaScript includes
-    │   ├── alerts.jsp           # Alert messages component
+    │   ├── scripts.jsp          # Common JS includes — param: pageScript
+    │   ├── alerts.jsp           # Alert messages component (success/error/warning/info)
+    │   ├── layout.jsp           # Full-page layout template — params: pageTitle, activeMenu, activeSubMenu, contentPage, pageCss, pageScript
     │   ├── pagination.jsp       # Pagination component
     │   └── delete-modal.jsp     # Delete confirmation modal
     └── views/
-        ├── auth/                # Authentication pages (login, register)
+        ├── auth/                # login.jsp, register.jsp, change-password.jsp
         ├── dashboard.jsp        # Main dashboard
-        ├── product/             # Product management
-        ├── category/            # Category management
-        ├── inventory/           # Inventory views
-        ├── error/               # Error pages (404, 403, 500, etc.)
-        └── [feature]/           # Other feature modules
+        ├── product/             # list.jsp, add.jsp, edit.jsp, details.jsp
+        ├── category/            # list.jsp, add.jsp, edit.jsp
+        ├── warehouse/           # list.jsp, add.jsp, edit.jsp
+        ├── location/            # list.jsp, add.jsp, edit.jsp
+        ├── user/                # list.jsp, add.jsp, edit.jsp
+        ├── customer/            # list.jsp, add.jsp, edit.jsp
+        ├── inventory/           # by-warehouse.jsp, by-product.jsp, search.jsp
+        ├── inbound/             # list.jsp, create.jsp, details.jsp, execute.jsp
+        ├── outbound/            # list.jsp, create.jsp, details.jsp, execute.jsp
+        ├── movement/            # list.jsp, create.jsp, details.jsp, execute.jsp
+        ├── transfer/            # list.jsp, create.jsp, view.jsp, execute-outbound.jsp, execute-inbound.jsp
+        ├── sales-order/         # list.jsp, create.jsp, view.jsp, generate-outbound.jsp, cancel.jsp
+        └── error/               # 403.jsp, 404.jsp, 500.jsp, maintenance.jsp, session-expired.jsp
 ```
+
+## Database Schema (SQL Server)
+
+### Tables
+| Table | PK | Key Columns |
+|-------|-----|-------------|
+| `Users` | Id (BIGINT IDENTITY) | Username (UNIQUE), Email (UNIQUE), Role, Status, WarehouseId (nullable FK) |
+| `Warehouses` | Id (BIGINT IDENTITY) | Name, Location |
+| `Categories` | Id (BIGINT IDENTITY) | Name, Description |
+| `Products` | Id (BIGINT IDENTITY) | SKU (UNIQUE), Name, Unit, CategoryId (FK), IsActive |
+| `Locations` | Id (BIGINT IDENTITY) | WarehouseId (FK), Code, Type, IsActive |
+| `Inventory` | (ProductId, WarehouseId, LocationId) | Quantity — composite PK with 3 FKs |
+| `Requests` | Id (BIGINT IDENTITY) | Type, Status, CreatedBy (FK), Source/DestWarehouseId, SalesOrderId |
+| `RequestItems` | (RequestId, ProductId) | Quantity, LocationId, Source/DestLocationId, ReceivedQuantity, PickedQuantity |
+| `Customers` | Id (BIGINT IDENTITY) | Code (UNIQUE), Name, ContactInfo, Status |
+| `SalesOrders` | Id (BIGINT IDENTITY) | OrderNo (UNIQUE), CustomerId (FK), Status, CreatedBy (FK) |
+| `SalesOrderItems` | (SalesOrderId, ProductId) | Quantity |
 
 ## Key Patterns & Conventions
 
 ### Servlet Controllers
-- Use `@WebServlet("/path")` annotation (no web.xml mapping)
-- Route via `action` parameter: `?action=login`, `?action=register`
-- Initialize services in `init()` method
-- Forward to JSP in WEB-INF: `request.getRequestDispatcher("/WEB-INF/views/feature/page.jsp").forward(request, response)`
+- Use `@WebServlet("/path")` annotation (no web.xml mapping needed)
+- Route via `action` parameter: `?action=list`, `?action=add`, `?action=edit`
+- Initialize services in `init()` method: `service = new XxxService();`
+- Forward to JSP: `request.getRequestDispatcher("/WEB-INF/views/feature/page.jsp").forward(request, response)`
+- Redirect after POST: `response.sendRedirect(request.getContextPath() + "/path?action=list")`
+- Check role in controllers via helper methods like `hasManageAccess()`, `isAdmin()`
 
 ### DAO Pattern
 ```java
@@ -58,24 +136,49 @@ try (Connection conn = DBConnection.getConnection();
      PreparedStatement stmt = conn.prepareStatement(sql)) {
     // Always use try-with-resources
     // Use PreparedStatement for SQL injection prevention
+    // Use Statement.RETURN_GENERATED_KEYS for inserts
+    // Use Types.BIGINT / Types.TIMESTAMP for nullable parameters
 }
 ```
+
+### Service Pattern
+- Services instantiate DAOs in constructor: `this.dao = new XxxDAO();`
+- Validate inputs before calling DAO (null checks, empty strings, ID ranges)
+- Return `null` or `false` on failure, caller checks result
+- No exceptions thrown to controllers — fail gracefully
 
 ### Password Security
 - Use `PasswordUtil.hashPassword(password)` for hashing (SHA-256 + salt)
 - Use `PasswordUtil.verifyPassword(password, storedHash)` for verification
-- Hash format: `salt:hash` (both Base64 encoded)
+- Hash format: `salt:hash` (both Base64 encoded, 16-byte salt)
 
 ### Role-Based Access Control
 Roles: `Admin`, `Manager`, `Staff`, `Sales`
-- Authorization enforced by `AuthFilter` using `ROLE_ACCESS_MAP`
-- Check role in controllers: `((User) session.getAttribute("user")).getRole()`
-- Public URLs bypass auth: `/auth`, `/assets`, `/css`, `/js`, `/libs`
+
+| URL Pattern | Allowed Roles |
+|-------------|--------------|
+| `/user`, `/users` | Admin |
+| `/warehouse`, `/location` | Admin, Manager |
+| `/category/add`, `/category/edit`, `/category/delete` | Admin, Manager |
+| `/product/add`, `/product/edit`, `/product/toggle` | Admin, Manager |
+| `/inbound`, `/outbound`, `/transfer`, `/movement`, `/inventory` | Admin, Manager, Staff |
+| `/sales-order`, `/customer` | Admin, Manager, Sales |
+| `/dashboard`, `/profile`, `/product`, `/category` | All authenticated |
+
+- Authorization enforced by `AuthFilter` (`@WebFilter("/*")`) using `ROLE_ACCESS_MAP`
+- Public URLs bypass auth: `/auth`, `/assets`, `/css`, `/js`, `/images`, `/libs`, `/fonts`, static file extensions
+- If no specific rule found, all authenticated users are allowed
 
 ### Session Management
-- 30-minute timeout configured in `web.xml`
-- Session attributes: `user` (User object), `userId`, `role`
+- 30-minute inactivity timeout — enforced both in `web.xml` and `AuthFilter`
+- `AuthFilter` tracks `lastActivityTime` attribute and invalidates expired sessions
+- Session cookie: `HttpOnly=true`, `Secure=false`, cookie-based tracking
+- Key session attributes:
+  - `user` — full `User` object
+  - `lastActivityTime` — `Long` timestamp updated on each request
+  - `successMessage` — flash message (consumed and removed after display)
 - Get session: `request.getSession(false)` (returns null if none exists)
+- Expired sessions redirect to login with `?expired=true`
 
 ### JSP Views (JSTL + EL Only)
 **CRITICAL: NO SCRIPTLETS ALLOWED**
@@ -84,16 +187,17 @@ Roles: `Admin`, `Manager`, `Staff`, `Sales`
 - Always include JSTL core taglib: `<%@ taglib prefix="c" uri="jakarta.tags.core" %>`
 
 ### Using Common Layout Components
-All pages with sidebar/navbar must include the common components:
 
+**Option A: Manual Include (used by most pages)**
 ```jsp
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 
 <!DOCTYPE html>
-<html lang="en" class="layout-menu-fixed layout-compact" 
-      data-assets-path="${contextPath}/assets/">
+<html lang="en" class="layout-menu-fixed layout-compact"
+      data-assets-path="${contextPath}/assets/"
+      data-template="vertical-menu-template-free">
 <head>
     <jsp:include page="/WEB-INF/common/head.jsp">
         <jsp:param name="pageTitle" value="Page Title" />
@@ -102,24 +206,20 @@ All pages with sidebar/navbar must include the common components:
 <body>
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
-            
-            <!-- Sidebar with active menu -->
+
             <jsp:include page="/WEB-INF/common/sidebar.jsp">
                 <jsp:param name="activeMenu" value="products" />
                 <jsp:param name="activeSubMenu" value="product-list" />
             </jsp:include>
-            
+
             <div class="layout-page">
                 <jsp:include page="/WEB-INF/common/navbar.jsp" />
-                
+
                 <div class="content-wrapper">
                     <div class="container-xxl flex-grow-1 container-p-y">
-                        <!-- Include alerts -->
                         <jsp:include page="/WEB-INF/common/alerts.jsp" />
-                        
                         <!-- Page content here -->
                     </div>
-                    
                     <jsp:include page="/WEB-INF/common/footer.jsp" />
                     <div class="content-backdrop fade"></div>
                 </div>
@@ -127,22 +227,31 @@ All pages with sidebar/navbar must include the common components:
         </div>
         <div class="layout-overlay layout-menu-toggle"></div>
     </div>
-    
+
     <jsp:include page="/WEB-INF/common/scripts.jsp" />
 </body>
 </html>
 ```
 
+**Option B: Layout template (`layout.jsp`)**
+`layout.jsp` wraps common structure and includes a `contentPage` parameter. It also auto-renders alert messages and breadcrumbs.
+
 ### Alert Messages
 Set these request attributes in servlets to show alerts:
-- `successMessage` - Green success alert
-- `errorMessage` - Red error alert
-- `warningMessage` - Yellow warning alert
-- `infoMessage` - Blue info alert
+- `successMessage` — Green success alert
+- `errorMessage` — Red error alert
+- `warningMessage` — Yellow warning alert
+- `infoMessage` — Blue info alert
 
 ```java
 request.setAttribute("successMessage", "Product created successfully!");
 request.getRequestDispatcher("/WEB-INF/views/product/list.jsp").forward(request, response);
+```
+
+For flash messages across redirects, store in session then consume:
+```java
+session.setAttribute("successMessage", "Logged in successfully!");
+// In DashboardController, move from session to request then remove from session
 ```
 
 **Common JSTL Patterns:**
@@ -166,7 +275,7 @@ request.getRequestDispatcher("/WEB-INF/views/product/list.jsp").forward(request,
 <!-- URL construction -->
 <c:url var="deleteUrl" value="/category">
     <c:param name="action" value="delete"/>
-    <c:param name="id" value="${category.categoryId}"/>
+    <c:param name="id" value="${category.id}"/>
 </c:url>
 
 <!-- Set variables -->
@@ -176,11 +285,10 @@ request.getRequestDispatcher("/WEB-INF/views/product/list.jsp").forward(request,
 **EL Expression Examples:**
 ```jsp
 ${user.username}                    <!-- Property access -->
-${product.price * quantity}         <!-- Arithmetic -->
-${status == 'Active'}              <!-- Comparison -->
-${not empty errorMessage}          <!-- Logical operators -->
 ${sessionScope.user.role}          <!-- Scope specification -->
+${not empty errorMessage}          <!-- Logical operators -->
 ${param.action}                    <!-- Request parameters -->
+${product.active ? 'Active' : 'Inactive'}  <!-- Ternary -->
 ```
 
 ## Developer Workflow
@@ -188,14 +296,15 @@ ${param.action}                    <!-- Request parameters -->
 ### Build & Run
 ```bash
 mvn clean package                    # Build WAR file
-# Copy target/buildms.war to Tomcat webapps/
+# Copy target/buildms.war to Tomcat 10+ webapps/
 # Access: http://localhost:8080/buildms/
 ```
 
 ### Database Setup
 ```bash
-sqlcmd -S localhost -i database/schema.sql           # Create schema
-sqlcmd -S localhost -d smartwms_db -i database/auth_migration.sql  # Add test users
+sqlcmd -S localhost -i database/schema.sql                         # Create schema
+sqlcmd -S localhost -d smartwms_db -i database/user_seed.sql       # Add test users
+sqlcmd -S localhost -d smartwms_db -i database/full_seed_data.sql  # Full seed data (all tables)
 ```
 
 ### Database Connection
@@ -206,7 +315,7 @@ db.username=your_username
 db.password=your_password
 db.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver
 ```
-Configuration is automatically loaded by `DBConnection.java` at startup.
+Configuration is automatically loaded by `DBConnection.java` static initializer at startup.
 
 ### Test Credentials
 | Username | Password | Role |
@@ -217,11 +326,16 @@ Configuration is automatically loaded by `DBConnection.java` at startup.
 | sales | password123 | Sales |
 
 ## Important Files
-- [schema.sql](database/schema.sql) - Database schema (all tables)
-- [AuthFilter.java](src/main/java/vn/edu/fpt/swp/filter/AuthFilter.java) - Role permissions map
-- [document/detail-design/](document/detail-design/) - Use case specifications (**MUST follow strictly**)
-- [document/SRS.md](document/SRS.md) - Feature requirements
-- [template/](template/) - UI templates (Bootstrap 5) - **MUST use for all new views**
+- [schema.sql](database/schema.sql) — Database schema (all tables)
+- [full_seed_data.sql](database/full_seed_data.sql) — Complete seed data
+- [user_seed.sql](database/user_seed.sql) — Test user accounts
+- [AuthFilter.java](src/main/java/vn/edu/fpt/swp/filter/AuthFilter.java) — Role permissions map & session timeout
+- [DBConnection.java](src/main/java/vn/edu/fpt/swp/util/DBConnection.java) — JDBC connection factory
+- [PasswordUtil.java](src/main/java/vn/edu/fpt/swp/util/PasswordUtil.java) — SHA-256 password hashing
+- [document/detail-design/](document/detail-design/) — Use case specifications (**MUST follow strictly**)
+- [document/SRS.md](document/SRS.md) — Feature requirements
+- [progress/OVERALL_PROGRESS.md](progress/OVERALL_PROGRESS.md) — Implementation status (48/48 complete)
+- [template/](template/) — UI templates (Sneat Bootstrap 5) — **MUST use for all new views**
 
 ## ⚠️ CRITICAL: Follow Detail Design & Templates
 
@@ -231,10 +345,10 @@ Before implementing any feature, **read and follow the corresponding use case do
 - Follow the Main Flow steps precisely
 - Implement all Alternative Flows for error handling
 - Respect the Access Control section for role permissions
-- Example: For login feature → follow [UC-AUTH-001-User-Login.md](document/detail-design/UC-AUTH-001-User-Login.md)
+- Example: For login feature → follow `document/detail-design/UC-AUTH-001-User-Login.md`
 
 ### UI Templates (MANDATORY)
-All JSP views **MUST use the Bootstrap 5 templates** from `template/`:
+All JSP views **MUST use the Sneat Bootstrap 5 templates** from `template/`:
 - Copy HTML structure from `template/html/` files
 - Use assets from `template/assets/` (already copied to `webapp/assets/`)
 - Reference `template/html/auth-login-basic.html` for auth pages
@@ -242,20 +356,72 @@ All JSP views **MUST use the Bootstrap 5 templates** from `template/`:
 - Reference `template/html/form-layouts-vertical.html` for forms
 - Maintain consistent look-and-feel across all pages
 
-## Request/Inventory Workflow
-Requests follow: `Created → Approved → InProgress → Completed` (or `Rejected`)
+## Request/Inventory Workflows
+
+### Request Lifecycle
+```
+Created → Approved → InProgress → Completed
+              ↓
+           Rejected
+```
 - Types: `Inbound`, `Outbound`, `Transfer`, `Internal`
 - Sales Orders trigger Outbound requests (no direct inventory modification)
-- Inventory keyed by: `(ProductId, WarehouseId, LocationId)`
+- Inventory keyed by composite PK: `(ProductId, WarehouseId, LocationId)`
+
+### Sales Order Lifecycle
+```
+Draft → Confirmed → FulfillmentRequested → Completed
+  ↓         ↓
+Cancelled  Cancelled
+```
+- Sales creates order → Confirms → Generates outbound request → Warehouse executes
+
+### Transfer Workflow
+Transfer requests move goods between warehouses via a two-phase execution:
+1. **Create** (Admin/Manager) — specify source/destination warehouses and items
+2. **Approve** (Admin/Manager) — approve or reject
+3. **Execute outbound** (Staff at source) — pick items from source warehouse
+4. **Execute inbound** (Staff at destination) — receive items at destination warehouse
+
+### Inbound Execution
+- Staff enters `receivedQuantity` per item (may differ from requested)
+- On completion, inventory is created/updated at specified locations
+
+### Outbound Execution
+- Staff enters `pickedQuantity` per item from specified locations
+- On completion, inventory is deducted from specified locations
+
+### Internal Movement
+- Moves items between locations **within the same warehouse**
+- Uses `sourceLocationId` → `destinationLocationId` on `RequestItem`
+- No approval step required — directly created and executed
+
+## Implemented Modules (48 Use Cases — All Complete)
+
+| Module | UCs | Controllers | Description |
+|--------|-----|-------------|-------------|
+| AUTH | 5 | AuthController | Login, Logout, Change Password, Admin Reset, Session Timeout |
+| PRD | 5 | ProductController | CRUD, Toggle Status, Details |
+| CAT | 4 | CategoryController | CRUD, Delete |
+| WH | 3 | WarehouseController | CRUD |
+| LOC | 4 | LocationController | CRUD, Toggle Status |
+| USER | 5 | UserController | CRUD, Toggle Status, Assign Warehouse |
+| CUS | 4 | CustomerController | CRUD, Toggle Status |
+| INB | 3 | InboundController | Create, Approve, Execute |
+| OUT | 3 | OutboundController | Approve, Execute, Create Internal |
+| MOV | 2 | MovementController | Create, Execute |
+| INV | 3 | InventoryController | By Warehouse, By Product, Search |
+| SO | 4 | SalesOrderController | Create, Confirm, Generate Outbound, Cancel |
+| TRF | 3 | TransferController | Create, Execute Outbound, Execute Inbound |
 
 ## When Adding New Features
 1. **Read the detail design** in `document/detail-design/UC-*.md` for exact requirements
-2. Create Model in `model/` with getters/setters
-3. Create DAO in `dao/` using `DBConnection` pattern
-4. Create Service in `service/` for business logic
-5. Create Controller in `controller/` with `@WebServlet`
+2. Create Model in `model/` with getters/setters implementing `Serializable`
+3. Create DAO in `dao/` using `DBConnection` try-with-resources pattern
+4. Create Service in `service/` for business logic and validation
+5. Create Controller in `controller/` with `@WebServlet` annotation
 6. Create JSP views in `webapp/WEB-INF/views/feature/` **using layout components from `WEB-INF/common/`**
-7. Update `AuthFilter.ROLE_ACCESS_MAP` if new protected routes
+7. Update `AuthFilter.ROLE_ACCESS_MAP` if new protected routes need role restrictions
 8. Verify implementation matches all flows in the detail design document
 
 ## Sidebar Menu Configuration
@@ -263,7 +429,17 @@ The sidebar (`WEB-INF/common/sidebar.jsp`) uses parameters to highlight active m
 
 | Parameter | Values |
 |-----------|--------|
-| `activeMenu` | `dashboard`, `products`, `categories`, `inventory`, `warehouses`, `locations`, `inbound`, `outbound`, `movement`, `customers`, `sales-orders`, `users`, `suppliers`, `profile`, `change-password` |
-| `activeSubMenu` | `product-list`, `product-add`, `category-list`, `category-add`, `inbound-list`, `inbound-create`, etc. |
+| `activeMenu` | `dashboard`, `products`, `categories`, `inventory`, `warehouses`, `locations`, `inbound`, `outbound`, `movement`, `transfers`, `customers`, `sales-orders`, `users`, `suppliers`, `profile`, `change-password` |
+| `activeSubMenu` | `product-list`, `product-add`, `category-list`, `category-add`, `warehouse-list`, `warehouse-add`, `location-list`, `location-add`, `inventory-warehouse`, `inventory-product`, `inbound-list`, `inbound-create`, `outbound-list`, `outbound-create`, `movement-list`, `movement-create`, `transfer-list`, `transfer-create`, `customer-list`, `customer-add`, `order-list`, `order-create`, `user-list`, `user-add`, `supplier-list`, `supplier-add` |
+
+### Sidebar Menu Sections (role-based visibility)
+| Section | Menu Items | Visible To |
+|---------|-----------|------------|
+| Inventory Management | Products, Categories, Inventory | All (manage: Admin/Manager) |
+| Warehouse Operations | Warehouses, Locations | Admin, Manager |
+| Request Management | Inbound, Outbound, Movement, Transfers | Admin, Manager, Staff |
+| Sales | Customers, Sales Orders | Admin, Manager, Sales |
+| Administration | Users, Suppliers | Admin only |
+| Account | My Profile, Change Password | All |
 
 Menu items are role-based and automatically show/hide based on `sessionScope.user.role`.

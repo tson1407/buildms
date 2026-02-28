@@ -78,12 +78,26 @@
                                             <!-- Source Warehouse -->
                                             <div class="mb-4">
                                                 <label for="warehouseId" class="form-label">Source Warehouse <span class="text-danger">*</span></label>
-                                                <select class="form-select" id="warehouseId" name="warehouseId" required>
-                                                    <option value="">Select warehouse...</option>
-                                                    <c:forEach var="wh" items="${warehouses}">
-                                                        <option value="${wh.id}">${wh.name} - ${wh.location}</option>
-                                                    </c:forEach>
-                                                </select>
+                                                <c:choose>
+                                                    <c:when test="${isManager}">
+                                                        <select class="form-select" id="warehouseId" disabled>
+                                                            <c:forEach var="wh" items="${warehouses}">
+                                                                <c:if test="${wh.id == lockedWarehouseId}">
+                                                                    <option value="${wh.id}" selected>${wh.name} - ${wh.location}</option>
+                                                                </c:if>
+                                                            </c:forEach>
+                                                        </select>
+                                                        <input type="hidden" name="warehouseId" value="${lockedWarehouseId}" />
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <select class="form-select" id="warehouseId" name="warehouseId" required>
+                                                            <option value="">Select warehouse...</option>
+                                                            <c:forEach var="wh" items="${warehouses}">
+                                                                <option value="${wh.id}">${wh.name} - ${wh.location}</option>
+                                                            </c:forEach>
+                                                        </select>
+                                                    </c:otherwise>
+                                                </c:choose>
                                             </div>
                                             
                                             <!-- Outbound Reason -->

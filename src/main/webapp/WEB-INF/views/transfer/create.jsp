@@ -78,14 +78,28 @@
                                     <input type="hidden" name="action" value="create">
                                     <div class="col-md-5">
                                         <label class="form-label">Source Warehouse <span class="text-danger">*</span></label>
-                                        <select name="sourceWarehouseId" class="form-select" onchange="this.form.submit()">
-                                            <option value="">Select Source Warehouse</option>
-                                            <c:forEach var="wh" items="${warehouses}">
-                                                <option value="${wh.id}" ${selectedSourceWarehouseId == wh.id ? 'selected' : ''}>
-                                                    ${wh.name}
-                                                </option>
-                                            </c:forEach>
-                                        </select>
+                                        <c:choose>
+                                            <c:when test="${isManager}">
+                                                <select name="sourceWarehouseId" class="form-select" disabled>
+                                                    <c:forEach var="wh" items="${warehouses}">
+                                                        <c:if test="${wh.id == lockedSourceWarehouseId}">
+                                                            <option value="${wh.id}" selected>${wh.name}</option>
+                                                        </c:if>
+                                                    </c:forEach>
+                                                </select>
+                                                <input type="hidden" name="sourceWarehouseId" value="${lockedSourceWarehouseId}" />
+                                            </c:when>
+                                            <c:otherwise>
+                                                <select name="sourceWarehouseId" class="form-select" onchange="this.form.submit()">
+                                                    <option value="">Select Source Warehouse</option>
+                                                    <c:forEach var="wh" items="${warehouses}">
+                                                        <option value="${wh.id}" ${selectedSourceWarehouseId == wh.id ? 'selected' : ''}>
+                                                            ${wh.name}
+                                                        </option>
+                                                    </c:forEach>
+                                                </select>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </div>
                                     <div class="col-md-2 d-flex align-items-center justify-content-center">
                                         <i class="bx bx-right-arrow-alt fs-2 text-primary"></i>

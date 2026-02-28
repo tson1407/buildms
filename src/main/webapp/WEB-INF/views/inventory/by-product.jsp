@@ -226,7 +226,7 @@
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0">Inventory Locations</h5>
-                                    <c:if test="${isStaff}">
+                                    <c:if test="${isWarehouseScoped}">
                                         <span class="badge bg-info">Showing your warehouse only</span>
                                     </c:if>
                                 </div>

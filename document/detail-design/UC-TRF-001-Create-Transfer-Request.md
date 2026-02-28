@@ -25,13 +25,16 @@
 ### Step 3: Display Creation Form
 - System displays form with fields:
   - Source Warehouse (dropdown, required)
+    - **If Manager:** Auto-selected to Manager's assigned warehouse (read-only)
+    - **If Admin:** All active warehouses shown
   - Destination Warehouse (dropdown, required)
   - Expected Transfer Date (date picker, optional)
   - Notes/Reason (text area, optional)
   - Transfer Items section
 
 ### Step 4: Select Source Warehouse
-- Manager selects source warehouse from dropdown
+- **If Manager:** Source warehouse is pre-selected and locked to their assigned warehouse
+- **If Admin:** Manager selects source warehouse from dropdown
 - System loads available inventory for this warehouse
 
 ### Step 5: Select Destination Warehouse
@@ -119,11 +122,13 @@
 ## Business Rules
 | Rule ID | Description |
 |---------|-------------|
-| BR-TRF-001 | Only Manager can create transfer requests |
+| BR-TRF-001 | Only Admin and Manager can create transfer requests |
 | BR-TRF-002 | Source and destination must be different |
 | BR-TRF-003 | Transfer generates linked outbound and inbound requests |
 | BR-TRF-004 | Inventory consistency maintained across warehouses |
 | BR-TRF-005 | Outbound must complete before inbound can execute |
+| BR-TRF-006 | Manager can only create transfer requests with their assigned warehouse as source |
+| BR-TRF-007 | Manager can only view/list transfer requests related to their assigned warehouse |
 
 ---
 

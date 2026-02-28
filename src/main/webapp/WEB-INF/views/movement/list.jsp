@@ -91,7 +91,7 @@
                                     </div>
                                     
                                     <!-- Filter by Warehouse -->
-                                    <c:if test="${not isStaff}">
+                                    <c:if test="${not isWarehouseScoped}">
                                         <div class="col-md-4">
                                             <select class="form-select" name="warehouseId">
                                                 <option value="">All Warehouses</option>

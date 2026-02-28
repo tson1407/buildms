@@ -139,6 +139,34 @@ public class InboundController extends HttpServlet {
     }
     
     /**
+     * Get current user
+     */
+    private User getCurrentUser(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session == null) return null;
+        return (User) session.getAttribute("user");
+    }
+    
+    /**
+     * Check if user is Manager (scoped to assigned warehouse)
+     */
+    private boolean isManager(HttpServletRequest request) {
+        User user = getCurrentUser(request);
+        return user != null && "Manager".equals(user.getRole());
+    }
+    
+    /**
+     * Get Manager's assigned warehouse ID
+     */
+    private Long getManagerWarehouseId(HttpServletRequest request) {
+        User user = getCurrentUser(request);
+        if (user != null && "Manager".equals(user.getRole())) {
+            return user.getWarehouseId();
+        }
+        return null;
+    }
+    
+    /**
      * UC-INB-004: List all inbound requests
      */
     private void listRequests(HttpServletRequest request, HttpServletResponse response)
@@ -148,7 +176,10 @@ public class InboundController extends HttpServlet {
         String warehouseIdStr = request.getParameter("warehouseId");
         
         Long warehouseId = null;
-        if (warehouseIdStr != null && !warehouseIdStr.trim().isEmpty()) {
+        if (isManager(request)) {
+            // Manager can only see requests for their assigned warehouse
+            warehouseId = getManagerWarehouseId(request);
+        } else if (warehouseIdStr != null && !warehouseIdStr.trim().isEmpty()) {
             try {
                 warehouseId = Long.parseLong(warehouseIdStr.trim());
             } catch (NumberFormatException e) {
@@ -186,6 +217,7 @@ public class InboundController extends HttpServlet {
         request.setAttribute("warehouses", warehouses);
         request.setAttribute("selectedStatus", status);
         request.setAttribute("selectedWarehouseId", warehouseId);
+        request.setAttribute("isManager", isManager(request));
         
         request.getRequestDispatcher("/WEB-INF/views/inbound/list.jsp").forward(request, response);
     }
@@ -216,6 +248,18 @@ public class InboundController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/product?action=add");
             return;
         }
+        
+        // Manager: pre-select and lock to their assigned warehouse
+        if (isManager(request)) {
+            Long managerWarehouseId = getManagerWarehouseId(request);
+            if (managerWarehouseId == null) {
+                request.getSession().setAttribute("errorMessage", "You are not assigned to any warehouse.");
+                response.sendRedirect(request.getContextPath() + "/inbound");
+                return;
+            }
+            request.setAttribute("lockedWarehouseId", managerWarehouseId);
+        }
+        request.setAttribute("isManager", isManager(request));
         
         request.setAttribute("warehouses", warehouses);
         request.setAttribute("products", products);
@@ -258,6 +302,16 @@ public class InboundController extends HttpServlet {
             }
             
             Long warehouseId = Long.parseLong(warehouseIdStr.trim());
+            
+            // Manager can only create for their assigned warehouse
+            if (isManager(request)) {
+                Long managerWarehouseId = getManagerWarehouseId(request);
+                if (managerWarehouseId == null || !managerWarehouseId.equals(warehouseId)) {
+                    request.getSession().setAttribute("errorMessage", "You can only create inbound requests for your assigned warehouse.");
+                    response.sendRedirect(request.getContextPath() + "/inbound?action=create");
+                    return;
+                }
+            }
             
             // Validate items
             if (productIds == null || productIds.length == 0) {
@@ -346,6 +400,16 @@ public class InboundController extends HttpServlet {
                 request.getSession().setAttribute("errorMessage", "Request not found.");
                 response.sendRedirect(request.getContextPath() + "/inbound");
                 return;
+            }
+            
+            // Manager can only view requests for their assigned warehouse
+            if (isManager(request)) {
+                Long managerWarehouseId = getManagerWarehouseId(request);
+                if (managerWarehouseId == null || !managerWarehouseId.equals(inboundRequest.getDestinationWarehouseId())) {
+                    request.getSession().setAttribute("errorMessage", "You don't have permission to view this request.");
+                    response.sendRedirect(request.getContextPath() + "/inbound");
+                    return;
+                }
             }
             
             // Get items
@@ -438,6 +502,19 @@ public class InboundController extends HttpServlet {
         
         try {
             Long requestId = Long.parseLong(idStr.trim());
+            
+            // Manager can only approve requests for their assigned warehouse
+            if (isManager(request)) {
+                Request inboundRequest = inboundService.getRequestById(requestId);
+                Long managerWarehouseId = getManagerWarehouseId(request);
+                if (inboundRequest == null || managerWarehouseId == null
+                        || !managerWarehouseId.equals(inboundRequest.getDestinationWarehouseId())) {
+                    request.getSession().setAttribute("errorMessage", "You don't have permission to approve this request.");
+                    response.sendRedirect(request.getContextPath() + "/inbound");
+                    return;
+                }
+            }
+            
             Long userId = getCurrentUserId(request);
             
             boolean approved = inboundService.approveRequest(requestId, userId);
@@ -484,6 +561,19 @@ public class InboundController extends HttpServlet {
         
         try {
             Long requestId = Long.parseLong(idStr.trim());
+            
+            // Manager can only reject requests for their assigned warehouse
+            if (isManager(request)) {
+                Request inboundRequest = inboundService.getRequestById(requestId);
+                Long managerWarehouseId = getManagerWarehouseId(request);
+                if (inboundRequest == null || managerWarehouseId == null
+                        || !managerWarehouseId.equals(inboundRequest.getDestinationWarehouseId())) {
+                    request.getSession().setAttribute("errorMessage", "You don't have permission to reject this request.");
+                    response.sendRedirect(request.getContextPath() + "/inbound");
+                    return;
+                }
+            }
+            
             Long userId = getCurrentUserId(request);
             
             boolean rejected = inboundService.rejectRequest(requestId, userId, reason.trim());

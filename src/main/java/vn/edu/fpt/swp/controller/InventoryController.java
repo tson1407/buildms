@@ -87,19 +87,21 @@ public class InventoryController extends HttpServlet {
     }
     
     /**
-     * Check if user is Staff (restricted to assigned warehouse)
+     * Check if user is warehouse-scoped (Staff or Manager — restricted to assigned warehouse)
      */
-    private boolean isStaff(HttpServletRequest request) {
+    private boolean isWarehouseScoped(HttpServletRequest request) {
         User user = getCurrentUser(request);
-        return user != null && "Staff".equals(user.getRole());
+        if (user == null) return false;
+        String role = user.getRole();
+        return "Staff".equals(role) || "Manager".equals(role);
     }
     
     /**
-     * Get Staff's assigned warehouse ID
+     * Get the user's assigned warehouse ID (for Staff and Manager)
      */
-    private Long getStaffWarehouseId(HttpServletRequest request) {
+    private Long getAssignedWarehouseId(HttpServletRequest request) {
         User user = getCurrentUser(request);
-        if (user != null && "Staff".equals(user.getRole())) {
+        if (user != null && ("Staff".equals(user.getRole()) || "Manager".equals(user.getRole()))) {
             return user.getWarehouseId();
         }
         return null;
@@ -121,16 +123,16 @@ public class InventoryController extends HttpServlet {
         Long warehouseId = null;
         String warehouseIdStr = request.getParameter("warehouseId");
         
-        if (isStaff(request)) {
-            // Staff can only view their assigned warehouse
-            warehouseId = getStaffWarehouseId(request);
+        if (isWarehouseScoped(request)) {
+            // Staff and Manager can only view their assigned warehouse
+            warehouseId = getAssignedWarehouseId(request);
             if (warehouseId == null) {
                 request.setAttribute("errorMessage", "You are not assigned to any warehouse.");
                 request.getRequestDispatcher("/WEB-INF/views/inventory/by-warehouse.jsp").forward(request, response);
                 return;
             }
         } else {
-            // Admin/Manager can select any warehouse
+            // Admin can select any warehouse
             if (warehouseIdStr != null && !warehouseIdStr.trim().isEmpty()) {
                 try {
                     warehouseId = Long.parseLong(warehouseIdStr.trim());
@@ -140,10 +142,10 @@ public class InventoryController extends HttpServlet {
             }
         }
         
-        // Get warehouses for dropdown (hidden for Staff)
+        // Get warehouses for dropdown (hidden for Staff and Manager)
         List<Warehouse> warehouses = inventoryService.getAllWarehouses();
         request.setAttribute("warehouses", warehouses);
-        request.setAttribute("isStaff", isStaff(request));
+        request.setAttribute("isWarehouseScoped", isWarehouseScoped(request));
         
         if (warehouseId != null) {
             // Get selected warehouse
@@ -201,11 +203,11 @@ public class InventoryController extends HttpServlet {
             request.setAttribute("searchResults", searchResults);
         }
         
-        // Get Staff warehouse filter if applicable
+        // Get warehouse filter for Staff/Manager
         Long warehouseFilter = null;
-        if (isStaff(request)) {
-            warehouseFilter = getStaffWarehouseId(request);
-            request.setAttribute("isStaff", true);
+        if (isWarehouseScoped(request)) {
+            warehouseFilter = getAssignedWarehouseId(request);
+            request.setAttribute("isWarehouseScoped", true);
         }
         
         if (productId != null) {
@@ -253,10 +255,10 @@ public class InventoryController extends HttpServlet {
         Integer minQuantity = null;
         Integer maxQuantity = null;
         
-        // Parse warehouse ID (Staff can only search their assigned warehouse)
-        if (isStaff(request)) {
-            warehouseId = getStaffWarehouseId(request);
-            request.setAttribute("isStaff", true);
+        // Parse warehouse ID (Staff and Manager can only search their assigned warehouse)
+        if (isWarehouseScoped(request)) {
+            warehouseId = getAssignedWarehouseId(request);
+            request.setAttribute("isWarehouseScoped", true);
         } else if (warehouseIdStr != null && !warehouseIdStr.trim().isEmpty()) {
             try {
                 warehouseId = Long.parseLong(warehouseIdStr.trim());
