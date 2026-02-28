@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="currentUser" value="${sessionScope.user}" />
@@ -254,7 +255,7 @@
                             </div>
                             <div class="col-md-3 mb-3">
                                 <label class="form-label">Target Location</label>
-                                <input type="text" class="form-control" name="locationId" placeholder="Optional" />
+                                <input type="number" class="form-control" name="locationId" placeholder="Optional" min="1" />
                             </div>
                         </div>
                     </div>

@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="currentUser" value="${sessionScope.user}" />
 
@@ -138,14 +139,14 @@
                                                     <tr>
                                                         <td><strong>${status.index + 1}</strong></td>
                                                         <td>
-                                                            <span class="fw-medium">${warehouse.name}</span>
+                                                            <span class="fw-medium"><c:out value="${warehouse.name}"/></span>
                                                         </td>
                                                         <td>
                                                             <c:choose>
                                                                 <c:when test="${not empty warehouse.location}">
                                                                     <span class="text-truncate d-inline-block" style="max-width: 250px;" 
-                                                                          title="${warehouse.location}">
-                                                                        <i class="bx bx-map-pin me-1 text-muted"></i>${warehouse.location}
+                                                                          title="${fn:escapeXml(warehouse.location)}">
+                                                                        <i class="bx bx-map-pin me-1 text-muted"></i><c:out value="${warehouse.location}"/>
                                                                     </span>
                                                                 </c:when>
                                                                 <c:otherwise>

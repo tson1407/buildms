@@ -140,10 +140,10 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <c:set var="allAvailable" value="true" />
+                                                    <c:set var="allAvailable" value="${true}" />
                                                     <c:forEach var="check" items="${availability}">
                                                         <c:if test="${check.available < check.item.quantity}">
-                                                            <c:set var="allAvailable" value="false" />
+                                                            <c:set var="allAvailable" value="${false}" />
                                                         </c:if>
                                                         <tr>
                                                             <td>
@@ -152,7 +152,11 @@
                                                                     <c:otherwise>Product #${check.item.productId}</c:otherwise>
                                                                 </c:choose>
                                                             </td>
-                                                            <td><code>${check.product.sku}</code></td>
+                                                            <td>
+                                                                <c:if test="${not empty check.product}">
+                                                                    <code><c:out value="${check.product.sku}"/></code>
+                                                                </c:if>
+                                                            </td>
                                                             <td class="text-center">${check.item.quantity}</td>
                                                             <td class="text-center">${check.available}</td>
                                                             <td class="text-center">
@@ -226,10 +230,10 @@
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <c:set var="allAvailable2" value="true" />
+                                                    <c:set var="allAvailable2" value="${true}" />
                                                     <c:forEach var="check" items="${availability}">
                                                         <c:if test="${check.available < check.item.quantity}">
-                                                            <c:set var="allAvailable2" value="false" />
+                                                            <c:set var="allAvailable2" value="${false}" />
                                                         </c:if>
                                                             <tr>
                                                                 <td>
@@ -239,7 +243,11 @@
                                                                     </c:choose>
                                                                     <input type="hidden" name="productId[]" value="${check.item.productId}">
                                                                 </td>
-                                                                <td><code>${check.product.sku}</code></td>
+                                                                <td>
+                                                                    <c:if test="${not empty check.product}">
+                                                                        <code><c:out value="${check.product.sku}"/></code>
+                                                                    </c:if>
+                                                                </td>
                                                                 <td class="text-center">${check.item.quantity}</td>
                                                                 <td class="text-center">${check.available}</td>
                                                                 <td class="text-center">

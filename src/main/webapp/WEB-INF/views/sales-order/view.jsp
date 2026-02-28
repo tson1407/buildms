@@ -44,7 +44,7 @@
                                 <li class="breadcrumb-item">
                                     <a href="${contextPath}/sales-order">Sales Orders</a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">${order.orderNo}</li>
+                                <li class="breadcrumb-item active" aria-current="page"><c:out value="${order.orderNo}"/></li>
                             </ol>
                         </nav>
                         
@@ -70,7 +70,7 @@
                         <!-- Page Header -->
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h4 class="mb-0">
-                                <i class="bx bx-cart me-2"></i>Sales Order: ${order.orderNo}
+                                <i class="bx bx-cart me-2"></i>Sales Order: <c:out value="${order.orderNo}"/>
                             </h4>
                             <div class="d-flex gap-2">
                                 <a href="${contextPath}/sales-order" class="btn btn-outline-secondary">
@@ -93,7 +93,7 @@
                                     </a>
                                 </c:if>
                                 
-                                <c:if test="${order.status != 'Completed' && order.status != 'Cancelled' && (currentUser.role == 'Admin' || currentUser.role == 'Manager' || currentUser.role == 'Sales')}">
+                                <c:if test="${order.status != 'Completed' && order.status != 'Cancelled' && order.status != 'FulfillmentRequested' && (currentUser.role == 'Admin' || currentUser.role == 'Manager' || currentUser.role == 'Sales')}">
                                     <a href="${contextPath}/sales-order?action=cancel&id=${order.id}" class="btn btn-outline-danger">
                                         <i class="bx bx-x-circle me-1"></i> Cancel Order
                                     </a>
@@ -112,7 +112,7 @@
                                         <table class="table table-borderless">
                                             <tr>
                                                 <th width="40%">Order No:</th>
-                                                <td><strong>${order.orderNo}</strong></td>
+                                                <td><strong><c:out value="${order.orderNo}"/></strong></td>
                                             </tr>
                                             <tr>
                                                 <th>Status:</th>
@@ -173,7 +173,7 @@
                                                 </tr>
                                                 <tr>
                                                     <th>Cancellation Reason:</th>
-                                                    <td class="text-danger">${order.cancellationReason}</td>
+                                                    <td class="text-danger"><c:out value="${order.cancellationReason}"/></td>
                                                 </tr>
                                             </c:if>
                                         </table>
@@ -191,15 +191,15 @@
                                         <table class="table table-borderless">
                                             <tr>
                                                 <th width="40%">Customer Code:</th>
-                                                <td>${customer.code}</td>
+                                                <td><c:out value="${not empty customer ? customer.code : 'N/A'}"/></td>
                                             </tr>
                                             <tr>
                                                 <th>Customer Name:</th>
-                                                <td><strong>${customer.name}</strong></td>
+                                                <td><strong><c:out value="${not empty customer ? customer.name : 'N/A'}"/></strong></td>
                                             </tr>
                                             <tr>
                                                 <th>Contact Info:</th>
-                                                <td>${customer.contactInfo}</td>
+                                                <td><c:out value="${not empty customer ? customer.contactInfo : 'N/A'}"/></td>
                                             </tr>
                                         </table>
                                     </div>
@@ -227,9 +227,9 @@
                                         <c:forEach var="itemData" items="${items}" varStatus="status">
                                             <tr>
                                                 <td>${status.index + 1}</td>
-                                                <td><strong>${itemData.product.name}</strong></td>
-                                                <td>${itemData.product.sku}</td>
-                                                <td>${itemData.product.unit}</td>
+                                                <td><strong><c:out value="${itemData.product.name}"/></strong></td>
+                                                <td><c:out value="${itemData.product.sku}"/></td>
+                                                <td><c:out value="${itemData.product.unit}"/></td>
                                                 <td class="text-end">${itemData.item.quantity}</td>
                                             </tr>
                                         </c:forEach>
@@ -287,7 +287,7 @@
                                                         <fmt:formatDate value="${reqDate}" pattern="dd/MM/yyyy HH:mm" />
                                                     </td>
                                                     <td>
-                                                        <a href="${contextPath}/outbound?action=view&id=${req.id}" class="btn btn-sm btn-outline-primary">
+                                                        <a href="${contextPath}/outbound?action=details&id=${req.id}" class="btn btn-sm btn-outline-primary">
                                                             <i class="bx bx-show"></i> View
                                                         </a>
                                                     </td>

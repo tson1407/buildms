@@ -160,18 +160,24 @@
                                         <c:if test="${currentUser.role == 'Admin'}">
                                             <c:choose>
                                                 <c:when test="${customer.status == 'Active'}">
-                                                    <a href="${contextPath}/customer?action=toggle&id=${customer.id}" 
-                                                       class="btn btn-warning w-100"
-                                                       onclick="return confirm('Are you sure you want to deactivate this customer?');">
-                                                        <i class="bx bx-block me-1"></i>Deactivate Customer
-                                                    </a>
+                                                    <form action="${contextPath}/customer" method="post" class="w-100">
+                                                        <input type="hidden" name="action" value="toggle" />
+                                                        <input type="hidden" name="id" value="${customer.id}" />
+                                                        <button type="submit" class="btn btn-warning w-100"
+                                                                onclick="return confirm('Are you sure you want to deactivate this customer?');">
+                                                            <i class="bx bx-block me-1"></i>Deactivate Customer
+                                                        </button>
+                                                    </form>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <a href="${contextPath}/customer?action=toggle&id=${customer.id}" 
-                                                       class="btn btn-success w-100"
-                                                       onclick="return confirm('Are you sure you want to activate this customer?');">
-                                                        <i class="bx bx-check me-1"></i>Activate Customer
-                                                    </a>
+                                                    <form action="${contextPath}/customer" method="post" class="w-100">
+                                                        <input type="hidden" name="action" value="toggle" />
+                                                        <input type="hidden" name="id" value="${customer.id}" />
+                                                        <button type="submit" class="btn btn-success w-100"
+                                                                onclick="return confirm('Are you sure you want to activate this customer?');">
+                                                            <i class="bx bx-check me-1"></i>Activate Customer
+                                                        </button>
+                                                    </form>
                                                 </c:otherwise>
                                             </c:choose>
                                         </c:if>

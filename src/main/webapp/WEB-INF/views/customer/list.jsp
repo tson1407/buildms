@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="currentUser" value="${sessionScope.user}" />
 
@@ -161,15 +162,15 @@
                                                     <tr class="${customer.status == 'Inactive' ? 'table-secondary' : ''}">
                                                         <td><strong>${loop.index + 1}</strong></td>
                                                         <td>
-                                                            <span class="fw-medium">${customer.code}</span>
+                                                            <span class="fw-medium"><c:out value="${customer.code}"/></span>
                                                         </td>
-                                                        <td>${customer.name}</td>
+                                                        <td><c:out value="${customer.name}"/></td>
                                                         <td>
                                                             <c:choose>
                                                                 <c:when test="${not empty customer.contactInfo}">
                                                                     <span class="text-truncate d-inline-block" style="max-width: 200px;" 
-                                                                          title="${customer.contactInfo}">
-                                                                        ${customer.contactInfo}
+                                                                          title="${fn:escapeXml(customer.contactInfo)}">
+                                                                        <c:out value="${customer.contactInfo}"/>
                                                                     </span>
                                                                 </c:when>
                                                                 <c:otherwise>

@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="currentUser" value="${sessionScope.user}" />
 
@@ -120,16 +122,16 @@
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label text-muted">Type</label>
-                                                <p class="mb-0 fw-semibold">${inboundRequest.type}</p>
+                                                <p class="mb-0 fw-semibold"><c:out value="${inboundRequest.type}"/></p>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label text-muted">Destination Warehouse</label>
                                                 <p class="mb-0 fw-semibold">
                                                     <c:choose>
                                                         <c:when test="${not empty warehouse}">
-                                                            ${warehouse.name}
+                                                            <c:out value="${warehouse.name}"/>
                                                             <c:if test="${not empty warehouse.location}">
-                                                                <br/><small class="text-muted">${warehouse.location}</small>
+                                                                <br/><small class="text-muted"><c:out value="${warehouse.location}"/></small>
                                                             </c:if>
                                                         </c:when>
                                                         <c:otherwise>-</c:otherwise>
@@ -152,7 +154,7 @@
                                                 <p class="mb-0">
                                                     <c:choose>
                                                         <c:when test="${not empty inboundRequest.notes}">
-                                                            ${inboundRequest.notes}
+                                                            <c:out value="${inboundRequest.notes}"/>
                                                         </c:when>
                                                         <c:otherwise><span class="text-muted">No notes</span></c:otherwise>
                                                     </c:choose>
@@ -166,7 +168,7 @@
                                 <div class="card mb-6">
                                     <div class="card-header d-flex justify-content-between align-items-center">
                                         <h5 class="mb-0">Request Items</h5>
-                                        <span class="badge bg-primary">${items.size()} items</span>
+                                        <span class="badge bg-primary">${fn:length(items)} items</span>
                                     </div>
                                     <div class="table-responsive">
                                         <table class="table table-hover mb-0">
@@ -183,10 +185,10 @@
                                                 <c:forEach var="item" items="${items}">
                                                     <tr>
                                                         <td>
-                                                            <strong>${requestScope['productName_'.concat(item.productId)]}</strong>
+                                                            <strong><c:out value="${requestScope['productName_'.concat(item.productId)]}"/></strong>
                                                         </td>
                                                         <td>
-                                                            <span class="text-muted">${requestScope['productSku_'.concat(item.productId)]}</span>
+                                                            <span class="text-muted"><c:out value="${requestScope['productSku_'.concat(item.productId)]}"/></span>
                                                         </td>
                                                         <td class="text-center">${item.quantity}</td>
                                                         <td class="text-center">
@@ -212,7 +214,7 @@
                                                         <td>
                                                             <c:choose>
                                                                 <c:when test="${not empty item.locationId}">
-                                                                    ${requestScope['locationCode_'.concat(item.locationId)]}
+                                                                    <c:out value="${requestScope['locationCode_'.concat(item.locationId)]}"/>
                                                                 </c:when>
                                                                 <c:otherwise>
                                                                     <span class="text-muted">Not specified</span>
@@ -266,18 +268,25 @@
                                                 <label class="form-label text-muted">Rejected By</label>
                                                 <p class="mb-0 fw-semibold">
                                                     <c:choose>
-                                                        <c:when test="${not empty rejectedByUser}">${rejectedByUser.name}</c:when>
+                                                        <c:when test="${not empty rejectedByUser}"><c:out value="${rejectedByUser.name}"/></c:when>
                                                         <c:otherwise>User #${inboundRequest.rejectedBy}</c:otherwise>
                                                     </c:choose>
                                                 </p>
                                             </div>
                                             <div class="mb-3">
                                                 <label class="form-label text-muted">Rejected Date</label>
-                                                <p class="mb-0">${inboundRequest.rejectedDate.toLocalDate()}</p>
+                                                <p class="mb-0">
+                                                    <c:choose>
+                                                        <c:when test="${not empty inboundRequest.rejectedDate}">
+                                                            ${inboundRequest.rejectedDate.toLocalDate()}
+                                                        </c:when>
+                                                        <c:otherwise>-</c:otherwise>
+                                                    </c:choose>
+                                                </p>
                                             </div>
                                             <div>
                                                 <label class="form-label text-muted">Reason</label>
-                                                <p class="mb-0 text-danger">${inboundRequest.rejectionReason}</p>
+                                                <p class="mb-0 text-danger"><c:out value="${inboundRequest.rejectionReason}"/></p>
                                             </div>
                                         </div>
                                     </div>
@@ -300,7 +309,7 @@
                                                     </div>
                                                     <p class="mb-0 text-muted small">
                                                         By: <c:choose>
-                                                            <c:when test="${not empty createdByUser}">${createdByUser.name}</c:when>
+                                                            <c:when test="${not empty createdByUser}"><c:out value="${createdByUser.name}"/></c:when>
                                                             <c:otherwise>User #${inboundRequest.createdBy}</c:otherwise>
                                                         </c:choose>
                                                         <br/>
@@ -318,7 +327,7 @@
                                                         </div>
                                                         <p class="mb-0 text-muted small">
                                                             By: <c:choose>
-                                                                <c:when test="${not empty approvedByUser}">${approvedByUser.name}</c:when>
+                                                                <c:when test="${not empty approvedByUser}"><c:out value="${approvedByUser.name}"/></c:when>
                                                                 <c:otherwise>User #${inboundRequest.approvedBy}</c:otherwise>
                                                             </c:choose>
                                                             <br/>
@@ -351,7 +360,7 @@
                                                         </div>
                                                         <p class="mb-0 text-muted small">
                                                             By: <c:choose>
-                                                                <c:when test="${not empty completedByUser}">${completedByUser.name}</c:when>
+                                                                <c:when test="${not empty completedByUser}"><c:out value="${completedByUser.name}"/></c:when>
                                                                 <c:otherwise>User #${inboundRequest.completedBy}</c:otherwise>
                                                             </c:choose>
                                                             <br/>

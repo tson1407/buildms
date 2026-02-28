@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="currentUser" value="${sessionScope.user}" />
 
@@ -110,7 +111,7 @@
                                                 <select class="form-select" disabled>
                                                     <c:forEach var="wh" items="${warehouses}">
                                                         <c:if test="${wh.id == selectedWarehouseId}">
-                                                            <option selected>${wh.name}</option>
+                                                            <option selected><c:out value="${wh.name}"/></option>
                                                         </c:if>
                                                     </c:forEach>
                                                 </select>
@@ -120,7 +121,7 @@
                                                     <option value="">All Warehouses</option>
                                                     <c:forEach var="wh" items="${warehouses}">
                                                         <option value="${wh.id}" ${selectedWarehouseId == wh.id ? 'selected' : ''}>
-                                                            ${wh.name}
+                                                            <c:out value="${wh.name}"/>
                                                         </option>
                                                     </c:forEach>
                                                 </select>
@@ -144,7 +145,7 @@
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">Outbound Requests</h5>
-                                <span class="badge bg-primary">${requests.size()} total</span>
+                                <span class="badge bg-primary">${fn:length(requests)} total</span>
                             </div>
                             <div class="table-responsive text-nowrap">
                                 <table class="table table-hover">
@@ -176,7 +177,7 @@
                                                         <td>
                                                             <c:choose>
                                                                 <c:when test="${not empty requestScope['warehouseName_'.concat(req.sourceWarehouseId)]}">
-                                                                    ${requestScope['warehouseName_'.concat(req.sourceWarehouseId)]}
+                                                                    <c:out value="${requestScope['warehouseName_'.concat(req.sourceWarehouseId)]}"/>
                                                                 </c:when>
                                                                 <c:otherwise>
                                                                     <span class="text-muted">-</span>
@@ -186,7 +187,7 @@
                                                         <td>
                                                             <c:choose>
                                                                 <c:when test="${not empty req.reason}">
-                                                                    <span class="badge bg-label-secondary">${req.reason}</span>
+                                                                    <span class="badge bg-label-secondary"><c:out value="${req.reason}"/></span>
                                                                 </c:when>
                                                                 <c:when test="${not empty req.salesOrderId}">
                                                                     <span class="badge bg-label-info">Sales Order #${req.salesOrderId}</span>
@@ -199,7 +200,7 @@
                                                         <td>
                                                             <c:choose>
                                                                 <c:when test="${not empty requestScope['userName_'.concat(req.createdBy)]}">
-                                                                    ${requestScope['userName_'.concat(req.createdBy)]}
+                                                                    <c:out value="${requestScope['userName_'.concat(req.createdBy)]}"/>
                                                                 </c:when>
                                                                 <c:otherwise>
                                                                     <span class="text-muted">User #${req.createdBy}</span>
@@ -229,7 +230,7 @@
                                                                     <span class="badge bg-label-danger">Rejected</span>
                                                                 </c:when>
                                                                 <c:otherwise>
-                                                                    <span class="badge bg-label-secondary">${req.status}</span>
+                                                                    <span class="badge bg-label-secondary"><c:out value="${req.status}"/></span>
                                                                 </c:otherwise>
                                                             </c:choose>
                                                         </td>

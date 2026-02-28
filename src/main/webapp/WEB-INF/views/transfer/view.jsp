@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
@@ -154,7 +154,7 @@
                                             </tr>
                                             <tr>
                                                 <th class="ps-0">Created By:</th>
-                                                <td>${creator.fullName}</td>
+                                                <td>${not empty creator ? creator.fullName : 'Unknown'}</td>
                                             </tr>
                                             <tr>
                                                 <th class="ps-0">Created At:</th>
@@ -168,7 +168,7 @@
                                             <c:if test="${not empty transfer.notes}">
                                                 <tr>
                                                     <th class="ps-0">Notes:</th>
-                                                    <td>${transfer.notes}</td>
+                                                    <td><c:out value="${transfer.notes}"/></td>
                                                 </tr>
                                             </c:if>
                                         </table>
@@ -188,9 +188,9 @@
                                                 <div class="border rounded p-3 bg-light">
                                                     <i class="bx bx-export fs-1 text-danger mb-2"></i>
                                                     <h6 class="text-muted mb-1">Source</h6>
-                                                    <strong>${sourceWarehouse.name}</strong>
+                                                    <strong><c:out value="${not empty sourceWarehouse ? sourceWarehouse.name : 'N/A'}"/></strong>
                                                     <br>
-                                                    <small class="text-muted">${sourceWarehouse.location}</small>
+                                                    <small class="text-muted"><c:out value="${not empty sourceWarehouse ? sourceWarehouse.location : ''}"/></small>
                                                 </div>
                                             </div>
                                             <div class="col-2 d-flex align-items-center justify-content-center">
@@ -200,9 +200,9 @@
                                                 <div class="border rounded p-3 bg-light">
                                                     <i class="bx bx-import fs-1 text-success mb-2"></i>
                                                     <h6 class="text-muted mb-1">Destination</h6>
-                                                    <strong>${destinationWarehouse.name}</strong>
+                                                    <strong><c:out value="${not empty destinationWarehouse ? destinationWarehouse.name : 'N/A'}"/></strong>
                                                     <br>
-                                                    <small class="text-muted">${destinationWarehouse.location}</small>
+                                                    <small class="text-muted"><c:out value="${not empty destinationWarehouse ? destinationWarehouse.location : ''}"/></small>
                                                 </div>
                                             </div>
                                         </div>
@@ -248,7 +248,7 @@
                                                 </td>
                                                 <td>
                                                     <c:if test="${not empty data.product}">
-                                                        <code>${data.product.sku}</code>
+                                                        <code><c:out value="${data.product.sku}"/></code>
                                                     </c:if>
                                                 </td>
                                                 <td class="text-center">
@@ -268,7 +268,14 @@
                                         </c:forEach>
                                         <c:if test="${empty items}">
                                             <tr>
-                                                <td colspan="6" class="text-center text-muted py-4">
+                                                <c:set var="colCount" value="4" />
+                                                <c:if test="${transfer.status == 'InProgress' || transfer.status == 'InTransit' || transfer.status == 'Receiving' || transfer.status == 'Completed'}">
+                                                    <c:set var="colCount" value="${colCount + 1}" />
+                                                </c:if>
+                                                <c:if test="${transfer.status == 'Receiving' || transfer.status == 'Completed'}">
+                                                    <c:set var="colCount" value="${colCount + 1}" />
+                                                </c:if>
+                                                <td colspan="${colCount}" class="text-center text-muted py-4">
                                                     No items in this transfer.
                                                 </td>
                                             </tr>
@@ -285,7 +292,7 @@
                                     <h5 class="mb-0"><i class="bx bx-x-circle me-2"></i>Rejection Details</h5>
                                 </div>
                                 <div class="card-body">
-                                    <p class="mb-0"><strong>Reason:</strong> ${transfer.rejectionReason}</p>
+                                    <p class="mb-0"><strong>Reason:</strong> <c:out value="${transfer.rejectionReason}"/></p>
                                 </div>
                             </div>
                         </c:if>

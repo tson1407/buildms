@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
@@ -51,7 +51,7 @@
                         <c:if test="${not empty param.success}">
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 <i class="bx bx-check-circle me-2"></i>
-                                ${param.success}
+                                <c:out value="${param.success}"/>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                         </c:if>
@@ -127,12 +127,12 @@
                                                         <td><strong>#${data.request.id}</strong></td>
                                                         <td>
                                                             <c:if test="${not empty data.sourceWarehouse}">
-                                                                ${data.sourceWarehouse.name}
+                                                                <c:out value="${data.sourceWarehouse.name}"/>
                                                             </c:if>
                                                         </td>
                                                         <td>
                                                             <c:if test="${not empty data.destinationWarehouse}">
-                                                                ${data.destinationWarehouse.name}
+                                                                <c:out value="${data.destinationWarehouse.name}"/>
                                                             </c:if>
                                                         </td>
                                                         <td>
@@ -165,12 +165,14 @@
                                                         </td>
                                                         <td>
                                                             <c:if test="${not empty data.creator}">
-                                                                ${data.creator.fullName}
+                                                                <c:out value="${data.creator.fullName}"/>
                                                             </c:if>
                                                         </td>
                                                         <td>
-                                                            <fmt:parseDate value="${data.request.createdAt}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDate" type="both" />
-                                                            <fmt:formatDate value="${parsedDate}" pattern="dd/MM/yyyy HH:mm" />
+                                                            <c:if test="${not empty data.request.createdAt}">
+                                                                <fmt:parseDate value="${data.request.createdAt}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDate" type="both" />
+                                                                <fmt:formatDate value="${parsedDate}" pattern="dd/MM/yyyy HH:mm" />
+                                                            </c:if>
                                                         </td>
                                                         <td>
                                                             <div class="dropdown">

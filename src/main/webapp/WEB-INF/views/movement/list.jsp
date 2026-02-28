@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="currentUser" value="${sessionScope.user}" />
 
@@ -69,9 +70,11 @@
                             <h4 class="mb-0">
                                 <i class="bx bx-transfer me-2"></i>Internal Movements
                             </h4>
-                            <a href="${contextPath}/movement?action=create" class="btn btn-primary">
-                                <i class="bx bx-plus me-1"></i>Create Movement
-                            </a>
+                            <c:if test="${currentUser.role == 'Admin' || currentUser.role == 'Manager' || currentUser.role == 'Staff'}">
+                                <a href="${contextPath}/movement?action=create" class="btn btn-primary">
+                                    <i class="bx bx-plus me-1"></i>Create Movement
+                                </a>
+                            </c:if>
                         </div>
                         
                         <!-- Filters Card -->
@@ -97,7 +100,7 @@
                                                 <option value="">All Warehouses</option>
                                                 <c:forEach var="wh" items="${warehouses}">
                                                     <option value="${wh.id}" ${selectedWarehouseId == wh.id ? 'selected' : ''}>
-                                                        ${wh.name}
+                                                        <c:out value="${wh.name}"/>
                                                     </option>
                                                 </c:forEach>
                                             </select>
@@ -120,7 +123,7 @@
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">Movement Requests</h5>
-                                <span class="badge bg-primary">${requests.size()} total</span>
+                                <span class="badge bg-primary">${fn:length(requests)} total</span>
                             </div>
                             <div class="table-responsive text-nowrap">
                                 <table class="table table-hover">
@@ -150,9 +153,9 @@
                                                         <td><strong>#${req.id}</strong></td>
                                                         <td>
                                                             <i class="bx bx-building-house me-1 text-muted"></i>
-                                                            ${requestScope["warehouseName_".concat(req.sourceWarehouseId)]}
+                                                            <c:out value="${requestScope['warehouseName_'.concat(req.sourceWarehouseId)]}"/>
                                                         </td>
-                                                        <td>${requestScope["userName_".concat(req.createdBy)]}</td>
+                                                        <td><c:out value="${requestScope['userName_'.concat(req.createdBy)]}"/></td>
                                                         <td>
                                                             <fmt:parseDate value="${req.createdAt}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDate" type="both" />
                                                             <fmt:formatDate value="${parsedDate}" pattern="yyyy-MM-dd HH:mm" />
@@ -169,7 +172,7 @@
                                                                     <span class="badge bg-success">Completed</span>
                                                                 </c:when>
                                                                 <c:otherwise>
-                                                                    <span class="badge bg-secondary">${req.status}</span>
+                                                                    <span class="badge bg-secondary"><c:out value="${req.status}"/></span>
                                                                 </c:otherwise>
                                                             </c:choose>
                                                         </td>

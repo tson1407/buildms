@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="currentUser" value="${sessionScope.user}" />
 
@@ -152,8 +153,8 @@
                                                             </div>
                                                             
                                                             <div class="col-md-4">
-                                                                <label class="form-label">Location</label>
-                                                                <select class="form-select" name="locationId">
+                                                                <label class="form-label">Location <span class="text-danger">*</span></label>
+                                                                <select class="form-select" name="locationId" required>
                                                                     <option value="">Select location...</option>
                                                                     <c:forEach var="loc" items="${locations}">
                                                                         <c:if test="${loc.isActive}">

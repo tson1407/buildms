@@ -97,7 +97,7 @@
                                                         <select class="form-select" name="warehouseId" required>
                                                             <option value="">-- Select Warehouse --</option>
                                                             <c:forEach var="wh" items="${warehouses}">
-                                                                <option value="${wh.id}">${wh.name}</option>
+                                                                <option value="${wh.id}"><c:out value="${wh.name}"/></option>
                                                             </c:forEach>
                                                         </select>
                                                     </div>
@@ -125,7 +125,7 @@
                                             <div>
                                                 <span class="text-muted">Warehouse:</span>
                                                 <strong class="ms-2">
-                                                    <i class="bx bx-building-house me-1"></i>${selectedWarehouse.name}
+                                                    <i class="bx bx-building-house me-1"></i><c:out value="${selectedWarehouse.name}"/>
                                                 </strong>
                                             </div>
                                             <c:if test="${not isWarehouseScoped}">

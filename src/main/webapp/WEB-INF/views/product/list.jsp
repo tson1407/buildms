@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="currentUser" value="${sessionScope.user}" />
 
@@ -178,24 +179,24 @@
                                                         <td>
                                                             <a href="${contextPath}/product?action=details&id=${product.id}" 
                                                                class="fw-medium text-primary">
-                                                                ${product.sku}
+                                                                <c:out value="${product.sku}"/>
                                                             </a>
                                                         </td>
                                                         <td>
                                                             <span class="text-truncate d-inline-block" style="max-width: 200px;"
-                                                                  title="${product.name}">
-                                                                ${product.name}
+                                                                  title="${fn:escapeXml(product.name)}">
+                                                                <c:out value="${product.name}"/>
                                                             </span>
                                                         </td>
                                                         <td>
                                                             <span class="badge bg-label-info">
-                                                                ${categoryName}
+                                                                <c:out value="${categoryName}"/>
                                                             </span>
                                                         </td>
                                                         <td>
                                                             <c:choose>
                                                                 <c:when test="${not empty product.unit}">
-                                                                    ${product.unit}
+                                                                    <c:out value="${product.unit}"/>
                                                                 </c:when>
                                                                 <c:otherwise>
                                                                     <span class="text-muted">-</span>

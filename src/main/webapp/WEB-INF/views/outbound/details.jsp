@@ -10,7 +10,7 @@
       data-template="vertical-menu-template-free">
 <head>
     <jsp:include page="/WEB-INF/common/head.jsp">
-        <jsp:param name="pageTitle" value="Outbound Request #${request.id}" />
+        <jsp:param name="pageTitle" value="Outbound Request #${outboundRequest.id}" />
     </jsp:include>
 </head>
 <body>
@@ -138,14 +138,14 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <strong>Source Warehouse:</strong>
-                                                <p class="mb-0">${sourceWarehouse.name}</p>
+                                                <p class="mb-0"><c:out value="${not empty sourceWarehouse ? sourceWarehouse.name : 'N/A'}"/></p>
                                             </div>
                                         </div>
                                         
                                         <div class="row mb-3">
                                             <div class="col-md-6">
                                                 <strong>Created By:</strong>
-                                                <p class="mb-0">${createdByUser.fullName}</p>
+                                                <p class="mb-0">${not empty createdByUser ? createdByUser.fullName : 'Unknown'}</p>
                                             </div>
                                             <div class="col-md-6">
                                                 <strong>Created Date:</strong>
@@ -161,7 +161,7 @@
                                             <div class="row mb-3">
                                                 <div class="col-12">
                                                     <strong>Reason:</strong>
-                                                    <p class="mb-0"><span class="badge bg-label-secondary">${outboundRequest.reason}</span></p>
+                                                    <p class="mb-0"><span class="badge bg-label-secondary"><c:out value="${outboundRequest.reason}"/></span></p>
                                                 </div>
                                             </div>
                                         </c:if>
@@ -170,7 +170,7 @@
                                             <div class="row mb-3">
                                                 <div class="col-12">
                                                     <strong>Notes:</strong>
-                                                    <p class="mb-0">${outboundRequest.notes}</p>
+                                                    <p class="mb-0"><c:out value="${outboundRequest.notes}"/></p>
                                                 </div>
                                             </div>
                                         </c:if>
@@ -183,7 +183,7 @@
                                                     <p class="mb-0">
                                                         <c:choose>
                                                             <c:when test="${not empty approvedByUser}">
-                                                                ${approvedByUser.fullName}
+                                                                <c:out value="${approvedByUser.fullName}"/>
                                                             </c:when>
                                                             <c:otherwise>-</c:otherwise>
                                                         </c:choose>
@@ -208,7 +208,7 @@
                                                     <p class="mb-0">
                                                         <c:choose>
                                                             <c:when test="${not empty rejectedByUser}">
-                                                                ${rejectedByUser.fullName}
+                                                                <c:out value="${rejectedByUser.fullName}"/>
                                                             </c:when>
                                                             <c:otherwise>-</c:otherwise>
                                                         </c:choose>
@@ -227,7 +227,7 @@
                                                 <div class="row">
                                                     <div class="col-12">
                                                         <strong>Rejection Reason:</strong>
-                                                        <p class="mb-0 text-danger">${outboundRequest.rejectionReason}</p>
+                                                        <p class="mb-0 text-danger"><c:out value="${outboundRequest.rejectionReason}"/></p>
                                                     </div>
                                                 </div>
                                             </c:if>
@@ -241,7 +241,7 @@
                                                     <p class="mb-0">
                                                         <c:choose>
                                                             <c:when test="${not empty completedByUser}">
-                                                                ${completedByUser.fullName}
+                                                                <c:out value="${completedByUser.fullName}"/>
                                                             </c:when>
                                                             <c:otherwise>-</c:otherwise>
                                                         </c:choose>
@@ -280,9 +280,9 @@
                                                 <c:forEach var="item" items="${items}">
                                                     <tr>
                                                         <td>
-                                                            <strong>${requestScope['productName_'.concat(item.productId)]}</strong>
+                                                            <strong><c:out value="${requestScope['productName_'.concat(item.productId)]}"/></strong>
                                                             <br />
-                                                            <small class="text-muted">${requestScope['productSku_'.concat(item.productId)]}</small>
+                                                            <small class="text-muted"><c:out value="${requestScope['productSku_'.concat(item.productId)]}"/></small>
                                                         </td>
                                                         <td class="text-center">${item.quantity}</td>
                                                         <td class="text-center">

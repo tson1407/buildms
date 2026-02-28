@@ -215,8 +215,8 @@
                                                                 <td class="text-center">
                                                                     <input type="number" name="receivedQty[]" 
                                                                            class="form-control form-control-sm text-center"
-                                                                           value="${data.item.quantity}"
-                                                                           min="0" required>
+                                                                           value="${data.item.pickedQuantity != null ? data.item.pickedQuantity : data.item.quantity}"
+                                                                           min="0" max="${data.item.pickedQuantity != null ? data.item.pickedQuantity : data.item.quantity}" required>
                                                                 </td>
                                                                 <td>
                                                                     <select name="locationId[]" class="form-select form-select-sm" required>

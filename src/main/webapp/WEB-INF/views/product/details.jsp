@@ -43,7 +43,7 @@
                                 <li class="breadcrumb-item">
                                     <a href="${contextPath}/product?action=list">Products</a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">${product.sku}</li>
+                                <li class="breadcrumb-item active" aria-current="page"><c:out value="${product.sku}"/></li>
                             </ol>
                         </nav>
                         
@@ -51,9 +51,9 @@
                         <div class="d-flex justify-content-between align-items-center mb-6">
                             <div>
                                 <h4 class="mb-1">
-                                    <i class="bx bx-package" aria-hidden="true me-2"></i>${product.name}
+                                    <i class="bx bx-package" aria-hidden="true me-2"></i><c:out value="${product.name}"/>
                                 </h4>
-                                <span class="text-muted">SKU: ${product.sku}</span>
+                                <span class="text-muted">SKU: <c:out value="${product.sku}"/></span>
                             </div>
                             <div class="d-flex gap-2">
                                 <a href="${contextPath}/product?action=list" class="btn btn-outline-secondary">
@@ -87,7 +87,7 @@
                                                     </div>
                                                     <div class="flex-grow-1">
                                                         <small class="text-muted d-block">SKU</small>
-                                                        <span class="fw-medium">${product.sku}</span>
+                                                        <span class="fw-medium"><c:out value="${product.sku}"/></span>
                                                     </div>
                                                 </div>
                                             </li>
@@ -103,7 +103,7 @@
                                                         <span class="fw-medium">
                                                             <c:choose>
                                                                 <c:when test="${not empty category}">
-                                                                    ${category.name}
+                                                                    <c:out value="${category.name}"/>
                                                                 </c:when>
                                                                 <c:otherwise>
                                                                     <span class="text-muted">Unknown</span>
@@ -125,7 +125,7 @@
                                                         <span class="fw-medium">
                                                             <c:choose>
                                                                 <c:when test="${not empty product.unit}">
-                                                                    ${product.unit}
+                                                                    <c:out value="${product.unit}"/>
                                                                 </c:when>
                                                                 <c:otherwise>
                                                                     <span class="text-muted">Not specified</span>

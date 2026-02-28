@@ -122,11 +122,11 @@
                                                 <c:forEach var="orderData" items="${orders}">
                                                     <tr>
                                                         <td>
-                                                            <strong>${orderData.order.orderNo}</strong>
+                                                            <strong><c:out value="${orderData.order.orderNo}"/></strong>
                                                         </td>
                                                         <td>
                                                             <c:if test="${not empty orderData.customer}">
-                                                                ${orderData.customer.name}
+                                                                <c:out value="${orderData.customer.name}"/>
                                                             </c:if>
                                                         </td>
                                                         <td>
@@ -153,7 +153,7 @@
                                                         </td>
                                                         <td>
                                                             <c:if test="${not empty orderData.creator}">
-                                                                ${orderData.creator.fullName}
+                                                                <c:out value="${orderData.creator.fullName}"/>
                                                             </c:if>
                                                         </td>
                                                         <td>

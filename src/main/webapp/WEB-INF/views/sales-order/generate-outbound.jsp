@@ -77,8 +77,8 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <p><strong>Order No:</strong> ${order.orderNo}</p>
-                                        <p><strong>Customer:</strong> ${customer.name}</p>
+                                        <p><strong>Order No:</strong> <c:out value="${order.orderNo}"/></p>
+                                        <p><strong>Customer:</strong> <c:out value="${customer.name}"/></p>
                                     </div>
                                     <div class="col-md-6">
                                         <p><strong>Status:</strong> 
@@ -105,7 +105,7 @@
                                                 <option value="">Select Warehouse</option>
                                                 <c:forEach var="warehouse" items="${warehouses}">
                                                     <option value="${warehouse.id}" ${selectedWarehouseId == warehouse.id ? 'selected' : ''}>
-                                                        ${warehouse.name} (${warehouse.code})
+                                                        ${warehouse.name} (${warehouse.location})
                                                     </option>
                                                 </c:forEach>
                                             </select>
@@ -142,10 +142,10 @@
                                                 <c:forEach var="avail" items="${availability}">
                                                     <tr class="${avail.sufficient ? '' : 'table-warning'}">
                                                         <td>
-                                                            <strong>${avail.product.name}</strong>
+                                                            <strong><c:out value="${avail.product.name}"/></strong>
                                                             <input type="hidden" name="productId[]" value="${avail.product.id}">
                                                         </td>
-                                                        <td>${avail.product.sku}</td>
+                                                        <td><c:out value="${avail.product.sku}"/></td>
                                                         <td class="text-end">${avail.requested}</td>
                                                         <td class="text-end">
                                                             <c:choose>

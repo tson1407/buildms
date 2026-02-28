@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="currentUser" value="${sessionScope.user}" />
 
@@ -89,7 +90,7 @@
                                             <div>
                                                 <h6 class="mb-0">Movement #${movementRequest.id}</h6>
                                                 <small class="text-muted">
-                                                    <i class="bx bx-building-house me-1"></i>${warehouse.name}
+                                                    <i class="bx bx-building-house me-1"></i><c:out value="${warehouse.name}"/>
                                                 </small>
                                             </div>
                                         </div>
@@ -104,7 +105,7 @@
                                                 <span class="badge bg-info fs-6">In Progress</span>
                                             </c:when>
                                             <c:otherwise>
-                                                <span class="badge bg-secondary fs-6">${movementRequest.status}</span>
+                                                <span class="badge bg-secondary fs-6"><c:out value="${movementRequest.status}"/></span>
                                             </c:otherwise>
                                         </c:choose>
                                     </div>
@@ -154,7 +155,7 @@
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">Items to Move</h5>
-                                <span class="badge bg-primary">${itemsWithDetails.size()} items</span>
+                                <span class="badge bg-primary">${fn:length(itemsWithDetails)} items</span>
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-hover">
@@ -180,15 +181,15 @@
                                             <tr>
                                                 <td>${status.count}</td>
                                                 <td>
-                                                    <strong>${product.sku}</strong>
-                                                    <br><small class="text-muted">${product.name}</small>
+                                                    <strong><c:out value="${product.sku}"/></strong>
+                                                    <br><small class="text-muted"><c:out value="${product.name}"/></small>
                                                 </td>
                                                 <td>
                                                     <div class="d-flex align-items-center">
                                                         <span class="badge bg-label-danger me-2">FROM</span>
                                                         <div>
-                                                            <strong>${srcLoc.code}</strong>
-                                                            <br><small class="text-muted">${srcLoc.type}</small>
+                                                            <strong><c:out value="${srcLoc.code}"/></strong>
+                                                            <br><small class="text-muted"><c:out value="${srcLoc.type}"/></small>
                                                         </div>
                                                     </div>
                                                 </td>
@@ -196,14 +197,14 @@
                                                     <div class="d-flex align-items-center">
                                                         <span class="badge bg-label-success me-2">TO</span>
                                                         <div>
-                                                            <strong>${destLoc.code}</strong>
-                                                            <br><small class="text-muted">${destLoc.type}</small>
+                                                            <strong><c:out value="${destLoc.code}"/></strong>
+                                                            <br><small class="text-muted"><c:out value="${destLoc.type}"/></small>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td>
                                                     <span class="fs-5 fw-bold text-primary">${item.quantity}</span>
-                                                    <span class="text-muted">${product.unit}</span>
+                                                    <span class="text-muted"><c:out value="${product.unit}"/></span>
                                                 </td>
                                                 <td>
                                                     <c:choose>
@@ -252,15 +253,15 @@
                                                 <c:set var="srcQty" value="${itemData.sourceQuantity}" />
                                                 <c:set var="destQty" value="${itemData.destinationQuantity}" />
                                                 <tr>
-                                                    <td><strong>${product.sku}</strong></td>
-                                                    <td>${srcLoc.code}</td>
+                                                    <td><strong><c:out value="${product.sku}"/></strong></td>
+                                                    <td><c:out value="${srcLoc.code}"/></td>
                                                     <td>
                                                         <span class="text-muted">${srcQty}</span>
                                                         <i class="bx bx-right-arrow-alt mx-2"></i>
                                                         <span class="fw-bold text-danger">${srcQty - item.quantity}</span>
                                                         <small class="text-danger ms-1">(-${item.quantity})</small>
                                                     </td>
-                                                    <td>${destLoc.code}</td>
+                                                    <td><c:out value="${destLoc.code}"/></td>
                                                     <td>
                                                         <span class="text-muted">${destQty}</span>
                                                         <i class="bx bx-right-arrow-alt mx-2"></i>
