@@ -21,7 +21,7 @@
             <!-- Sidebar -->
             <jsp:include page="/WEB-INF/common/sidebar.jsp">
                 <jsp:param name="activeMenu" value="sales-orders" />
-                <jsp:param name="activeSubMenu" value="sales-order-list" />
+                <jsp:param name="activeSubMenu" value="order-list" />
             </jsp:include>
             
             <!-- Layout container -->
@@ -150,16 +150,18 @@
                                             <tr>
                                                 <th>Created At:</th>
                                                 <td>
-                                                    <fmt:parseDate value="${order.createdAt}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDate" type="both" />
-                                                    <fmt:formatDate value="${parsedDate}" pattern="dd/MM/yyyy HH:mm" />
+                                                    <c:if test="${not empty order.createdAt}">
+                                                        ${order.createdAt.toLocalDate()} ${order.createdAt.toLocalTime().toString().substring(0, 5)}
+                                                    </c:if>
                                                 </td>
                                             </tr>
                                             <c:if test="${not empty order.confirmedDate}">
                                                 <tr>
                                                     <th>Confirmed At:</th>
                                                     <td>
-                                                        <fmt:parseDate value="${order.confirmedDate}" pattern="yyyy-MM-dd'T'HH:mm" var="confirmedDate" type="both" />
-                                                        <fmt:formatDate value="${confirmedDate}" pattern="dd/MM/yyyy HH:mm" />
+                                                        <c:if test="${not empty order.confirmedDate}">
+                                                            ${order.confirmedDate.toLocalDate()} ${order.confirmedDate.toLocalTime().toString().substring(0, 5)}
+                                                        </c:if>
                                                     </td>
                                                 </tr>
                                             </c:if>
@@ -167,8 +169,9 @@
                                                 <tr>
                                                     <th>Cancelled At:</th>
                                                     <td>
-                                                        <fmt:parseDate value="${order.cancelledDate}" pattern="yyyy-MM-dd'T'HH:mm" var="cancelledDate" type="both" />
-                                                        <fmt:formatDate value="${cancelledDate}" pattern="dd/MM/yyyy HH:mm" />
+                                                        <c:if test="${not empty order.cancelledDate}">
+                                                            ${order.cancelledDate.toLocalDate()} ${order.cancelledDate.toLocalTime().toString().substring(0, 5)}
+                                                        </c:if>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -283,8 +286,9 @@
                                                         </c:choose>
                                                     </td>
                                                     <td>
-                                                        <fmt:parseDate value="${req.createdAt}" pattern="yyyy-MM-dd'T'HH:mm" var="reqDate" type="both" />
-                                                        <fmt:formatDate value="${reqDate}" pattern="dd/MM/yyyy HH:mm" />
+                                                        <c:if test="${not empty req.createdAt}">
+                                                            ${req.createdAt.toLocalDate()} ${req.createdAt.toLocalTime().toString().substring(0, 5)}
+                                                        </c:if>
                                                     </td>
                                                     <td>
                                                         <a href="${contextPath}/outbound?action=details&id=${req.id}" class="btn btn-sm btn-outline-primary">
@@ -299,7 +303,7 @@
                             </div>
                         </c:if>
                         
-                    </div>
+                    </main>
                     <!-- / Content -->
                     
                     <!-- Footer -->

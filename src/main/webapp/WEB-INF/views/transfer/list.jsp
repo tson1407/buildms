@@ -1,4 +1,4 @@
-﻿<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
@@ -170,8 +170,7 @@
                                                         </td>
                                                         <td>
                                                             <c:if test="${not empty data.request.createdAt}">
-                                                                <fmt:parseDate value="${data.request.createdAt}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDate" type="both" />
-                                                                <fmt:formatDate value="${parsedDate}" pattern="dd/MM/yyyy HH:mm" />
+                                                                ${data.request.createdAt.toLocalDate()} ${data.request.createdAt.toLocalTime().toString().substring(0, 5)}
                                                             </c:if>
                                                         </td>
                                                         <td>
@@ -217,7 +216,7 @@
                             </div>
                         </div>
                         
-                    </div>
+                    </main>
                     <!-- / Content -->
                     
                     <!-- Footer -->

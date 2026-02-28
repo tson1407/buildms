@@ -130,8 +130,9 @@
                                     <div class="col-md-3 mb-3">
                                         <p class="text-muted mb-1">Created Date</p>
                                         <p class="fw-bold">
-                                            <fmt:parseDate value="${movementRequest.createdAt}" pattern="yyyy-MM-dd'T'HH:mm" var="createdDate" type="both" />
-                                            <fmt:formatDate value="${createdDate}" pattern="yyyy-MM-dd HH:mm" />
+                                            <c:if test="${not empty movementRequest.createdAt}">
+                                                ${movementRequest.createdAt.toLocalDate()} ${movementRequest.createdAt.toLocalTime().toString().substring(0, 5)}
+                                            </c:if>
                                         </p>
                                     </div>
                                     <c:if test="${movementRequest.status == 'Completed' and not empty completedByUser}">
@@ -142,8 +143,9 @@
                                         <div class="col-md-3 mb-3">
                                             <p class="text-muted mb-1">Completed Date</p>
                                             <p class="fw-bold">
-                                                <fmt:parseDate value="${movementRequest.completedDate}" pattern="yyyy-MM-dd'T'HH:mm" var="completedDate" type="both" />
-                                                <fmt:formatDate value="${completedDate}" pattern="yyyy-MM-dd HH:mm" />
+                                                <c:if test="${not empty movementRequest.completedDate}">
+                                                    ${movementRequest.completedDate.toLocalDate()} ${movementRequest.completedDate.toLocalTime().toString().substring(0, 5)}
+                                                </c:if>
                                             </p>
                                         </div>
                                     </c:if>
@@ -211,7 +213,7 @@
                             </div>
                         </div>
                         
-                    </div>
+                    </main>
                     <!-- / Content -->
                     
                     <jsp:include page="/WEB-INF/common/footer.jsp" />

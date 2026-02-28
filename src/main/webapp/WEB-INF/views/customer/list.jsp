@@ -126,7 +126,7 @@
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">Customers</h5>
-                                <span class="badge bg-primary">${customers.size()} total</span>
+                                <span class="badge bg-primary">${fn:length(customers)} total</span>
                             </div>
                             <div class="table-responsive text-nowrap">
                                 <table class="table table-hover">
@@ -211,7 +211,7 @@
                                                                             data-customer-status="${customer.status}"
                                                                             title="${customer.status == 'Active' ? 'Deactivate' : 'Activate'}"
                                                                             aria-label="${customer.status == 'Active' ? 'Deactivate customer' : 'Activate customer'}">
-                                                                        <i class="bx ${customer.status == 'Active' ? 'bx-block' : 'bx-check'}" aria-hidden="true"></i></i>
+                                                                        <i class="bx ${customer.status == 'Active' ? 'bx-block' : 'bx-check'}" aria-hidden="true"></i>
                                                                     </button>
                                                                 </c:if>
                                                             </div>
@@ -225,7 +225,7 @@
                             </div>
                         </div>
                         
-                    </div>
+                    </main>
                     <!-- / Content -->
                     
                     <!-- Footer -->

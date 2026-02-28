@@ -269,9 +269,13 @@ public class TransferService {
      * @param completedBy User completing
      * @return true if successful
      */
-    public boolean completeOutboundExecution(Long requestId, Long completedBy) {
+    public boolean completeOutboundExecution(Long requestId, Long completedBy, Map<Long, Integer> pickedQuantities) {
         if (requestId == null || completedBy == null) {
             return false;
+        }
+        
+        if (pickedQuantities == null) {
+            pickedQuantities = new HashMap<>();
         }
         
         Request request = getTransferRequestById(requestId);
@@ -288,7 +292,7 @@ public class TransferService {
         List<RequestItem> items = requestItemDAO.findByRequestId(requestId);
         
         for (RequestItem item : items) {
-            int qtyToDecrease = item.getQuantity();
+            int qtyToDecrease = pickedQuantities.getOrDefault(item.getProductId(), item.getQuantity());
             if (qtyToDecrease <= 0) {
                 continue;
             }
@@ -360,9 +364,13 @@ public class TransferService {
      * @param itemLocationMap Map of productId to destination locationId
      * @return true if successful
      */
-    public boolean completeInboundExecution(Long requestId, Long completedBy, Map<Long, Long> itemLocationMap) {
+    public boolean completeInboundExecution(Long requestId, Long completedBy, Map<Long, Long> itemLocationMap, Map<Long, Integer> receivedQuantities) {
         if (requestId == null || completedBy == null || itemLocationMap == null || itemLocationMap.isEmpty()) {
             return false;
+        }
+        
+        if (receivedQuantities == null) {
+            receivedQuantities = new HashMap<>();
         }
         
         Request request = getTransferRequestById(requestId);
@@ -385,7 +393,7 @@ public class TransferService {
                 return false;
             }
             
-            int qtyToReceive = item.getQuantity();
+            int qtyToReceive = receivedQuantities.getOrDefault(item.getProductId(), item.getQuantity());
             
             // Add to destination warehouse at specified location
             boolean success = inventoryDAO.increaseQuantity(

@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="currentUser" value="${sessionScope.user}" />
 
@@ -139,7 +140,7 @@
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">Users</h5>
-                                <span class="badge bg-primary">${users.size()} total</span>
+                                <span class="badge bg-primary">${fn:length(users)} total</span>
                             </div>
                             <div class="table-responsive text-nowrap">
                                 <table class="table table-hover">
@@ -265,7 +266,7 @@
                             </div>
                         </div>
                         
-                    </div>
+                    </main>
                     <!-- / Content -->
                     
                     <!-- Footer -->

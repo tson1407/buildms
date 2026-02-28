@@ -157,8 +157,9 @@
                                                         </td>
                                                         <td><c:out value="${requestScope['userName_'.concat(req.createdBy)]}"/></td>
                                                         <td>
-                                                            <fmt:parseDate value="${req.createdAt}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDate" type="both" />
-                                                            <fmt:formatDate value="${parsedDate}" pattern="yyyy-MM-dd HH:mm" />
+                                                            <c:if test="${not empty req.createdAt}">
+                                                                ${req.createdAt.toLocalDate()} ${req.createdAt.toLocalTime().toString().substring(0, 5)}
+                                                            </c:if>
                                                         </td>
                                                         <td>
                                                             <c:choose>
@@ -197,7 +198,7 @@
                             </div>
                         </div>
                         
-                    </div>
+                    </main>
                     <!-- / Content -->
                     
                     <jsp:include page="/WEB-INF/common/footer.jsp" />

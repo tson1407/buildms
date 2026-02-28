@@ -92,6 +92,9 @@ public class CustomerController extends HttpServlet {
             case "edit":
                 processEdit(request, response);
                 break;
+            case "toggle":
+                toggleStatus(request, response);
+                break;
             default:
                 response.sendRedirect(request.getContextPath() + "/customer?action=list");
         }

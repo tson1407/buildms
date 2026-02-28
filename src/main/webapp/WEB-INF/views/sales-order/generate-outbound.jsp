@@ -21,7 +21,7 @@
             <!-- Sidebar -->
             <jsp:include page="/WEB-INF/common/sidebar.jsp">
                 <jsp:param name="activeMenu" value="sales-orders" />
-                <jsp:param name="activeSubMenu" value="sales-order-list" />
+                <jsp:param name="activeSubMenu" value="order-list" />
             </jsp:include>
             
             <!-- Layout container -->
@@ -205,7 +205,7 @@
                             </div>
                         </c:if>
                         
-                    </div>
+                    </main>
                     <!-- / Content -->
                     
                     <!-- Footer -->

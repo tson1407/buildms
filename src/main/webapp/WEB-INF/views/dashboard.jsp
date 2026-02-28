@@ -153,7 +153,7 @@
                                         </div>
                                         <p class="mb-1">Low Stock Items</p>
                                         <h4 class="card-title mb-3">${lowStockItems != null ? lowStockItems : 0}</h4>
-                                        <small><a href="${contextPath}/inventory?action=lowStock">View items</a></small>
+                                        <small><a href="${contextPath}/inventory?action=search&maxQty=10">View items</a></small>
                                     </div>
                                 </div>
                             </div>
@@ -204,30 +204,35 @@
                                             <tbody>
                                                 <c:choose>
                                                     <c:when test="${not empty recentRequests}">
-                                                        <c:forEach var="request" items="${recentRequests}">
+                                                        <c:forEach var="req" items="${recentRequests}">
                                                             <tr>
-                                                                <td><strong>${request.requestId}</strong></td>
+                                                                <td><strong>#${req.id}</strong></td>
                                                                 <td>
-                                                                    <span class="badge bg-label-${request.type == 'Inbound' ? 'info' : 'warning'}">
-                                                                        ${request.type}
+                                                                    <span class="badge bg-label-${req.type == 'Inbound' ? 'info' : 'warning'}">
+                                                                        ${req.type}
                                                                     </span>
                                                                 </td>
                                                                 <td>
-                                                                    <span class="badge bg-label-${request.status == 'Completed' ? 'success' : 
-                                                                                                  request.status == 'Rejected' ? 'danger' : 
-                                                                                                  request.status == 'InProgress' ? 'primary' : 'secondary'}">
-                                                                        ${request.status}
+                                                                    <span class="badge bg-label-${req.status == 'Completed' ? 'success' : 
+                                                                                                  req.status == 'Rejected' ? 'danger' : 
+                                                                                                  req.status == 'InProgress' ? 'primary' : 'secondary'}">
+                                                                        ${req.status}
                                                                     </span>
                                                                 </td>
-                                                                <td>${request.createdDate}</td>
                                                                 <td>
-                                                                    <a href="${contextPath}/${request.type == 'Inbound' ? 'inbound' : 'outbound'}?action=view&id=${request.requestId}" 
+                                                                    <c:if test="${not empty req.createdAt}">
+                                                                        ${req.createdAt.toLocalDate()} ${req.createdAt.toLocalTime().toString().substring(0, 5)}
+                                                                    </c:if>
+                                                                </td>
+                                                                <td>
+                                                                    <a href="${contextPath}/${req.type == 'Inbound' ? 'inbound' : 'outbound'}?action=view&id=${req.id}" 
                                                                        class="btn btn-sm btn-outline-primary">
                                                                         View
                                                                     </a>
                                                                 </td>
                                                             </tr>
-                                                        </c:forEach>
+                                                            </tr>
+                                        </c:forEach>
                                                     </c:when>
                                                     <c:otherwise>
                                                         <tr>

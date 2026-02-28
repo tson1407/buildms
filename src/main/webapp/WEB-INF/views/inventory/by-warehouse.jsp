@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="currentUser" value="${sessionScope.user}" />
 
@@ -196,7 +197,7 @@
                                                             <strong>${entry.key.code}</strong>
                                                             <span class="text-muted ms-2">(${entry.key.type})</span>
                                                         </span>
-                                                        <span class="badge bg-primary">${entry.value.size()} products</span>
+                                                        <span class="badge bg-primary">${fn:length(entry.value)} products</span>
                                                     </div>
                                                 </button>
                                             </h2>
@@ -248,7 +249,7 @@
                             </c:otherwise>
                         </c:choose>
                         
-                    </div>
+                    </main>
                     <!-- / Content -->
                     
                     <jsp:include page="/WEB-INF/common/footer.jsp" />

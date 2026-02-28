@@ -258,7 +258,7 @@
                             </c:otherwise>
                         </c:choose>
                         
-                    </div>
+                    </main>
                     <!-- / Content -->
                     
                     <!-- Footer -->

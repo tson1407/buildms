@@ -154,13 +154,14 @@
                                                     </label>
                                                     <c:set var="currentRole" value="${not empty role ? role : user.role}" />
                                                     <select class="form-select" id="role" name="role" required
-                                                            ${isCurrentUser && user.role == 'Admin' ? '' : ''}>
+                                                            ${isCurrentUser && user.role == 'Admin' ? 'disabled' : ''}>
                                                         <option value="">Select Role</option>
                                                         <c:forEach var="r" items="${roles}">
                                                             <option value="${r}" ${currentRole == r ? 'selected' : ''}>${r}</option>
                                                         </c:forEach>
                                                     </select>
                                                     <c:if test="${isCurrentUser && user.role == 'Admin'}">
+                                                        <input type="hidden" name="role" value="${user.role}" />
                                                         <div class="form-text text-warning">
                                                             <i class="bx bx-info-circle me-1"></i>
                                                             You cannot demote your own admin account.
@@ -326,7 +327,7 @@
                             </div>
                         </div>
                         
-                    </div>
+                    </main>
                     <!-- / Content -->
                     
                     <!-- Footer -->

@@ -21,7 +21,7 @@
             <!-- Sidebar -->
             <jsp:include page="/WEB-INF/common/sidebar.jsp">
                 <jsp:param name="activeMenu" value="sales-orders" />
-                <jsp:param name="activeSubMenu" value="sales-order-create" />
+                <jsp:param name="activeSubMenu" value="order-create" />
             </jsp:include>
             
             <!-- Layout container -->

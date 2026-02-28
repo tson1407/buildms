@@ -511,7 +511,21 @@ public class TransferController extends HttpServlet {
         try {
             Long requestId = Long.parseLong(request.getParameter("id"));
             
-            boolean success = transferService.completeOutboundExecution(requestId, currentUser.getId());
+            // Parse per-item picked quantities from form
+            String[] productIds = request.getParameterValues("productId[]");
+            String[] pickedQtys = request.getParameterValues("pickedQty[]");
+            
+            Map<Long, Integer> pickedQuantities = new HashMap<>();
+            if (productIds != null && pickedQtys != null && productIds.length == pickedQtys.length) {
+                for (int i = 0; i < productIds.length; i++) {
+                    if (productIds[i] != null && !productIds[i].isEmpty()
+                            && pickedQtys[i] != null && !pickedQtys[i].isEmpty()) {
+                        pickedQuantities.put(Long.parseLong(productIds[i]), Integer.parseInt(pickedQtys[i]));
+                    }
+                }
+            }
+            
+            boolean success = transferService.completeOutboundExecution(requestId, currentUser.getId(), pickedQuantities);
             
             if (success) {
                 response.sendRedirect(request.getContextPath() + 
@@ -606,9 +620,10 @@ public class TransferController extends HttpServlet {
         try {
             Long requestId = Long.parseLong(request.getParameter("id"));
             
-            // Parse per-item location assignments
+            // Parse per-item location assignments and received quantities
             String[] productIds = request.getParameterValues("productId[]");
             String[] locationIds = request.getParameterValues("locationId[]");
+            String[] receivedQtys = request.getParameterValues("receivedQty[]");
             
             if (productIds == null || locationIds == null || productIds.length != locationIds.length) {
                 request.setAttribute("errorMessage", "Please assign a location to each item");
@@ -617,10 +632,16 @@ public class TransferController extends HttpServlet {
             }
             
             Map<Long, Long> itemLocationMap = new HashMap<>();
+            Map<Long, Integer> receivedQuantities = new HashMap<>();
             for (int i = 0; i < productIds.length; i++) {
                 if (productIds[i] != null && !productIds[i].isEmpty()
                         && locationIds[i] != null && !locationIds[i].isEmpty()) {
-                    itemLocationMap.put(Long.parseLong(productIds[i]), Long.parseLong(locationIds[i]));
+                    Long prodId = Long.parseLong(productIds[i]);
+                    itemLocationMap.put(prodId, Long.parseLong(locationIds[i]));
+                    if (receivedQtys != null && i < receivedQtys.length
+                            && receivedQtys[i] != null && !receivedQtys[i].isEmpty()) {
+                        receivedQuantities.put(prodId, Integer.parseInt(receivedQtys[i]));
+                    }
                 }
             }
             
@@ -631,7 +652,7 @@ public class TransferController extends HttpServlet {
             }
             
             boolean success = transferService.completeInboundExecution(
-                requestId, currentUser.getId(), itemLocationMap);
+                requestId, currentUser.getId(), itemLocationMap, receivedQuantities);
             
             if (success) {
                 response.sendRedirect(request.getContextPath() + 

@@ -21,7 +21,7 @@
             <!-- Sidebar -->
             <jsp:include page="/WEB-INF/common/sidebar.jsp">
                 <jsp:param name="activeMenu" value="sales-orders" />
-                <jsp:param name="activeSubMenu" value="sales-order-list" />
+                <jsp:param name="activeSubMenu" value="order-list" />
             </jsp:include>
             
             <!-- Layout container -->
@@ -157,8 +157,9 @@
                                                             </c:if>
                                                         </td>
                                                         <td>
-                                                            <fmt:parseDate value="${orderData.order.createdAt}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDate" type="both" />
-                                                            <fmt:formatDate value="${parsedDate}" pattern="dd/MM/yyyy HH:mm" />
+                                                            <c:if test="${not empty orderData.order.createdAt}">
+                                                                ${orderData.order.createdAt.toLocalDate()} ${orderData.order.createdAt.toLocalTime().toString().substring(0, 5)}
+                                                            </c:if>
                                                         </td>
                                                         <td>
                                                             <div class="dropdown">
@@ -203,7 +204,7 @@
                             </div>
                         </div>
                         
-                    </div>
+                    </main>
                     <!-- / Content -->
                     
                     <!-- Footer -->

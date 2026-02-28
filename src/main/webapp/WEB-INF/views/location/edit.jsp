@@ -86,7 +86,7 @@
                                             <div class="mb-4">
                                                 <label for="warehouseName" class="form-label">Warehouse</label>
                                                 <input type="text" class="form-control" id="warehouseName" 
-                                                       value="${warehouseName}" readonly disabled />
+                                                       value="${not empty warehouse ? warehouse.name : ''}" readonly disabled />
                                                 <div class="form-text">
                                                     <i class="bx bx-info-circle me-1"></i>
                                                     Warehouse cannot be changed after creation.
@@ -286,7 +286,7 @@
                             </div>
                         </div>
                         
-                    </div>
+                    </main>
                     <!-- / Content -->
                     
                     <!-- Footer -->

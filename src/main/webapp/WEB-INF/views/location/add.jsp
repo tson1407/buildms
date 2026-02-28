@@ -89,7 +89,7 @@
                                                     <option value="">Select Warehouse</option>
                                                     <c:forEach var="wh" items="${warehouses}">
                                                         <option value="${wh.id}" 
-                                                                ${(selectedWarehouseId == wh.id || param.warehouseId == wh.id) ? 'selected' : ''}>
+                                                                ${(warehouseId == wh.id || param.warehouseId == wh.id) ? 'selected' : ''}>
                                                             ${wh.name}
                                                         </option>
                                                     </c:forEach>
@@ -241,7 +241,7 @@
                             </div>
                         </div>
                         
-                    </div>
+                    </main>
                     <!-- / Content -->
                     
                     <!-- Footer -->

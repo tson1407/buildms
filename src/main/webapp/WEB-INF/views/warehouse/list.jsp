@@ -99,7 +99,7 @@
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">Warehouses</h5>
-                                <span class="badge bg-primary">${warehouses.size()} total</span>
+                                <span class="badge bg-primary">${fn:length(warehouses)} total</span>
                             </div>
                             <div class="table-responsive text-nowrap">
                                 <table class="table table-hover">
@@ -197,7 +197,7 @@
                             </div>
                         </div>
                         
-                    </div>
+                    </main>
                     <!-- / Content -->
                     
                     <!-- Footer -->

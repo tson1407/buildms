@@ -320,6 +320,7 @@ public class UserController extends HttpServlet {
                 request.setAttribute("user", user);
                 request.setAttribute("warehouses", warehouseService.getAllWarehouses());
                 request.setAttribute("roles", userService.getValidRoles());
+                request.setAttribute("isCurrentUser", currentUser != null && currentUser.getId().equals(id));
                 request.getRequestDispatcher("/WEB-INF/views/user/edit.jsp")
                        .forward(request, response);
             }
@@ -329,6 +330,7 @@ public class UserController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/user?action=list");
         } catch (IllegalArgumentException e) {
             Long id = Long.parseLong(idParam);
+            User currentUser2 = getCurrentUser(request);
             User user = userService.getUserById(id);
             request.setAttribute("errorMessage", e.getMessage());
             request.setAttribute("user", user);
@@ -339,6 +341,7 @@ public class UserController extends HttpServlet {
             request.setAttribute("warehouseId", warehouseId);
             request.setAttribute("warehouses", warehouseService.getAllWarehouses());
             request.setAttribute("roles", userService.getValidRoles());
+            request.setAttribute("isCurrentUser", currentUser2 != null && currentUser2.getId().equals(id));
             request.getRequestDispatcher("/WEB-INF/views/user/edit.jsp")
                    .forward(request, response);
         }

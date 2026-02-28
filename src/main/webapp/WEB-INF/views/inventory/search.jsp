@@ -228,7 +228,7 @@
                             </c:choose>
                         </div>
                         
-                    </div>
+                    </main>
                     <!-- / Content -->
                     
                     <jsp:include page="/WEB-INF/common/footer.jsp" />

@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="currentUser" value="${sessionScope.user}" />
 
@@ -112,7 +113,7 @@
                                     <div class="card mb-6">
                                         <div class="card-header d-flex justify-content-between align-items-center">
                                             <h5 class="mb-0">Items to Receive</h5>
-                                            <span class="badge bg-primary">${items.size()} items</span>
+                                            <span class="badge bg-primary">${fn:length(items)} items</span>
                                         </div>
                                         <div class="card-body">
                                             <c:forEach var="item" items="${items}" varStatus="status">
@@ -157,7 +158,7 @@
                                                                 <select class="form-select" name="locationId" required>
                                                                     <option value="">Select location...</option>
                                                                     <c:forEach var="loc" items="${locations}">
-                                                                        <c:if test="${loc.isActive}">
+                                                                        <c:if test="${loc.active}">
                                                                             <option value="${loc.id}" ${item.locationId == loc.id ? 'selected' : ''}>
                                                                                 ${loc.code} (${loc.type})
                                                                             </option>
@@ -212,7 +213,7 @@
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label text-muted small">Total Items</label>
-                                            <p class="mb-0 fw-semibold">${items.size()}</p>
+                                            <p class="mb-0 fw-semibold">${fn:length(items)}</p>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label text-muted small">Expected Date</label>
@@ -250,7 +251,7 @@
                             </div>
                         </div>
                         
-                    </div>
+                    </main>
                     <!-- / Content -->
                     
                     <jsp:include page="/WEB-INF/common/footer.jsp" />

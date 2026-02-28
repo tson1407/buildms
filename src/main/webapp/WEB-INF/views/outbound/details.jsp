@@ -138,7 +138,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <strong>Source Warehouse:</strong>
-                                                <p class="mb-0"><c:out value="${not empty sourceWarehouse ? sourceWarehouse.name : 'N/A'}"/></p>
+                                                <p class="mb-0"><c:out value="${not empty warehouse ? warehouse.name : 'N/A'}"/></p>
                                             </div>
                                         </div>
                                         
@@ -437,7 +437,7 @@
                             </div>
                         </div>
                         
-                    </div>
+                    </main>
                     <!-- / Content -->
                     
                     <jsp:include page="/WEB-INF/common/footer.jsp" />

@@ -99,7 +99,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <span class="text-muted">Source:</span>
-                                        <strong class="ms-2">${sourceWarehouse.name}</strong>
+                                        <strong class="ms-2">${not empty warehouse ? warehouse.name : 'N/A'}</strong>
                                     </div>
                                     <div class="col-md-3">
                                         <span class="text-muted">Reason:</span>
@@ -283,7 +283,7 @@
                             </div>
                         </c:if>
                         
-                    </div>
+                    </main>
                     <!-- / Content -->
                     
                     <jsp:include page="/WEB-INF/common/footer.jsp" />
