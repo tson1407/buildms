@@ -51,22 +51,6 @@
                         <!-- Alerts -->
                         <jsp:include page="/WEB-INF/common/alerts.jsp" />
                         
-                        <c:if test="${not empty successMessage}">
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                <i class="bx bx-check-circle me-2"></i>
-                                ${successMessage}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        </c:if>
-                        
-                        <c:if test="${not empty param.success}">
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                <i class="bx bx-check-circle me-2"></i>
-                                ${param.success}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        </c:if>
-                        
                         <!-- Page Header -->
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h4 class="mb-0">
@@ -93,7 +77,7 @@
                                     </a>
                                 </c:if>
                                 
-                                <c:if test="${order.status != 'Completed' && order.status != 'Cancelled' && order.status != 'FulfillmentRequested' && (currentUser.role == 'Admin' || currentUser.role == 'Manager' || currentUser.role == 'Sales')}">
+                                <c:if test="${order.status != 'Completed' && order.status != 'Cancelled' && (currentUser.role == 'Admin' || currentUser.role == 'Manager' || currentUser.role == 'Sales')}">
                                     <a href="${contextPath}/sales-order?action=cancel&id=${order.id}" class="btn btn-outline-danger">
                                         <i class="bx bx-x-circle me-1"></i> Cancel Order
                                     </a>

@@ -390,6 +390,7 @@ public class LocationController extends HttpServlet {
                     location.setType(type);
                     request.setAttribute("location", location);
                     request.setAttribute("warehouse", warehouseService.getWarehouseById(location.getWarehouseId()));
+                    request.setAttribute("inventoryCount", locationService.getInventoryCount(id));
                 }
                 request.getRequestDispatcher("/WEB-INF/views/location/edit.jsp").forward(request, response);
                 return;
@@ -414,6 +415,7 @@ public class LocationController extends HttpServlet {
                     loc.setType(type);
                     request.setAttribute("location", loc);
                     request.setAttribute("warehouse", warehouseService.getWarehouseById(loc.getWarehouseId()));
+                    request.setAttribute("inventoryCount", locationService.getInventoryCount(id));
                     request.getRequestDispatcher("/WEB-INF/views/location/edit.jsp").forward(request, response);
                     return;
                 }

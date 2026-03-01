@@ -275,6 +275,7 @@ public class WarehouseController extends HttpServlet {
                     warehouse.setName(name);
                     warehouse.setLocation(location);
                     request.setAttribute("warehouse", warehouse);
+                    request.setAttribute("locationCount", warehouseService.getLocationCount(id));
                 }
                 request.getRequestDispatcher("/WEB-INF/views/warehouse/edit.jsp").forward(request, response);
                 return;
@@ -293,6 +294,7 @@ public class WarehouseController extends HttpServlet {
                     existing.setName(name);
                     existing.setLocation(location);
                     request.setAttribute("warehouse", existing);
+                    request.setAttribute("locationCount", warehouseService.getLocationCount(id));
                     request.getRequestDispatcher("/WEB-INF/views/warehouse/edit.jsp").forward(request, response);
                     return;
                 }

@@ -122,7 +122,7 @@
                                             <div class="alert alert-light mb-4">
                                                 <i class="bx bx-lock me-1"></i>
                                                 Password cannot be changed here. Use 
-                                                <a href="${contextPath}/auth?action=resetPassword&id=${user.id}">Admin Reset Password</a> 
+                                                <a href="${contextPath}/user?action=resetPassword&id=${user.id}">Admin Reset Password</a> 
                                                 to reset user password.
                                             </div>
                                             

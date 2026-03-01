@@ -213,7 +213,7 @@
                                                 </a>
                                             </c:if>
                                             <c:if test="${customer.status == 'Active'}">
-                                                <a href="${contextPath}/sales-order?action=add&customerId=${customer.id}" 
+                                                <a href="${contextPath}/sales-order?action=create&customerId=${customer.id}" 
                                                    class="btn btn-outline-success">
                                                     <i class="bx bx-plus me-1"></i>
                                                     Create Sales Order

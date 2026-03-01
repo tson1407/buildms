@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import vn.edu.fpt.swp.model.User;
 import vn.edu.fpt.swp.model.Warehouse;
+import vn.edu.fpt.swp.service.AuthService;
 import vn.edu.fpt.swp.service.UserService;
 import vn.edu.fpt.swp.service.WarehouseService;
 
@@ -23,11 +24,13 @@ public class UserController extends HttpServlet {
     
     private UserService userService;
     private WarehouseService warehouseService;
+    private AuthService authService;
     
     @Override
     public void init() throws ServletException {
         userService = new UserService();
         warehouseService = new WarehouseService();
+        authService = new AuthService();
     }
     
     @Override
@@ -58,6 +61,9 @@ public class UserController extends HttpServlet {
             case "toggle":
                 toggleStatus(request, response);
                 break;
+            case "resetPassword":
+                showResetPasswordForm(request, response);
+                break;
             default:
                 showList(request, response);
         }
@@ -82,6 +88,9 @@ public class UserController extends HttpServlet {
                 break;
             case "edit":
                 processEdit(request, response);
+                break;
+            case "resetPassword":
+                processResetPassword(request, response);
                 break;
             default:
                 response.sendRedirect(request.getContextPath() + "/user?action=list");
@@ -429,5 +438,85 @@ public class UserController extends HttpServlet {
         HttpSession session = request.getSession(false);
         if (session == null) return null;
         return (User) session.getAttribute("user");
+    }
+    
+    /**
+     * UC-AUTH-003: Show admin reset password form
+     */
+    private void showResetPasswordForm(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String idParam = request.getParameter("id");
+        if (idParam == null || idParam.trim().isEmpty()) {
+            request.getSession().setAttribute("errorMessage", "User ID is required");
+            response.sendRedirect(request.getContextPath() + "/user?action=list");
+            return;
+        }
+        try {
+            Long id = Long.parseLong(idParam.trim());
+            User user = userService.getUserById(id);
+            if (user == null) {
+                request.getSession().setAttribute("errorMessage", "User not found");
+                response.sendRedirect(request.getContextPath() + "/user?action=list");
+                return;
+            }
+            request.setAttribute("targetUser", user);
+            request.getRequestDispatcher("/WEB-INF/views/user/reset-password.jsp").forward(request, response);
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "Invalid user ID");
+            response.sendRedirect(request.getContextPath() + "/user?action=list");
+        }
+    }
+    
+    /**
+     * UC-AUTH-003: Process admin reset password
+     */
+    private void processResetPassword(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String idParam = request.getParameter("id");
+        String newPassword = request.getParameter("newPassword");
+        String confirmPassword = request.getParameter("confirmPassword");
+        
+        if (idParam == null || idParam.trim().isEmpty()) {
+            request.getSession().setAttribute("errorMessage", "User ID is required");
+            response.sendRedirect(request.getContextPath() + "/user?action=list");
+            return;
+        }
+        
+        try {
+            Long id = Long.parseLong(idParam.trim());
+            User user = userService.getUserById(id);
+            if (user == null) {
+                request.getSession().setAttribute("errorMessage", "User not found");
+                response.sendRedirect(request.getContextPath() + "/user?action=list");
+                return;
+            }
+            
+            // Validate passwords
+            if (newPassword == null || newPassword.length() < 6) {
+                request.setAttribute("errorMessage", "Password must be at least 6 characters");
+                request.setAttribute("targetUser", user);
+                request.getRequestDispatcher("/WEB-INF/views/user/reset-password.jsp").forward(request, response);
+                return;
+            }
+            
+            if (!newPassword.equals(confirmPassword)) {
+                request.setAttribute("errorMessage", "Passwords do not match");
+                request.setAttribute("targetUser", user);
+                request.getRequestDispatcher("/WEB-INF/views/user/reset-password.jsp").forward(request, response);
+                return;
+            }
+            
+            boolean success = authService.resetPassword(id, newPassword);
+            if (success) {
+                request.getSession().setAttribute("successMessage", "Password reset successfully for " + user.getUsername());
+            } else {
+                request.getSession().setAttribute("errorMessage", "Failed to reset password");
+            }
+            response.sendRedirect(request.getContextPath() + "/user?action=edit&id=" + id);
+            
+        } catch (NumberFormatException e) {
+            request.getSession().setAttribute("errorMessage", "Invalid user ID");
+            response.sendRedirect(request.getContextPath() + "/user?action=list");
+        }
     }
 }

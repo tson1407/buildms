@@ -443,6 +443,12 @@ public class TransferController extends HttpServlet {
         try {
             Long requestId = Long.parseLong(request.getParameter("id"));
             
+            // Capture success message from redirect
+            String success = request.getParameter("success");
+            if (success != null && !success.isEmpty()) {
+                request.setAttribute("successMessage", success);
+            }
+            
             Request transfer = transferService.getTransferRequestById(requestId);
             if (transfer == null) {
                 request.setAttribute("errorMessage", "Transfer request not found");
@@ -549,6 +555,12 @@ public class TransferController extends HttpServlet {
             throws ServletException, IOException {
         try {
             Long requestId = Long.parseLong(request.getParameter("id"));
+            
+            // Capture success message from redirect
+            String success = request.getParameter("success");
+            if (success != null && !success.isEmpty()) {
+                request.setAttribute("successMessage", success);
+            }
             
             Request transfer = transferService.getTransferRequestById(requestId);
             if (transfer == null) {

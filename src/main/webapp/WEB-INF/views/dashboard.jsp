@@ -225,12 +225,11 @@
                                                                     </c:if>
                                                                 </td>
                                                                 <td>
-                                                                    <a href="${contextPath}/${req.type == 'Inbound' ? 'inbound' : 'outbound'}?action=view&id=${req.id}" 
+                                                                    <a href="${contextPath}/${req.type == 'Inbound' ? 'inbound' : 'outbound'}?action=details&id=${req.id}" 
                                                                        class="btn btn-sm btn-outline-primary">
                                                                         View
                                                                     </a>
                                                                 </td>
-                                                            </tr>
                                                             </tr>
                                         </c:forEach>
                                                     </c:when>

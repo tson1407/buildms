@@ -54,14 +54,6 @@
                         <!-- Alerts -->
                         <jsp:include page="/WEB-INF/common/alerts.jsp" />
                         
-                        <c:if test="${not empty errorMessage}">
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <i class="bx bx-error-circle me-2"></i>
-                                ${errorMessage}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        </c:if>
-                        
                         <!-- Page Header -->
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <div>
@@ -146,7 +138,7 @@
                                                                     <c:otherwise>Product #${data.item.productId}</c:otherwise>
                                                                 </c:choose>
                                                             </td>
-                                                            <td><code>${data.product.sku}</code></td>
+                                                            <td><code><c:if test="${not empty data.product}">${data.product.sku}</c:if></code></td>
                                                             <td class="text-center">${data.item.quantity}</td>
                                                             <td class="text-center">
                                                                 <span class="badge bg-info">${data.item.pickedQuantity != null ? data.item.pickedQuantity : 0}</span>
@@ -208,7 +200,7 @@
                                                                     </c:choose>
                                                                     <input type="hidden" name="productId[]" value="${data.item.productId}">
                                                                 </td>
-                                                                <td><code>${data.product.sku}</code></td>
+                                                                <td><code><c:if test="${not empty data.product}">${data.product.sku}</c:if></code></td>
                                                                 <td class="text-center">
                                                                     <span class="badge bg-info">${data.item.pickedQuantity != null ? data.item.pickedQuantity : 0}</span>
                                                                 </td>

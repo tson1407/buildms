@@ -52,14 +52,6 @@
                         <!-- Alerts -->
                         <jsp:include page="/WEB-INF/common/alerts.jsp" />
                         
-                        <c:if test="${not empty errorMessage}">
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <i class="bx bx-error-circle me-2"></i>
-                                ${errorMessage}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        </c:if>
-                        
                         <!-- Page Header -->
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h4 class="mb-0">

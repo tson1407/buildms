@@ -238,7 +238,7 @@
                                                 View Warehouse Locations
                                             </a>
                                             <c:if test="${inventoryCount > 0}">
-                                                <a href="${contextPath}/inventory?action=byLocation&locationId=${location.id}" 
+                                                <a href="${contextPath}/inventory?action=byWarehouse&warehouseId=${location.warehouseId}" 
                                                    class="btn btn-outline-info">
                                                     <i class="bx bx-box me-1"></i>
                                                     View Inventory

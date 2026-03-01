@@ -173,7 +173,7 @@
                                                     </div>
                                                     <div class="col-md-2 text-center">
                                                         <span class="text-muted small d-block">Picked</span>
-                                                        <strong class="fs-5">${item.pickedQuantity}</strong>
+                                                        <strong class="fs-5">${item.pickedQuantity != null ? item.pickedQuantity : 0}</strong>
                                                     </div>
                                                     <div class="col-md-2">
                                                         <c:choose>
@@ -220,7 +220,7 @@
                                                             <div class="mb-3">
                                                                 <div class="d-flex justify-content-between text-muted small mb-2">
                                                                     <span>Requested: ${item.quantity}</span>
-                                                                    <span>Already Picked: ${item.pickedQuantity}</span>
+                                                                    <span>Already Picked: ${item.pickedQuantity != null ? item.pickedQuantity : 0}</span>
                                                                 </div>
                                                                 <div class="d-flex justify-content-between text-muted small mb-3">
                                                                     <span>Remaining: ${item.quantity - item.pickedQuantity}</span>
