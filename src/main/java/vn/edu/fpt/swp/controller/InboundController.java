@@ -198,22 +198,19 @@ public class InboundController extends HttpServlet {
         
         // Get warehouses for filter
         List<Warehouse> warehouses = inboundService.getAllWarehouses();
-        
-        // Build lookup maps for display
-        for (Request req : requests) {
-            if (req.getCreatedBy() != null) {
-                User creator = inboundService.getUserById(req.getCreatedBy());
-                if (creator != null) {
-                    request.setAttribute("userName_" + req.getCreatedBy(), creator.getName());
-                }
-            }
-            if (req.getDestinationWarehouseId() != null) {
-                Warehouse wh = inboundService.getWarehouseById(req.getDestinationWarehouseId());
-                if (wh != null) {
-                    request.setAttribute("warehouseName_" + req.getDestinationWarehouseId(), wh.getName());
-                }
-            }
+
+        // Build lookup maps for display using pre-loaded collections (no N+1 DB calls)
+        java.util.Map<Long, String> warehouseMap = new java.util.HashMap<>();
+        for (Warehouse wh : warehouses) {
+            warehouseMap.put(wh.getId(), wh.getName());
         }
+        java.util.Map<Long, String> userMap = new java.util.HashMap<>();
+        for (User u : inboundService.getAllUsers()) {
+            userMap.put(u.getId(), u.getName());
+        }
+
+        request.setAttribute("warehouseMap", warehouseMap);
+        request.setAttribute("userMap", userMap);
         
         request.setAttribute("requests", requests);
         request.setAttribute("warehouses", warehouses);

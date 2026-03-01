@@ -5,7 +5,9 @@ import vn.edu.fpt.swp.util.DBConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Data Access Object for Category entity
@@ -237,6 +239,29 @@ public class CategoryDAO {
         return categories;
     }
     
+    /**
+     * Get product count per category in one query — avoids N+1 on the list page.
+     *
+     * @return Map of categoryId -> product count
+     */
+    public Map<Long, Integer> getAllProductCounts() {
+        Map<Long, Integer> result = new HashMap<>();
+        String sql = "SELECT categoryId, COUNT(*) AS cnt FROM Products GROUP BY categoryId";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                result.put(rs.getLong("categoryId"), rs.getInt("cnt"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
     /**
      * Map ResultSet row to Category object
      */

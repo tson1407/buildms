@@ -176,8 +176,8 @@
                                                         <td><strong>#<c:out value="${req.id}"/></strong></td>
                                                         <td>
                                                             <c:choose>
-                                                                <c:when test="${not empty requestScope['warehouseName_'.concat(req.destinationWarehouseId)]}">
-                                                                    <c:out value="${requestScope['warehouseName_'.concat(req.destinationWarehouseId)]}"/>
+                                                                <c:when test="${not empty warehouseMap[req.destinationWarehouseId]}">
+                                                                    <c:out value="${warehouseMap[req.destinationWarehouseId]}"/>
                                                                 </c:when>
                                                                 <c:otherwise>
                                                                     <span class="text-muted">-</span>
@@ -186,8 +186,8 @@
                                                         </td>
                                                         <td>
                                                             <c:choose>
-                                                                <c:when test="${not empty requestScope['userName_'.concat(req.createdBy)]}">
-                                                                    <c:out value="${requestScope['userName_'.concat(req.createdBy)]}"/>
+                                                                <c:when test="${not empty userMap[req.createdBy]}">
+                                                                    <c:out value="${userMap[req.createdBy]}"/>
                                                                 </c:when>
                                                                 <c:otherwise>
                                                                     <span class="text-muted">User #<c:out value="${req.createdBy}"/></span>

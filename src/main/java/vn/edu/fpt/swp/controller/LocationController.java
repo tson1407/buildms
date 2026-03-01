@@ -167,18 +167,18 @@ public class LocationController extends HttpServlet {
         // Get all warehouses for filter dropdown and display
         List<Warehouse> warehouses = warehouseService.getAllWarehouses();
         request.setAttribute("warehouses", warehouses);
-        
+
         // Build warehouse name map for display
+        java.util.Map<Long, String> warehouseMap = new java.util.HashMap<>();
         for (Warehouse warehouse : warehouses) {
-            request.setAttribute("warehouseName_" + warehouse.getId(), warehouse.getName());
+            warehouseMap.put(warehouse.getId(), warehouse.getName());
         }
-        
-        // Add inventory count for each location
-        for (Location location : locations) {
-            int inventoryCount = locationService.getInventoryCount(location.getId());
-            request.setAttribute("inventoryCount_" + location.getId(), inventoryCount);
-        }
-        
+        request.setAttribute("warehouseMap", warehouseMap);
+
+        // Fetch all inventory counts in ONE query instead of N per-location queries
+        java.util.Map<Long, Integer> inventoryCountMap = locationService.getAllLocationInventoryCounts();
+        request.setAttribute("inventoryCountMap", inventoryCountMap);
+
         request.setAttribute("locations", locations);
         request.getRequestDispatcher("/WEB-INF/views/location/list.jsp").forward(request, response);
     }

@@ -158,7 +158,7 @@
                                             </c:when>
                                             <c:otherwise>
                                                 <c:forEach var="customer" items="${customers}" varStatus="loop">
-                                                    <c:set var="orderCount" value="${requestScope['orderCount_'.concat(customer.id)]}" />
+                                                    <c:set var="orderCount" value="${orderCountMap[customer.id]}" />
                                                     <tr class="${customer.status == 'Inactive' ? 'table-secondary' : ''}">
                                                         <td><strong><c:out value="${loop.index + 1}"/></strong></td>
                                                         <td>

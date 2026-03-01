@@ -182,8 +182,8 @@
                                             </c:when>
                                             <c:otherwise>
                                                 <c:forEach var="location" items="${locations}" varStatus="loop">
-                                                    <c:set var="warehouseName" value="${requestScope['warehouseName_'.concat(location.warehouseId)]}" />
-                                                    <c:set var="inventoryCount" value="${requestScope['inventoryCount_'.concat(location.id)]}" />
+                                                    <c:set var="warehouseName" value="${warehouseMap[location.warehouseId]}" />
+                                                    <c:set var="inventoryCount" value="${inventoryCountMap[location.id]}" />
                                                     <tr class="${!location.active ? 'table-secondary' : ''}">
                                                         <td><strong><c:out value="${loop.index + 1}"/></strong></td>
                                                         <td>

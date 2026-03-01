@@ -172,8 +172,8 @@
                                             </c:when>
                                             <c:otherwise>
                                                 <c:forEach var="product" items="${products}" varStatus="loop">
-                                                    <c:set var="categoryName" value="${requestScope['categoryName_'.concat(product.categoryId)]}" />
-                                                    <c:set var="totalQty" value="${requestScope['totalQty_'.concat(product.id)]}" />
+                                                    <c:set var="categoryName" value="${categoryMap[product.categoryId]}" />
+                                                    <c:set var="totalQty" value="${inventoryTotals[product.id]}" />
                                                     <tr class="${!product.active ? 'table-secondary' : ''}">
                                                         <td><strong><c:out value="${loop.index + 1}"/></strong></td>
                                                         <td>

@@ -10,6 +10,7 @@ import vn.edu.fpt.swp.model.Product;
 import vn.edu.fpt.swp.model.Warehouse;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -176,6 +177,17 @@ public class ProductService {
      */
     public int getTotalInventoryQuantity(Long productId) {
         return productDAO.getTotalInventoryQuantity(productId);
+    }
+
+    /**
+     * Get total inventory quantities for ALL products in one DB round-trip.
+     * Use this on the product list page instead of calling getTotalInventoryQuantity() per product.
+     *
+     * @return Map of productId -> total quantity
+     */
+    public Map<Long, Integer> getAllProductTotalQuantities() {
+        Map<Long, Integer> result = inventoryDAO.getAllProductTotalQuantities();
+        return result != null ? result : Collections.emptyMap();
     }
     
     /**

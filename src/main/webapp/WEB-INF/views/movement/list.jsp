@@ -153,9 +153,9 @@
                                                         <td><strong>#<c:out value="${req.id}"/></strong></td>
                                                         <td>
                                                             <i class="bx bx-building-house me-1 text-muted"></i>
-                                                            <c:out value="${requestScope['warehouseName_'.concat(req.sourceWarehouseId)]}"/>
+                                                            <c:out value="${warehouseMap[req.sourceWarehouseId]}"/>
                                                         </td>
-                                                        <td><c:out value="${requestScope['userName_'.concat(req.createdBy)]}"/></td>
+                                                        <td><c:out value="${userMap[req.createdBy]}"/></td>
                                                         <td>
                                                             <c:if test="${not empty req.createdAt}">
                                                                 <c:out value="${req.createdAt.toLocalDate()}"/> <c:out value="${req.createdAt.toLocalTime().toString().substring(0, 5)}"/>

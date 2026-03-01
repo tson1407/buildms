@@ -130,12 +130,10 @@ public class WarehouseController extends HttpServlet {
             warehouses = warehouseService.getAllWarehouses();
         }
         
-        // Add location count for each warehouse
-        for (Warehouse warehouse : warehouses) {
-            int locationCount = warehouseService.getLocationCount(warehouse.getId());
-            request.setAttribute("locationCount_" + warehouse.getId(), locationCount);
-        }
-        
+        // Fetch all location counts in ONE query instead of N per-warehouse queries
+        java.util.Map<Long, Integer> locationCountMap = warehouseService.getAllLocationCounts();
+        request.setAttribute("locationCountMap", locationCountMap);
+
         request.setAttribute("warehouses", warehouses);
         request.getRequestDispatcher("/WEB-INF/views/warehouse/list.jsp").forward(request, response);
     }

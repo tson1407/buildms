@@ -109,18 +109,23 @@ public class SalesOrderController extends HttpServlet {
             orders = salesOrderService.getAllSalesOrders();
         }
         
+        // Build lookup maps once — avoids N+1 DB calls per order
+        java.util.Map<Long, Customer> customerMap = new java.util.HashMap<>();
+        for (Customer c : salesOrderService.getAllCustomers()) {
+            customerMap.put(c.getId(), c);
+        }
+        java.util.Map<Long, User> userMap = new java.util.HashMap<>();
+        for (User u : salesOrderService.getAllUsers()) {
+            userMap.put(u.getId(), u);
+        }
+
         // Enrich with customer info
         List<Map<String, Object>> ordersWithDetails = new ArrayList<>();
         for (SalesOrder order : orders) {
             Map<String, Object> orderData = new HashMap<>();
             orderData.put("order", order);
-            
-            Customer customer = salesOrderService.getCustomerById(order.getCustomerId());
-            orderData.put("customer", customer);
-            
-            User creator = salesOrderService.getUserById(order.getCreatedBy());
-            orderData.put("creator", creator);
-            
+            orderData.put("customer", customerMap.get(order.getCustomerId()));
+            orderData.put("creator", userMap.get(order.getCreatedBy()));
             ordersWithDetails.add(orderData);
         }
         

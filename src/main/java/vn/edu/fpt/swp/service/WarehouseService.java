@@ -127,6 +127,16 @@ public class WarehouseService {
     public int getLocationCount(Long warehouseId) {
         return warehouseDAO.countLocations(warehouseId);
     }
+
+    /**
+     * Get location counts for ALL warehouses in one DB round-trip.
+     * Use this on the warehouse list page instead of calling getLocationCount() per warehouse.
+     *
+     * @return Map of warehouseId -> location count
+     */
+    public java.util.Map<Long, Integer> getAllLocationCounts() {
+        return warehouseDAO.getAllLocationCounts();
+    }
     
     /**
      * Check if warehouse has inventory

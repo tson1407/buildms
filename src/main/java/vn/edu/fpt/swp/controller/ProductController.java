@@ -164,16 +164,16 @@ public class ProductController extends HttpServlet {
         request.setAttribute("categories", categories);
         
         // Build category map for display
+        java.util.Map<Long, String> categoryMap = new java.util.HashMap<>();
         for (Category category : categories) {
-            request.setAttribute("categoryName_" + category.getId(), category.getName());
+            categoryMap.put(category.getId(), category.getName());
         }
-        
-        // Add total inventory quantity for each product
-        for (Product product : products) {
-            int totalQty = productService.getTotalInventoryQuantity(product.getId());
-            request.setAttribute("totalQty_" + product.getId(), totalQty);
-        }
-        
+        request.setAttribute("categoryMap", categoryMap);
+
+        // Fetch all inventory totals in ONE query instead of N per-product queries
+        java.util.Map<Long, Integer> inventoryTotals = productService.getAllProductTotalQuantities();
+        request.setAttribute("inventoryTotals", inventoryTotals);
+
         request.setAttribute("products", products);
         request.getRequestDispatcher("/WEB-INF/views/product/list.jsp").forward(request, response);
     }

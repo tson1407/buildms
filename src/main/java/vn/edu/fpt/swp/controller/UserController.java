@@ -131,21 +131,16 @@ public class UserController extends HttpServlet {
         // Get warehouses for filter dropdown and to display warehouse names
         List<Warehouse> warehouses = warehouseService.getAllWarehouses();
         
-        // Set warehouse names for each user
-        for (User user : users) {
-            if (user.getWarehouseId() != null) {
-                for (Warehouse wh : warehouses) {
-                    if (wh.getId() == user.getWarehouseId().intValue()) {
-                        request.setAttribute("warehouseName_" + user.getId(), wh.getName());
-                        break;
-                    }
-                }
-            }
+        // Build warehouse name map — single pass, no extra DB queries
+        java.util.Map<Long, String> warehouseMap = new java.util.HashMap<>();
+        for (Warehouse wh : warehouses) {
+            warehouseMap.put(wh.getId(), wh.getName());
         }
-        
+        request.setAttribute("warehouseMap", warehouseMap);
+
         // Get current user ID for highlighting
         User currentUser = getCurrentUser(request);
-        
+
         request.setAttribute("users", users);
         request.setAttribute("warehouses", warehouses);
         request.setAttribute("keyword", keyword);

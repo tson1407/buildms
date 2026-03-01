@@ -468,6 +468,14 @@ public class MovementService {
     public User getUserById(Long userId) {
         return userDAO.findById(userId);
     }
+
+    /**
+     * Get all users — used for batch display on the list page.
+     * @return List of all users
+     */
+    public List<User> getAllUsers() {
+        return userDAO.getAll();
+    }
     
     /**
      * Get all active products

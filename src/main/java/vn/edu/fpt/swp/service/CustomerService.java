@@ -167,6 +167,16 @@ public class CustomerService {
     public int getOrderCount(Long customerId) {
         return customerDAO.getOrderCount(customerId);
     }
+
+    /**
+     * Get order counts for ALL customers in one DB round-trip.
+     * Use this on the customer list page instead of calling getOrderCount() per customer.
+     *
+     * @return Map of customerId -> order count
+     */
+    public java.util.Map<Long, Integer> getAllOrderCounts() {
+        return customerDAO.getAllOrderCounts();
+    }
     
     /**
      * Check if customer has pending orders

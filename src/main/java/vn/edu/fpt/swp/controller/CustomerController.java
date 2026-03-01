@@ -118,12 +118,10 @@ public class CustomerController extends HttpServlet {
             customers = customerService.getAllCustomers();
         }
         
-        // Get order count for each customer
-        for (Customer customer : customers) {
-            int orderCount = customerService.getOrderCount(customer.getId());
-            request.setAttribute("orderCount_" + customer.getId(), orderCount);
-        }
-        
+        // Fetch all order counts in ONE query instead of N per-customer queries
+        java.util.Map<Long, Integer> orderCountMap = customerService.getAllOrderCounts();
+        request.setAttribute("orderCountMap", orderCountMap);
+
         request.setAttribute("customers", customers);
         request.setAttribute("keyword", keyword);
         request.setAttribute("status", status);

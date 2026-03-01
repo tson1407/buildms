@@ -127,20 +127,24 @@ public class TransferController extends HttpServlet {
                 .collect(Collectors.toList());
         }
         
+        // Build lookup maps once — avoids N+1 DB calls per transfer
+        java.util.Map<Long, Warehouse> warehouseMap = new java.util.HashMap<>();
+        for (Warehouse w : transferService.getAllWarehouses()) {
+            warehouseMap.put(w.getId(), w);
+        }
+        java.util.Map<Long, User> userMap = new java.util.HashMap<>();
+        for (User u : transferService.getAllUsers()) {
+            userMap.put(u.getId(), u);
+        }
+
         // Enrich with warehouse info
         List<Map<String, Object>> transfersWithDetails = new ArrayList<>();
         for (Request transfer : transfers) {
             Map<String, Object> data = new HashMap<>();
             data.put("request", transfer);
-            
-            Warehouse source = transferService.getWarehouseById(transfer.getSourceWarehouseId());
-            Warehouse dest = transferService.getWarehouseById(transfer.getDestinationWarehouseId());
-            User creator = transferService.getUserById(transfer.getCreatedBy());
-            
-            data.put("sourceWarehouse", source);
-            data.put("destinationWarehouse", dest);
-            data.put("creator", creator);
-            
+            data.put("sourceWarehouse", warehouseMap.get(transfer.getSourceWarehouseId()));
+            data.put("destinationWarehouse", warehouseMap.get(transfer.getDestinationWarehouseId()));
+            data.put("creator", userMap.get(transfer.getCreatedBy()));
             transfersWithDetails.add(data);
         }
         

@@ -173,7 +173,7 @@
                                             </c:when>
                                             <c:otherwise>
                                                 <c:forEach var="u" items="${users}" varStatus="loop">
-                                                    <c:set var="warehouseName" value="${requestScope['warehouseName_'.concat(u.id)]}" />
+                                                    <c:set var="warehouseName" value="${warehouseMap[u.warehouseId]}" />
                                                     <c:set var="isCurrentUser" value="${currentUserId == u.id}" />
                                                     <tr class="${u.status == 'Inactive' ? 'table-secondary' : ''} ${isCurrentUser ? 'table-info' : ''}">
                                                         <td><strong><c:out value="${loop.index + 1}"/></strong></td>

@@ -115,12 +115,10 @@ public class CategoryController extends HttpServlet {
             categories = categoryService.getAllCategories();
         }
         
-        // Add product count for each category
-        for (Category category : categories) {
-            int productCount = categoryService.getProductCount(category.getId());
-            request.setAttribute("productCount_" + category.getId(), productCount);
-        }
-        
+        // Fetch all product counts in ONE query instead of N per-category queries
+        java.util.Map<Long, Integer> productCountMap = categoryService.getAllProductCounts();
+        request.setAttribute("productCountMap", productCountMap);
+
         request.setAttribute("categories", categories);
         request.getRequestDispatcher("/WEB-INF/views/category/list.jsp").forward(request, response);
     }

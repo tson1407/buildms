@@ -5,7 +5,9 @@ import vn.edu.fpt.swp.util.DBConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Data Access Object for Warehouse entity
@@ -274,6 +276,29 @@ public class WarehouseDAO {
         return false;
     }
     
+    /**
+     * Get location count per warehouse in one query — avoids N+1 on the list page.
+     *
+     * @return Map of warehouseId -> location count
+     */
+    public Map<Long, Integer> getAllLocationCounts() {
+        Map<Long, Integer> result = new HashMap<>();
+        String sql = "SELECT WarehouseId, COUNT(*) AS cnt FROM Locations GROUP BY WarehouseId";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                result.put(rs.getLong("WarehouseId"), rs.getInt("cnt"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
     /**
      * Map ResultSet row to Warehouse object
      */

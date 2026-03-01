@@ -135,7 +135,7 @@
                                             </c:when>
                                             <c:otherwise>
                                                 <c:forEach var="warehouse" items="${warehouses}" varStatus="status">
-                                                    <c:set var="locationCount" value="${requestScope['locationCount_'.concat(warehouse.id)]}" />
+                                                    <c:set var="locationCount" value="${locationCountMap[warehouse.id]}" />
                                                     <tr>
                                                         <td><strong>${status.index + 1}</strong></td>
                                                         <td>

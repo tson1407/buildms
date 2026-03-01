@@ -5,7 +5,9 @@ import vn.edu.fpt.swp.util.DBConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Data Access Object for Location entity
@@ -428,6 +430,30 @@ public class LocationDAO {
         return 0;
     }
     
+    /**
+     * Get inventory item counts (distinct product lines with qty > 0) per location
+     * in a single query — avoids N+1 calls on the location list page.
+     *
+     * @return Map of locationId -> inventory item count
+     */
+    public Map<Long, Integer> getAllLocationInventoryCounts() {
+        Map<Long, Integer> result = new HashMap<>();
+        String sql = "SELECT LocationId, COUNT(*) AS cnt FROM Inventory WHERE Quantity > 0 GROUP BY LocationId";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                result.put(rs.getLong("LocationId"), rs.getInt("cnt"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
     /**
      * Map ResultSet row to Location object
      */

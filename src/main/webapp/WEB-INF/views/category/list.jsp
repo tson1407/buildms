@@ -134,7 +134,7 @@
                                             </c:when>
                                             <c:otherwise>
                                                 <c:forEach var="category" items="${categories}" varStatus="status">
-                                                    <c:set var="productCount" value="${requestScope['productCount_'.concat(category.id)]}" />
+                                                    <c:set var="productCount" value="${productCountMap[category.id]}" />
                                                     <tr>
                                                         <td><strong>${status.index + 1}</strong></td>
                                                         <td>

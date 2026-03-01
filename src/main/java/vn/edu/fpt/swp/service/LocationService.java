@@ -3,7 +3,9 @@ package vn.edu.fpt.swp.service;
 import vn.edu.fpt.swp.dao.LocationDAO;
 import vn.edu.fpt.swp.model.Location;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service class for location operations
@@ -236,6 +238,17 @@ public class LocationService {
      */
     public int getInventoryCount(Long locationId) {
         return locationDAO.getInventoryCount(locationId);
+    }
+
+    /**
+     * Get inventory item counts for ALL locations in one DB round-trip.
+     * Use this on the location list page instead of calling getInventoryCount() per location.
+     *
+     * @return Map of locationId -> inventory item count
+     */
+    public Map<Long, Integer> getAllLocationInventoryCounts() {
+        Map<Long, Integer> result = locationDAO.getAllLocationInventoryCounts();
+        return result != null ? result : Collections.emptyMap();
     }
     
     /**
