@@ -10,6 +10,7 @@ import vn.edu.fpt.swp.model.*;
 import vn.edu.fpt.swp.service.TransferService;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -262,13 +263,20 @@ public class TransferController extends HttpServlet {
                 return;
             }
             
+            // Parse optional expected date
+            String expectedDateStr = request.getParameter("expectedDate");
+            LocalDateTime expectedDate = null;
+            if (expectedDateStr != null && !expectedDateStr.trim().isEmpty()) {
+                expectedDate = LocalDateTime.parse(expectedDateStr + "T00:00:00");
+            }
+            
             Request transfer = transferService.createTransferRequest(
-                sourceWarehouseId, destinationWarehouseId, currentUser.getId(), items, notes);
+                sourceWarehouseId, destinationWarehouseId, currentUser.getId(), items, notes, expectedDate);
             
             if (transfer != null) {
+                request.getSession().setAttribute("successMessage", "Transfer request created successfully");
                 response.sendRedirect(request.getContextPath() + 
-                    "/transfer?action=view&id=" + transfer.getId() + 
-                    "&success=Transfer request created successfully");
+                    "/transfer?action=view&id=" + transfer.getId());
             } else {
                 request.setAttribute("errorMessage", "Failed to create transfer request");
                 showCreateForm(request, response);
@@ -320,10 +328,11 @@ public class TransferController extends HttpServlet {
             request.setAttribute("creator", creator);
             request.setAttribute("items", items);
             
-            // Check success message
-            String success = request.getParameter("success");
-            if (success != null && !success.isEmpty()) {
-                request.setAttribute("successMessage", success);
+            // Check success message from session flash
+            HttpSession viewSession = request.getSession(false);
+            if (viewSession != null && viewSession.getAttribute("successMessage") != null) {
+                request.setAttribute("successMessage", viewSession.getAttribute("successMessage"));
+                viewSession.removeAttribute("successMessage");
             }
             
             request.getRequestDispatcher("/WEB-INF/views/transfer/view.jsp")
@@ -368,9 +377,9 @@ public class TransferController extends HttpServlet {
             boolean success = transferService.approveTransfer(requestId, currentUser.getId());
             
             if (success) {
+                request.getSession().setAttribute("successMessage", "Transfer approved successfully");
                 response.sendRedirect(request.getContextPath() + 
-                    "/transfer?action=view&id=" + requestId + 
-                    "&success=Transfer approved successfully");
+                    "/transfer?action=view&id=" + requestId);
             } else {
                 request.setAttribute("errorMessage", "Failed to approve transfer");
                 viewTransfer(request, response);
@@ -443,10 +452,11 @@ public class TransferController extends HttpServlet {
         try {
             Long requestId = Long.parseLong(request.getParameter("id"));
             
-            // Capture success message from redirect
-            String success = request.getParameter("success");
-            if (success != null && !success.isEmpty()) {
-                request.setAttribute("successMessage", success);
+            // Check success message from session flash
+            HttpSession outSession = request.getSession(false);
+            if (outSession != null && outSession.getAttribute("successMessage") != null) {
+                request.setAttribute("successMessage", outSession.getAttribute("successMessage"));
+                outSession.removeAttribute("successMessage");
             }
             
             Request transfer = transferService.getTransferRequestById(requestId);
@@ -492,9 +502,9 @@ public class TransferController extends HttpServlet {
             boolean success = transferService.startOutboundExecution(requestId);
             
             if (success) {
+                request.getSession().setAttribute("successMessage", "Outbound picking started");
                 response.sendRedirect(request.getContextPath() + 
-                    "/transfer?action=execute-outbound&id=" + requestId + 
-                    "&success=Outbound picking started");
+                    "/transfer?action=execute-outbound&id=" + requestId);
             } else {
                 request.setAttribute("errorMessage", "Failed to start outbound execution");
                 showOutboundExecutionForm(request, response);
@@ -534,9 +544,9 @@ public class TransferController extends HttpServlet {
             boolean success = transferService.completeOutboundExecution(requestId, currentUser.getId(), pickedQuantities);
             
             if (success) {
+                request.getSession().setAttribute("successMessage", "Outbound completed. Goods are now in transit");
                 response.sendRedirect(request.getContextPath() + 
-                    "/transfer?action=view&id=" + requestId + 
-                    "&success=Outbound completed. Goods are now in transit");
+                    "/transfer?action=view&id=" + requestId);
             } else {
                 request.setAttribute("errorMessage", "Failed to complete outbound");
                 showOutboundExecutionForm(request, response);
@@ -556,10 +566,11 @@ public class TransferController extends HttpServlet {
         try {
             Long requestId = Long.parseLong(request.getParameter("id"));
             
-            // Capture success message from redirect
-            String success = request.getParameter("success");
-            if (success != null && !success.isEmpty()) {
-                request.setAttribute("successMessage", success);
+            // Check success message from session flash
+            HttpSession execSession = request.getSession(false);
+            if (execSession != null && execSession.getAttribute("successMessage") != null) {
+                request.setAttribute("successMessage", execSession.getAttribute("successMessage"));
+                execSession.removeAttribute("successMessage");
             }
             
             Request transfer = transferService.getTransferRequestById(requestId);
@@ -607,9 +618,9 @@ public class TransferController extends HttpServlet {
             boolean success = transferService.startInboundExecution(requestId);
             
             if (success) {
+                request.getSession().setAttribute("successMessage", "Inbound receiving started");
                 response.sendRedirect(request.getContextPath() + 
-                    "/transfer?action=execute-inbound&id=" + requestId + 
-                    "&success=Inbound receiving started");
+                    "/transfer?action=execute-inbound&id=" + requestId);
             } else {
                 request.setAttribute("errorMessage", "Failed to start inbound execution");
                 showInboundExecutionForm(request, response);
@@ -667,9 +678,9 @@ public class TransferController extends HttpServlet {
                 requestId, currentUser.getId(), itemLocationMap, receivedQuantities);
             
             if (success) {
+                request.getSession().setAttribute("successMessage", "Transfer completed successfully");
                 response.sendRedirect(request.getContextPath() + 
-                    "/transfer?action=view&id=" + requestId + 
-                    "&success=Transfer completed successfully");
+                    "/transfer?action=view&id=" + requestId);
             } else {
                 request.setAttribute("errorMessage", "Failed to complete inbound");
                 showInboundExecutionForm(request, response);

@@ -42,7 +42,7 @@
 
                                             <div class="mb-3">
                                                 <label class="form-label">Username</label>
-                                                <input type="text" class="form-control" value="${targetUser.username}" disabled />
+                                                <input type="text" class="form-control" value="<c:out value='${targetUser.username}'/>" disabled />
                                             </div>
 
                                             <div class="mb-3">

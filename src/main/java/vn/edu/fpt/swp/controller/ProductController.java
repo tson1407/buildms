@@ -529,6 +529,16 @@ public class ProductController extends HttpServlet {
                 pendingOrders = productService.getPendingOrderCount(id);
             }
             
+            // Get inventory breakdown (not visible to Sales)
+            if (!"Sales".equals(role)) {
+                HttpSession session = request.getSession(false);
+                User currentUser = (User) session.getAttribute("user");
+                Long warehouseFilter = "Staff".equals(role) ? currentUser.getWarehouseId() : null;
+                java.util.List<java.util.Map<String, Object>> inventoryBreakdown = 
+                    productService.getInventoryBreakdown(id, warehouseFilter);
+                request.setAttribute("inventoryBreakdown", inventoryBreakdown);
+            }
+            
             request.setAttribute("product", product);
             request.setAttribute("category", category);
             request.setAttribute("totalInventory", totalInventory);

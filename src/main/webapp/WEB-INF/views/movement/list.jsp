@@ -50,7 +50,7 @@
                         <c:if test="${not empty sessionScope.successMessage}">
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 <i class="bx bx-check-circle me-2"></i>
-                                ${sessionScope.successMessage}
+                                <c:out value="${sessionScope.successMessage}"/>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <c:remove var="successMessage" scope="session" />
@@ -59,7 +59,7 @@
                         <c:if test="${not empty sessionScope.errorMessage}">
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <i class="bx bx-error-circle me-2"></i>
-                                ${sessionScope.errorMessage}
+                                <c:out value="${sessionScope.errorMessage}"/>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <c:remove var="errorMessage" scope="session" />
@@ -87,9 +87,9 @@
                                     <div class="col-md-4">
                                         <select class="form-select" name="status">
                                             <option value="">All Status</option>
-                                            <option value="Created" ${selectedStatus == 'Created' ? 'selected' : ''}>Created</option>
-                                            <option value="InProgress" ${selectedStatus == 'InProgress' ? 'selected' : ''}>In Progress</option>
-                                            <option value="Completed" ${selectedStatus == 'Completed' ? 'selected' : ''}>Completed</option>
+                                            <option value="Created" <c:out value="${selectedStatus == 'Created' ? 'selected' : ''}"/>>Created</option>
+                                            <option value="InProgress" <c:out value="${selectedStatus == 'InProgress' ? 'selected' : ''}"/>>In Progress</option>
+                                            <option value="Completed" <c:out value="${selectedStatus == 'Completed' ? 'selected' : ''}"/>>Completed</option>
                                         </select>
                                     </div>
                                     
@@ -99,7 +99,7 @@
                                             <select class="form-select" name="warehouseId">
                                                 <option value="">All Warehouses</option>
                                                 <c:forEach var="wh" items="${warehouses}">
-                                                    <option value="${wh.id}" ${selectedWarehouseId == wh.id ? 'selected' : ''}>
+                                                    <option value="<c:out value='${wh.id}'/>" <c:out value="${selectedWarehouseId == wh.id ? 'selected' : ''}"/>>
                                                         <c:out value="${wh.name}"/>
                                                     </option>
                                                 </c:forEach>
@@ -150,7 +150,7 @@
                                             <c:otherwise>
                                                 <c:forEach var="req" items="${requests}">
                                                     <tr>
-                                                        <td><strong>#${req.id}</strong></td>
+                                                        <td><strong>#<c:out value="${req.id}"/></strong></td>
                                                         <td>
                                                             <i class="bx bx-building-house me-1 text-muted"></i>
                                                             <c:out value="${requestScope['warehouseName_'.concat(req.sourceWarehouseId)]}"/>
@@ -158,7 +158,7 @@
                                                         <td><c:out value="${requestScope['userName_'.concat(req.createdBy)]}"/></td>
                                                         <td>
                                                             <c:if test="${not empty req.createdAt}">
-                                                                ${req.createdAt.toLocalDate()} ${req.createdAt.toLocalTime().toString().substring(0, 5)}
+                                                                <c:out value="${req.createdAt.toLocalDate()}"/> <c:out value="${req.createdAt.toLocalTime().toString().substring(0, 5)}"/>
                                                             </c:if>
                                                         </td>
                                                         <td>

@@ -45,7 +45,7 @@
                                     <a href="${contextPath}/outbound">Outbound Requests</a>
                                 </li>
                                 <li class="breadcrumb-item">
-                                    <a href="${contextPath}/outbound?action=details&id=${outboundRequest.id}">Request #${outboundRequest.id}</a>
+                                    <a href="${contextPath}/outbound?action=details&id=${outboundRequest.id}">Request #<c:out value="${outboundRequest.id}"/></a>
                                 </li>
                                 <li class="breadcrumb-item active" aria-current="page">Execute</li>
                             </ol>
@@ -55,7 +55,7 @@
                         <c:if test="${not empty sessionScope.successMessage}">
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 <i class="bx bx-check-circle me-2"></i>
-                                ${sessionScope.successMessage}
+                                <c:out value="${sessionScope.successMessage}"/>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <c:remove var="successMessage" scope="session" />
@@ -64,7 +64,7 @@
                         <c:if test="${not empty sessionScope.errorMessage}">
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <i class="bx bx-error-circle me-2"></i>
-                                ${sessionScope.errorMessage}
+                                <c:out value="${sessionScope.errorMessage}"/>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <c:remove var="errorMessage" scope="session" />
@@ -73,7 +73,7 @@
                         <!-- Page Header -->
                         <div class="d-flex justify-content-between align-items-center mb-6">
                             <h4 class="mb-0">
-                                <i class="bx bx-package me-2"></i>Execute Outbound #${outboundRequest.id}
+                                <i class="bx bx-package me-2"></i>Execute Outbound #<c:out value="${outboundRequest.id}"/>
                             </h4>
                             <div>
                                 <a href="${contextPath}/outbound?action=details&id=${outboundRequest.id}" class="btn btn-outline-secondary">
@@ -99,7 +99,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         <span class="text-muted">Source:</span>
-                                        <strong class="ms-2">${not empty warehouse ? warehouse.name : 'N/A'}</strong>
+                                        <strong class="ms-2"><c:out value="${not empty warehouse ? warehouse.name : 'N/A'}"/></strong>
                                     </div>
                                     <div class="col-md-3">
                                         <span class="text-muted">Reason:</span>
@@ -150,30 +150,30 @@
                                             <div class="card-body">
                                                 <div class="row align-items-center">
                                                     <div class="col-md-4">
-                                                        <h6 class="mb-1">${productName}</h6>
-                                                        <small class="text-muted">${productSku}</small>
+                                                        <h6 class="mb-1"><c:out value="${productName}"/></h6>
+                                                        <small class="text-muted"><c:out value="${productSku}"/></small>
                                                     </div>
                                                     <div class="col-md-2 text-center">
                                                         <span class="text-muted small d-block">Requested</span>
-                                                        <strong class="fs-5">${item.quantity}</strong>
+                                                        <strong class="fs-5"><c:out value="${item.quantity}"/></strong>
                                                     </div>
                                                     <div class="col-md-2 text-center">
                                                         <span class="text-muted small d-block">Available</span>
                                                         <c:choose>
                                                             <c:when test="${available >= item.quantity}">
-                                                                <strong class="fs-5 text-success">${available}</strong>
+                                                                <strong class="fs-5 text-success"><c:out value="${available}"/></strong>
                                                             </c:when>
                                                             <c:when test="${available > 0}">
-                                                                <strong class="fs-5 text-warning">${available}</strong>
+                                                                <strong class="fs-5 text-warning"><c:out value="${available}"/></strong>
                                                             </c:when>
                                                             <c:otherwise>
-                                                                <strong class="fs-5 text-danger">${available != null ? available : 0}</strong>
+                                                                <strong class="fs-5 text-danger"><c:out value="${available != null ? available : 0}"/></strong>
                                                             </c:otherwise>
                                                         </c:choose>
                                                     </div>
                                                     <div class="col-md-2 text-center">
                                                         <span class="text-muted small d-block">Picked</span>
-                                                        <strong class="fs-5">${item.pickedQuantity != null ? item.pickedQuantity : 0}</strong>
+                                                        <strong class="fs-5"><c:out value="${item.pickedQuantity != null ? item.pickedQuantity : 0}"/></strong>
                                                     </div>
                                                     <div class="col-md-2">
                                                         <c:choose>
@@ -185,8 +185,8 @@
                                                             <c:otherwise>
                                                                 <button type="button" class="btn btn-outline-primary btn-sm w-100" 
                                                                         data-bs-toggle="modal" 
-                                                                        data-bs-target="#pickModal${item.productId}"
-                                                                        ${(available == null || available <= 0) ? 'disabled' : ''}>
+                                                                        data-bs-target="#pickModal<c:out value='${item.productId}'/>"
+                                                                        <c:out value="${(available == null || available <= 0) ? 'disabled' : ''}"/>>
                                                                     <i class="bx bx-box me-1"></i>Pick
                                                                 </button>
                                                             </c:otherwise>
@@ -197,7 +197,7 @@
                                                 <c:if test="${available != null && available < item.quantity && item.pickedQuantity < item.quantity}">
                                                     <div class="alert alert-warning mt-3 mb-0 py-2">
                                                         <i class="bx bx-error me-1"></i>
-                                                        <small>Insufficient inventory. Available: ${available}, Needed: ${item.quantity - item.pickedQuantity}</small>
+                                                        <small>Insufficient inventory. Available: <c:out value="${available}"/>, Needed: <c:out value="${item.quantity - item.pickedQuantity}"/></small>
                                                     </div>
                                                 </c:if>
                                             </div>
@@ -213,18 +213,18 @@
                                                         <input type="hidden" name="productId" value="${item.productId}" />
                                                         
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title">Pick: ${productName}</h5>
+                                                            <h5 class="modal-title">Pick: <c:out value="${productName}"/></h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                         </div>
                                                         <div class="modal-body">
                                                             <div class="mb-3">
                                                                 <div class="d-flex justify-content-between text-muted small mb-2">
-                                                                    <span>Requested: ${item.quantity}</span>
-                                                                    <span>Already Picked: ${item.pickedQuantity != null ? item.pickedQuantity : 0}</span>
+                                                                    <span>Requested: <c:out value="${item.quantity}"/></span>
+                                                                    <span>Already Picked: <c:out value="${item.pickedQuantity != null ? item.pickedQuantity : 0}"/></span>
                                                                 </div>
                                                                 <div class="d-flex justify-content-between text-muted small mb-3">
-                                                                    <span>Remaining: ${item.quantity - item.pickedQuantity}</span>
-                                                                    <span>Available: ${available != null ? available : 0}</span>
+                                                                    <span>Remaining: <c:out value="${item.quantity - item.pickedQuantity}"/></span>
+                                                                    <span>Available: <c:out value="${available != null ? available : 0}"/></span>
                                                                 </div>
                                                             </div>
                                                             
@@ -239,16 +239,16 @@
                                                                        name="pickedQuantity" 
                                                                        min="1" 
                                                                        max="${maxPick > 0 ? maxPick : 1}"
-                                                                       value="${maxPick > 0 ? maxPick : 1}"
+                                                                       value="<c:out value='${maxPick > 0 ? maxPick : 1}'/>"
                                                                        required />
                                                                 <small class="text-muted">
-                                                                    Enter quantity picked (max: ${maxPick > 0 ? maxPick : 0})
+                                                                    Enter quantity picked (max: <c:out value="${maxPick > 0 ? maxPick : 0}"/>)
                                                                 </small>
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                            <button type="submit" class="btn btn-primary" ${maxPick <= 0 ? 'disabled' : ''}>
+                                                            <button type="submit" class="btn btn-primary" <c:out value="${maxPick <= 0 ? 'disabled' : ''}"/>>
                                                                 <i class="bx bx-check me-1"></i>Confirm Pick
                                                             </button>
                                                         </div>

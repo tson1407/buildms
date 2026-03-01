@@ -45,7 +45,7 @@
                                     <a href="${contextPath}/transfer">Transfers</a>
                                 </li>
                                 <li class="breadcrumb-item">
-                                    <a href="${contextPath}/transfer?action=view&id=${transfer.id}">#${transfer.id}</a>
+                                    <a href="${contextPath}/transfer?action=view&id=${transfer.id}">#<c:out value="${transfer.id}"/></a>
                                 </li>
                                 <li class="breadcrumb-item active" aria-current="page">Execute Outbound</li>
                             </ol>
@@ -58,7 +58,7 @@
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <div>
                                 <h4 class="mb-1">
-                                    <i class="bx bx-export me-2"></i>Execute Outbound: #${transfer.id}
+                                    <i class="bx bx-export me-2"></i>Execute Outbound: #<c:out value="${transfer.id}"/>
                                 </h4>
                                 <p class="text-muted mb-0">Pick items from source warehouse for transfer</p>
                             </div>
@@ -78,8 +78,8 @@
                                             </div>
                                             <div>
                                                 <h6 class="text-muted mb-1">Source Warehouse</h6>
-                                                <h5 class="mb-0">${sourceWarehouse.name}</h5>
-                                                <small class="text-muted">${sourceWarehouse.location}</small>
+                                                <h5 class="mb-0"><c:out value="${sourceWarehouse.name}"/></h5>
+                                                <small class="text-muted"><c:out value="${sourceWarehouse.location}"/></small>
                                             </div>
                                         </div>
                                     </div>
@@ -94,8 +94,8 @@
                                             </div>
                                             <div>
                                                 <h6 class="text-muted mb-1">Destination Warehouse</h6>
-                                                <h5 class="mb-0">${destinationWarehouse.name}</h5>
-                                                <small class="text-muted">${destinationWarehouse.location}</small>
+                                                <h5 class="mb-0"><c:out value="${destinationWarehouse.name}"/></h5>
+                                                <small class="text-muted"><c:out value="${destinationWarehouse.location}"/></small>
                                             </div>
                                         </div>
                                     </div>
@@ -149,8 +149,8 @@
                                                                     <code><c:out value="${check.product.sku}"/></code>
                                                                 </c:if>
                                                             </td>
-                                                            <td class="text-center">${check.item.quantity}</td>
-                                                            <td class="text-center">${check.available}</td>
+                                                            <td class="text-center"><c:out value="${check.item.quantity}"/></td>
+                                                            <td class="text-center"><c:out value="${check.available}"/></td>
                                                             <td class="text-center">
                                                                 <c:choose>
                                                                     <c:when test="${check.available >= check.item.quantity}">
@@ -240,12 +240,12 @@
                                                                         <code><c:out value="${check.product.sku}"/></code>
                                                                     </c:if>
                                                                 </td>
-                                                                <td class="text-center">${check.item.quantity}</td>
-                                                                <td class="text-center">${check.available}</td>
+                                                                <td class="text-center"><c:out value="${check.item.quantity}"/></td>
+                                                                <td class="text-center"><c:out value="${check.available}"/></td>
                                                                 <td class="text-center">
                                                                     <input type="number" name="pickedQty[]" 
                                                                            class="form-control form-control-sm text-center"
-                                                                           value="${check.item.quantity <= check.available ? check.item.quantity : check.available}"
+                                                                           value="<c:out value='${check.item.quantity <= check.available ? check.item.quantity : check.available}'/>"
                                                                            min="0" max="${check.available}" required>
                                                                 </td>
                                                             </tr>
@@ -268,7 +268,7 @@
                                 <div class="alert alert-info">
                                     <i class="bx bx-info-circle me-2"></i>
                                     This transfer is not in a state that requires outbound execution.
-                                    Current status: <strong>${transfer.status}</strong>
+                                    Current status: <strong><c:out value="${transfer.status}"/></strong>
                                 </div>
                             </c:otherwise>
                         </c:choose>

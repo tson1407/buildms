@@ -45,7 +45,7 @@
                                 <li class="breadcrumb-item">
                                     <a href="${contextPath}/movement">Internal Movements</a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Details #${movementRequest.id}</li>
+                                <li class="breadcrumb-item active" aria-current="page">Details #<c:out value="${movementRequest.id}"/></li>
                             </ol>
                         </nav>
                         
@@ -53,7 +53,7 @@
                         <c:if test="${not empty sessionScope.successMessage}">
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 <i class="bx bx-check-circle me-2"></i>
-                                ${sessionScope.successMessage}
+                                <c:out value="${sessionScope.successMessage}"/>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <c:remove var="successMessage" scope="session" />
@@ -62,7 +62,7 @@
                         <c:if test="${not empty sessionScope.errorMessage}">
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <i class="bx bx-error-circle me-2"></i>
-                                ${sessionScope.errorMessage}
+                                <c:out value="${sessionScope.errorMessage}"/>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <c:remove var="errorMessage" scope="session" />
@@ -71,7 +71,7 @@
                         <!-- Page Header -->
                         <div class="d-flex justify-content-between align-items-center mb-6">
                             <h4 class="mb-0">
-                                <i class="bx bx-transfer me-2"></i>Movement #${movementRequest.id}
+                                <i class="bx bx-transfer me-2"></i>Movement #<c:out value="${movementRequest.id}"/>
                             </h4>
                             <div>
                                 <a href="${contextPath}/movement" class="btn btn-outline-secondary me-2">
@@ -94,7 +94,7 @@
                                 <div class="row">
                                     <div class="col-md-3 mb-3">
                                         <p class="text-muted mb-1">Request ID</p>
-                                        <p class="fw-bold">#${movementRequest.id}</p>
+                                        <p class="fw-bold">#<c:out value="${movementRequest.id}"/></p>
                                     </div>
                                     <div class="col-md-3 mb-3">
                                         <p class="text-muted mb-1">Type</p>
@@ -131,7 +131,7 @@
                                         <p class="text-muted mb-1">Created Date</p>
                                         <p class="fw-bold">
                                             <c:if test="${not empty movementRequest.createdAt}">
-                                                ${movementRequest.createdAt.toLocalDate()} ${movementRequest.createdAt.toLocalTime().toString().substring(0, 5)}
+                                                <c:out value="${movementRequest.createdAt.toLocalDate()}"/> <c:out value="${movementRequest.createdAt.toLocalTime().toString().substring(0, 5)}"/>
                                             </c:if>
                                         </p>
                                     </div>
@@ -144,7 +144,7 @@
                                             <p class="text-muted mb-1">Completed Date</p>
                                             <p class="fw-bold">
                                                 <c:if test="${not empty movementRequest.completedDate}">
-                                                    ${movementRequest.completedDate.toLocalDate()} ${movementRequest.completedDate.toLocalTime().toString().substring(0, 5)}
+                                                    <c:out value="${movementRequest.completedDate.toLocalDate()}"/> <c:out value="${movementRequest.completedDate.toLocalTime().toString().substring(0, 5)}"/>
                                                 </c:if>
                                             </p>
                                         </div>
@@ -203,7 +203,7 @@
                                                     <span class="text-muted">(<c:out value="${destLoc.type}"/>)</span>
                                                 </td>
                                                 <td>
-                                                    <span class="fw-bold">${item.quantity}</span>
+                                                    <span class="fw-bold"><c:out value="${item.quantity}"/></span>
                                                     <span class="text-muted"><c:out value="${product.unit}"/></span>
                                                 </td>
                                             </tr>

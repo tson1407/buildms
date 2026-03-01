@@ -50,7 +50,7 @@
                         <c:if test="${not empty sessionScope.successMessage}">
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 <i class="bx bx-check-circle me-2"></i>
-                                ${sessionScope.successMessage}
+                                <c:out value="${sessionScope.successMessage}"/>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <c:remove var="successMessage" scope="session" />
@@ -59,7 +59,7 @@
                         <c:if test="${not empty sessionScope.errorMessage}">
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <i class="bx bx-error-circle me-2"></i>
-                                ${sessionScope.errorMessage}
+                                <c:out value="${sessionScope.errorMessage}"/>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <c:remove var="errorMessage" scope="session" />
@@ -86,7 +86,7 @@
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="bx bx-search"></i></span>
                                             <input type="text" class="form-control" name="keyword" 
-                                                   value="${keyword}" placeholder="Search username/email..." />
+                                                   value="<c:out value='${keyword}'/>" placeholder="Search username/email..." />
                                         </div>
                                     </div>
                                     
@@ -95,7 +95,7 @@
                                         <select class="form-select" name="role">
                                             <option value="">All Roles</option>
                                             <c:forEach var="r" items="${roles}">
-                                                <option value="${r}" ${role == r ? 'selected' : ''}>${r}</option>
+                                                <option value="<c:out value='${r}'/>" <c:out value="${role == r ? 'selected' : ''}"/>><c:out value="${r}"/></option>
                                             </c:forEach>
                                         </select>
                                     </div>
@@ -104,8 +104,8 @@
                                     <div class="col-md-2">
                                         <select class="form-select" name="status">
                                             <option value="">All Status</option>
-                                            <option value="Active" ${status == 'Active' ? 'selected' : ''}>Active</option>
-                                            <option value="Inactive" ${status == 'Inactive' ? 'selected' : ''}>Inactive</option>
+                                            <option value="Active" <c:out value="${status == 'Active' ? 'selected' : ''}"/>>Active</option>
+                                            <option value="Inactive" <c:out value="${status == 'Inactive' ? 'selected' : ''}"/>>Inactive</option>
                                         </select>
                                     </div>
                                     
@@ -114,8 +114,8 @@
                                         <select class="form-select" name="warehouseId">
                                             <option value="">All Warehouses</option>
                                             <c:forEach var="wh" items="${warehouses}">
-                                                <option value="${wh.id}" ${warehouseId == wh.id ? 'selected' : ''}>
-                                                    ${wh.name}
+                                                <option value="<c:out value='${wh.id}'/>" <c:out value="${warehouseId == wh.id ? 'selected' : ''}"/>>
+                                                    <c:out value="${wh.name}"/>
                                                 </option>
                                             </c:forEach>
                                         </select>
@@ -176,39 +176,39 @@
                                                     <c:set var="warehouseName" value="${requestScope['warehouseName_'.concat(u.id)]}" />
                                                     <c:set var="isCurrentUser" value="${currentUserId == u.id}" />
                                                     <tr class="${u.status == 'Inactive' ? 'table-secondary' : ''} ${isCurrentUser ? 'table-info' : ''}">
-                                                        <td><strong>${loop.index + 1}</strong></td>
+                                                        <td><strong><c:out value="${loop.index + 1}"/></strong></td>
                                                         <td>
-                                                            <span class="fw-medium">${u.username}</span>
+                                                            <span class="fw-medium"><c:out value="${u.username}"/></span>
                                                             <c:if test="${isCurrentUser}">
                                                                 <span class="badge bg-info ms-1">You</span>
                                                             </c:if>
                                                         </td>
-                                                        <td>${u.name}</td>
+                                                        <td><c:out value="${u.name}"/></td>
                                                         <td>
-                                                            <a href="mailto:${u.email}" class="text-primary">
-                                                                ${u.email}
+                                                            <a href="mailto:<c:out value='${u.email}'/>" class="text-primary">
+                                                                <c:out value="${u.email}"/>
                                                             </a>
                                                         </td>
                                                         <td>
                                                             <c:choose>
                                                                 <c:when test="${u.role == 'Admin'}">
-                                                                    <span class="badge bg-danger">${u.role}</span>
+                                                                    <span class="badge bg-danger"><c:out value="${u.role}"/></span>
                                                                 </c:when>
                                                                 <c:when test="${u.role == 'Manager'}">
-                                                                    <span class="badge bg-warning">${u.role}</span>
+                                                                    <span class="badge bg-warning"><c:out value="${u.role}"/></span>
                                                                 </c:when>
                                                                 <c:when test="${u.role == 'Staff'}">
-                                                                    <span class="badge bg-primary">${u.role}</span>
+                                                                    <span class="badge bg-primary"><c:out value="${u.role}"/></span>
                                                                 </c:when>
                                                                 <c:otherwise>
-                                                                    <span class="badge bg-info">${u.role}</span>
+                                                                    <span class="badge bg-info"><c:out value="${u.role}"/></span>
                                                                 </c:otherwise>
                                                             </c:choose>
                                                         </td>
                                                         <td>
                                                             <c:choose>
                                                                 <c:when test="${not empty warehouseName}">
-                                                                    ${warehouseName}
+                                                                    <c:out value="${warehouseName}"/>
                                                                 </c:when>
                                                                 <c:otherwise>
                                                                     <span class="text-muted">-</span>
@@ -247,10 +247,10 @@
                                                                                 class="btn btn-sm ${u.status == 'Active' ? 'btn-outline-warning' : 'btn-outline-success'}" 
                                                                                 data-bs-toggle="modal" 
                                                                                 data-bs-target="#toggleModal"
-                                                                                data-user-id="${u.id}"
-                                                                                data-user-name="${u.username}"
-                                                                                data-user-status="${u.status}"
-                                                                                title="${u.status == 'Active' ? 'Deactivate' : 'Activate'}">
+                                                                                data-user-id="<c:out value='${u.id}'/>"
+                                                                                data-user-name="<c:out value='${u.username}'/>"
+                                                                                data-user-status="<c:out value='${u.status}'/>"
+                                                                                title="<c:out value='${u.status == 'Active' ? 'Deactivate' : 'Activate'}'/>">
                                                                             <i class="bx ${u.status == 'Active' ? 'bx-block' : 'bx-check'}"></i>
                                                                         </button>
                                                                     </c:otherwise>

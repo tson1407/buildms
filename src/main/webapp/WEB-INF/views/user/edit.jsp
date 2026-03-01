@@ -76,7 +76,7 @@
                                         <c:if test="${not empty errorMessage}">
                                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                                 <i class="bx bx-error-circle me-2"></i>
-                                                ${errorMessage}
+                                                <c:out value="${errorMessage}"/>
                                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                             </div>
                                         </c:if>
@@ -103,7 +103,7 @@
                                                     </label>
                                                     <input type="text" class="form-control" id="username" name="username" 
                                                            placeholder="Enter username" 
-                                                           value="${not empty username ? username : user.username}" 
+                                                           value="<c:out value='${not empty username ? username : user.username}'/>" 
                                                            maxlength="100" 
                                                            required />
                                                 </div>
@@ -113,7 +113,7 @@
                                                     </label>
                                                     <input type="email" class="form-control" id="email" name="email" 
                                                            placeholder="Enter email address" 
-                                                           value="${not empty email ? email : user.email}" 
+                                                           value="<c:out value='${not empty email ? email : user.email}'/>" 
                                                            maxlength="255" 
                                                            required />
                                                 </div>
@@ -137,7 +137,7 @@
                                                 </label>
                                                 <input type="text" class="form-control" id="name" name="name" 
                                                        placeholder="Enter full name" 
-                                                       value="${not empty name ? name : user.name}" 
+                                                       value="<c:out value='${not empty name ? name : user.name}'/>" 
                                                        maxlength="255" 
                                                        required />
                                             </div>
@@ -154,10 +154,10 @@
                                                     </label>
                                                     <c:set var="currentRole" value="${not empty role ? role : user.role}" />
                                                     <select class="form-select" id="role" name="role" required
-                                                            ${isCurrentUser && user.role == 'Admin' ? 'disabled' : ''}>
+                                                            <c:out value="${isCurrentUser && user.role == 'Admin' ? 'disabled' : ''}"/>>
                                                         <option value="">Select Role</option>
                                                         <c:forEach var="r" items="${roles}">
-                                                            <option value="${r}" ${currentRole == r ? 'selected' : ''}>${r}</option>
+                                                            <option value="<c:out value='${r}'/>" <c:out value="${currentRole == r ? 'selected' : ''}"/>><c:out value="${r}"/></option>
                                                         </c:forEach>
                                                     </select>
                                                     <c:if test="${isCurrentUser && user.role == 'Admin'}">
@@ -174,8 +174,8 @@
                                                     <select class="form-select" id="warehouseId" name="warehouseId">
                                                         <option value="">No Assignment</option>
                                                         <c:forEach var="wh" items="${warehouses}">
-                                                            <option value="${wh.id}" ${currentWarehouseId == wh.id ? 'selected' : ''}>
-                                                                ${wh.name}
+                                                            <option value="<c:out value='${wh.id}'/>" <c:out value="${currentWarehouseId == wh.id ? 'selected' : ''}"/>>
+                                                                <c:out value="${wh.name}"/>
                                                             </option>
                                                         </c:forEach>
                                                     </select>
@@ -222,7 +222,7 @@
                                             <span class="me-3">Created:</span>
                                             <small class="text-muted">
                                                 <c:if test="${not empty user.createdAt}">
-                                                    ${user.createdAt.toLocalDate()}
+                                                    <c:out value="${user.createdAt.toLocalDate()}"/>
                                                 </c:if>
                                             </small>
                                         </div>
@@ -232,7 +232,7 @@
                                             <small class="text-muted">
                                                 <c:choose>
                                                     <c:when test="${not empty user.lastLogin}">
-                                                        ${user.lastLogin.toLocalDate()} ${user.lastLogin.toLocalTime().withNano(0)}
+                                                        <c:out value="${user.lastLogin.toLocalDate()}"/> <c:out value="${user.lastLogin.toLocalTime().withNano(0)}"/>
                                                     </c:when>
                                                     <c:otherwise>
                                                         Never

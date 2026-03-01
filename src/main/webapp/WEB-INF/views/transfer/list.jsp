@@ -48,14 +48,6 @@
                         <!-- Alerts -->
                         <jsp:include page="/WEB-INF/common/alerts.jsp" />
                         
-                        <c:if test="${not empty param.success}">
-                            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                <i class="bx bx-check-circle me-2"></i>
-                                <c:out value="${param.success}"/>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        </c:if>
-                        
                         <!-- Page Header -->
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h4 class="mb-0">
@@ -76,13 +68,13 @@
                                         <label class="form-label">Status</label>
                                         <select name="status" class="form-select">
                                             <option value="">All Status</option>
-                                            <option value="Created" ${selectedStatus == 'Created' ? 'selected' : ''}>Created</option>
-                                            <option value="Approved" ${selectedStatus == 'Approved' ? 'selected' : ''}>Approved</option>
-                                            <option value="InProgress" ${selectedStatus == 'InProgress' ? 'selected' : ''}>Outbound In Progress</option>
-                                            <option value="InTransit" ${selectedStatus == 'InTransit' ? 'selected' : ''}>In Transit</option>
-                                            <option value="Receiving" ${selectedStatus == 'Receiving' ? 'selected' : ''}>Receiving</option>
-                                            <option value="Completed" ${selectedStatus == 'Completed' ? 'selected' : ''}>Completed</option>
-                                            <option value="Rejected" ${selectedStatus == 'Rejected' ? 'selected' : ''}>Rejected</option>
+                                            <option value="Created" <c:out value="${selectedStatus == 'Created' ? 'selected' : ''}"/>>Created</option>
+                                            <option value="Approved" <c:out value="${selectedStatus == 'Approved' ? 'selected' : ''}"/>>Approved</option>
+                                            <option value="InProgress" <c:out value="${selectedStatus == 'InProgress' ? 'selected' : ''}"/>>Outbound In Progress</option>
+                                            <option value="InTransit" <c:out value="${selectedStatus == 'InTransit' ? 'selected' : ''}"/>>In Transit</option>
+                                            <option value="Receiving" <c:out value="${selectedStatus == 'Receiving' ? 'selected' : ''}"/>>Receiving</option>
+                                            <option value="Completed" <c:out value="${selectedStatus == 'Completed' ? 'selected' : ''}"/>>Completed</option>
+                                            <option value="Rejected" <c:out value="${selectedStatus == 'Rejected' ? 'selected' : ''}"/>>Rejected</option>
                                         </select>
                                     </div>
                                     <div class="col-md-2 d-flex align-items-end">
@@ -124,7 +116,7 @@
                                             <c:otherwise>
                                                 <c:forEach var="data" items="${transfers}">
                                                     <tr>
-                                                        <td><strong>#${data.request.id}</strong></td>
+                                                        <td><strong>#<c:out value="${data.request.id}"/></strong></td>
                                                         <td>
                                                             <c:if test="${not empty data.sourceWarehouse}">
                                                                 <c:out value="${data.sourceWarehouse.name}"/>
@@ -159,7 +151,7 @@
                                                                     <span class="badge bg-label-danger">Rejected</span>
                                                                 </c:when>
                                                                 <c:otherwise>
-                                                                    <span class="badge bg-label-secondary">${data.request.status}</span>
+                                                                    <span class="badge bg-label-secondary"><c:out value="${data.request.status}"/></span>
                                                                 </c:otherwise>
                                                             </c:choose>
                                                         </td>
@@ -170,7 +162,7 @@
                                                         </td>
                                                         <td>
                                                             <c:if test="${not empty data.request.createdAt}">
-                                                                ${data.request.createdAt.toLocalDate()} ${data.request.createdAt.toLocalTime().toString().substring(0, 5)}
+                                                                <c:out value="${data.request.createdAt.toLocalDate()}"/> <c:out value="${data.request.createdAt.toLocalTime().toString().substring(0, 5)}"/>
                                                             </c:if>
                                                         </td>
                                                         <td>

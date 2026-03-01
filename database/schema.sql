@@ -197,6 +197,9 @@ BEGIN
         Status NVARCHAR(50) NOT NULL, -- Draft / Confirmed / FulfillmentRequested / Completed / Cancelled
         CreatedBy BIGINT NOT NULL,
         CreatedAt DATETIME2 DEFAULT GETDATE(),
+        OrderDate DATETIME2 NULL,
+        RequiredDeliveryDate DATETIME2 NULL,
+        Notes NVARCHAR(1000) NULL,
         ConfirmedBy BIGINT NULL,
         ConfirmedDate DATETIME2 NULL,
         CancelledBy BIGINT NULL,
@@ -215,6 +218,7 @@ BEGIN
         SalesOrderId BIGINT NOT NULL,
         ProductId BIGINT NOT NULL,
         Quantity INT NOT NULL,
+        FulfilledQuantity INT NOT NULL DEFAULT 0,
         PRIMARY KEY (SalesOrderId, ProductId),
         CONSTRAINT FK_SOItem_Order FOREIGN KEY (SalesOrderId) REFERENCES SalesOrders(Id),
         CONSTRAINT FK_SOItem_Product FOREIGN KEY (ProductId) REFERENCES Products(Id)

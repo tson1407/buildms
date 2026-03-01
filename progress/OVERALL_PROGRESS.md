@@ -144,5 +144,18 @@ All 48 use cases across 13 modules have been successfully implemented!
 ## References
 - [Detail Design Documents](../document/detail-design/) - Complete use case specifications
 - [SRS](../document/SRS.md) - System requirements
-- [Progress Folder](./) - Implementation details for completed modules</content>
+- [Progress Folder](./) - Implementation details for completed modules
+
+## Changelog
+
+### March 1, 2026 — Navigation Simplification
+- **Removed** Suppliers menu from Administration section (feature was never implemented)
+- **Removed** "Add X" shortcut sub-menu items from all catalog items (Products, Categories,
+  Warehouses, Locations, Users, Customers); Add actions are accessed via the `+` button on
+  each list page
+- **Merged** "Inventory Management" + "Warehouse Operations" sidebar sections into a single
+  **"Catalog & Setup"** section — reduces visual clutter while preserving all functionality
+- **Renamed** "Request Management" section to **"Operations"** for clarity
+- Admin navigation reduced from ~35 sidebar items to ~22 (37% reduction)
+- All existing URLs and controller actions are unchanged; only sidebar presentation was updated</content>
 <parameter name="filePath">c:\Users\buitu\Downloads\SWP\buildms\progress\OVERALL_PROGRESS.md

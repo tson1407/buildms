@@ -161,8 +161,8 @@ Roles: `Admin`, `Manager`, `Staff`, `Sales`
 | `/warehouse`, `/location` | Admin, Manager |
 | `/category/add`, `/category/edit`, `/category/delete` | Admin, Manager |
 | `/product/add`, `/product/edit`, `/product/toggle` | Admin, Manager |
-| `/inbound`, `/outbound`, `/transfer`, `/movement`, `/inventory` | Admin, Manager, Staff |
-| `/sales-order`, `/customer` | Admin, Manager, Sales |
+| `/inbound`, `/outbound`, `/transfer`, `/movement`, `/inventory` | Manager, Staff |
+| `/sales-order`, `/customer` | Manager, Sales |
 | `/dashboard`, `/profile`, `/product`, `/category` | All authenticated |
 
 - Authorization enforced by `AuthFilter` (`@WebFilter("/*")`) using `ROLE_ACCESS_MAP`
@@ -425,21 +425,32 @@ Transfer requests move goods between warehouses via a two-phase execution:
 8. Verify implementation matches all flows in the detail design document
 
 ## Sidebar Menu Configuration
-The sidebar (`WEB-INF/common/sidebar.jsp`) uses parameters to highlight active menu items:
+The sidebar (`WEB-INF/common/sidebar.jsp`) uses parameters to highlight active menu items.
+
+> **Simplified navigation (March 2026):** Sections were consolidated and redundant
+> "Add X" shortcut sub-items were removed from catalog items. Suppliers (never
+> implemented) was removed entirely. Use the `+` button on each list page to add.
 
 | Parameter | Values |
 |-----------|--------|
-| `activeMenu` | `dashboard`, `products`, `categories`, `inventory`, `warehouses`, `locations`, `inbound`, `outbound`, `movement`, `transfers`, `customers`, `sales-orders`, `users`, `suppliers`, `profile`, `change-password` |
-| `activeSubMenu` | `product-list`, `product-add`, `category-list`, `category-add`, `warehouse-list`, `warehouse-add`, `location-list`, `location-add`, `inventory-warehouse`, `inventory-product`, `inbound-list`, `inbound-create`, `outbound-list`, `outbound-create`, `movement-list`, `movement-create`, `transfer-list`, `transfer-create`, `customer-list`, `customer-add`, `order-list`, `order-create`, `user-list`, `user-add`, `supplier-list`, `supplier-add` |
+| `activeMenu` | `dashboard`, `products`, `categories`, `inventory`, `warehouses`, `locations`, `inbound`, `outbound`, `movement`, `transfers`, `customers`, `sales-orders`, `users`, `profile`, `change-password` |
+| `activeSubMenu` | `inventory-warehouse`, `inventory-product`, `inbound-list`, `inbound-create`, `outbound-list`, `outbound-create`, `movement-list`, `movement-create`, `transfer-list`, `transfer-create`, `order-list`, `order-create` |
+
+**Notes on `activeSubMenu`:** Only Operation and Sales Order menu items have sub-menus now.
+Catalog items (Products, Categories, Warehouses, Locations, Users, Customers) are direct links —
+pass only `activeMenu` for those pages.
 
 ### Sidebar Menu Sections (role-based visibility)
 | Section | Menu Items | Visible To |
 |---------|-----------|------------|
-| Inventory Management | Products, Categories, Inventory | All (manage: Admin/Manager) |
-| Warehouse Operations | Warehouses, Locations | Admin, Manager |
-| Request Management | Inbound, Outbound, Movement, Transfers | Admin, Manager, Staff |
-| Sales | Customers, Sales Orders | Admin, Manager, Sales |
-| Administration | Users, Suppliers | Admin only |
+| Catalog & Setup | Products, Categories, Warehouses\*, Locations\*\* | All authenticated (manage: Admin/Manager) |
+| Operations | Inbound, Outbound, Movement, Transfers, Inventory | Manager, Staff |
+| Sales | Customers, Sales Orders | Manager, Sales |
+| Administration | Users | Admin only |
 | Account | My Profile, Change Password | All |
 
-Menu items are role-based and automatically show/hide based on `sessionScope.user.role`.
+\* Warehouses: Admin and Manager only  
+\*\* Locations: Admin and Manager only (simplified from previous Admin/Manager/Staff)
+
+**Admin sees:** Dashboard · Products · Categories · Warehouses · Locations · Users · Profile · Change Password  
+**Admin does NOT see:** Inventory, Inbound, Outbound, Movement, Transfers, Customers, Sales Orders

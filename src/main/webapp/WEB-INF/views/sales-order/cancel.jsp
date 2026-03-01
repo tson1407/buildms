@@ -45,7 +45,7 @@
                                     <a href="${contextPath}/sales-order">Sales Orders</a>
                                 </li>
                                 <li class="breadcrumb-item">
-                                    <a href="${contextPath}/sales-order?action=view&id=${order.id}">${order.orderNo}</a>
+                                    <a href="${contextPath}/sales-order?action=view&id=${order.id}"><c:out value="${order.orderNo}"/></a>
                                 </li>
                                 <li class="breadcrumb-item active" aria-current="page">Cancel Order</li>
                             </ol>
@@ -65,7 +65,7 @@
                             <c:when test="${cancellationStatus.canCancel == false}">
                                 <div class="alert alert-danger">
                                     <i class="bx bx-error-circle me-2"></i>
-                                    ${cancellationStatus.reason}
+                                    <c:out value="${cancellationStatus.reason}"/>
                                 </div>
                                 <a href="${contextPath}/sales-order?action=view&id=${order.id}" class="btn btn-outline-secondary">
                                     <i class="bx bx-arrow-back me-1"></i> Back to Order
@@ -82,8 +82,8 @@
                                     <div class="card-body">
                                         <div class="row mb-3">
                                             <div class="col-md-6">
-                                                <p><strong>Order No:</strong> ${order.orderNo}</p>
-                                                <p><strong>Customer:</strong> ${customer.name}</p>
+                                                <p><strong>Order No:</strong> <c:out value="${order.orderNo}"/></p>
+                                                <p><strong>Customer:</strong> <c:out value="${customer.name}"/></p>
                                             </div>
                                             <div class="col-md-6">
                                                 <p><strong>Current Status:</strong> 
@@ -98,7 +98,7 @@
                                                             <span class="badge bg-label-warning">Fulfillment Requested</span>
                                                         </c:when>
                                                         <c:otherwise>
-                                                            <span class="badge bg-label-secondary">${order.status}</span>
+                                                            <span class="badge bg-label-secondary"><c:out value="${order.status}"/></span>
                                                         </c:otherwise>
                                                     </c:choose>
                                                 </p>
@@ -113,7 +113,7 @@
                                                 </h6>
                                                 <ul class="mb-0">
                                                     <c:forEach var="warning" items="${cancellationStatus.warnings}">
-                                                        <li>${warning}</li>
+                                                        <li><c:out value="${warning}"/></li>
                                                     </c:forEach>
                                                 </ul>
                                             </div>

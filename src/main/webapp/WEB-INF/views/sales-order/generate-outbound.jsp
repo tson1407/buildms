@@ -45,7 +45,7 @@
                                     <a href="${contextPath}/sales-order">Sales Orders</a>
                                 </li>
                                 <li class="breadcrumb-item">
-                                    <a href="${contextPath}/sales-order?action=view&id=${order.id}">${order.orderNo}</a>
+                                    <a href="${contextPath}/sales-order?action=view&id=${order.id}"><c:out value="${order.orderNo}"/></a>
                                 </li>
                                 <li class="breadcrumb-item active" aria-current="page">Generate Outbound</li>
                             </ol>
@@ -96,8 +96,8 @@
                                             <select name="warehouseId" class="form-select" onchange="this.form.submit()">
                                                 <option value="">Select Warehouse</option>
                                                 <c:forEach var="warehouse" items="${warehouses}">
-                                                    <option value="${warehouse.id}" ${selectedWarehouseId == warehouse.id ? 'selected' : ''}>
-                                                        ${warehouse.name} (${warehouse.location})
+                                                    <option value="<c:out value='${warehouse.id}'/>" <c:out value="${selectedWarehouseId == warehouse.id ? 'selected' : ''}"/>>
+                                                        <c:out value="${warehouse.name}"/> (<c:out value="${warehouse.location}"/>)
                                                     </option>
                                                 </c:forEach>
                                             </select>
@@ -138,14 +138,14 @@
                                                             <input type="hidden" name="productId[]" value="${avail.product.id}">
                                                         </td>
                                                         <td><c:out value="${avail.product.sku}"/></td>
-                                                        <td class="text-end">${avail.requested}</td>
+                                                        <td class="text-end"><c:out value="${avail.requested}"/></td>
                                                         <td class="text-end">
                                                             <c:choose>
                                                                 <c:when test="${avail.available < avail.requested}">
-                                                                    <span class="text-danger">${avail.available}</span>
+                                                                    <span class="text-danger"><c:out value="${avail.available}"/></span>
                                                                 </c:when>
                                                                 <c:otherwise>
-                                                                    <span class="text-success">${avail.available}</span>
+                                                                    <span class="text-success"><c:out value="${avail.available}"/></span>
                                                                 </c:otherwise>
                                                             </c:choose>
                                                         </td>
@@ -155,7 +155,7 @@
                                                                    class="form-control form-control-sm text-end" 
                                                                    min="0" 
                                                                    max="${avail.requested}"
-                                                                   value="${avail.available >= avail.requested ? avail.requested : avail.available}">
+                                                                   value="<c:out value='${avail.available >= avail.requested ? avail.requested : avail.available}'/>">
                                                         </td>
                                                         <td>
                                                             <c:choose>

@@ -148,19 +148,21 @@ public class InboundController extends HttpServlet {
     }
     
     /**
-     * Check if user is Manager (scoped to assigned warehouse)
+     * Check if user is warehouse-scoped (Staff or Manager — restricted to assigned warehouse)
      */
-    private boolean isManager(HttpServletRequest request) {
+    private boolean isWarehouseScoped(HttpServletRequest request) {
         User user = getCurrentUser(request);
-        return user != null && "Manager".equals(user.getRole());
+        if (user == null) return false;
+        String role = user.getRole();
+        return "Staff".equals(role) || "Manager".equals(role);
     }
     
     /**
-     * Get Manager's assigned warehouse ID
+     * Get the user's assigned warehouse ID (for Staff and Manager)
      */
-    private Long getManagerWarehouseId(HttpServletRequest request) {
+    private Long getAssignedWarehouseId(HttpServletRequest request) {
         User user = getCurrentUser(request);
-        if (user != null && "Manager".equals(user.getRole())) {
+        if (user != null && ("Staff".equals(user.getRole()) || "Manager".equals(user.getRole()))) {
             return user.getWarehouseId();
         }
         return null;
@@ -176,9 +178,9 @@ public class InboundController extends HttpServlet {
         String warehouseIdStr = request.getParameter("warehouseId");
         
         Long warehouseId = null;
-        if (isManager(request)) {
-            // Manager can only see requests for their assigned warehouse
-            warehouseId = getManagerWarehouseId(request);
+        if (isWarehouseScoped(request)) {
+            // Staff/Manager can only see requests for their assigned warehouse
+            warehouseId = getAssignedWarehouseId(request);
         } else if (warehouseIdStr != null && !warehouseIdStr.trim().isEmpty()) {
             try {
                 warehouseId = Long.parseLong(warehouseIdStr.trim());
@@ -217,7 +219,7 @@ public class InboundController extends HttpServlet {
         request.setAttribute("warehouses", warehouses);
         request.setAttribute("selectedStatus", status);
         request.setAttribute("selectedWarehouseId", warehouseId);
-        request.setAttribute("isManager", isManager(request));
+        request.setAttribute("isManager", isWarehouseScoped(request));
         
         request.getRequestDispatcher("/WEB-INF/views/inbound/list.jsp").forward(request, response);
     }
@@ -249,17 +251,17 @@ public class InboundController extends HttpServlet {
             return;
         }
         
-        // Manager: pre-select and lock to their assigned warehouse
-        if (isManager(request)) {
-            Long managerWarehouseId = getManagerWarehouseId(request);
-            if (managerWarehouseId == null) {
+        // Staff/Manager: pre-select and lock to their assigned warehouse
+        if (isWarehouseScoped(request)) {
+            Long assignedWarehouseId = getAssignedWarehouseId(request);
+            if (assignedWarehouseId == null) {
                 request.getSession().setAttribute("errorMessage", "You are not assigned to any warehouse.");
                 response.sendRedirect(request.getContextPath() + "/inbound");
                 return;
             }
-            request.setAttribute("lockedWarehouseId", managerWarehouseId);
+            request.setAttribute("lockedWarehouseId", assignedWarehouseId);
         }
-        request.setAttribute("isManager", isManager(request));
+        request.setAttribute("isManager", isWarehouseScoped(request));
         
         request.setAttribute("warehouses", warehouses);
         request.setAttribute("products", products);
@@ -303,10 +305,10 @@ public class InboundController extends HttpServlet {
             
             Long warehouseId = Long.parseLong(warehouseIdStr.trim());
             
-            // Manager can only create for their assigned warehouse
-            if (isManager(request)) {
-                Long managerWarehouseId = getManagerWarehouseId(request);
-                if (managerWarehouseId == null || !managerWarehouseId.equals(warehouseId)) {
+            // Staff/Manager can only create for their assigned warehouse
+            if (isWarehouseScoped(request)) {
+                Long assignedWarehouseId = getAssignedWarehouseId(request);
+                if (assignedWarehouseId == null || !assignedWarehouseId.equals(warehouseId)) {
                     request.getSession().setAttribute("errorMessage", "You can only create inbound requests for your assigned warehouse.");
                     response.sendRedirect(request.getContextPath() + "/inbound?action=create");
                     return;
@@ -402,10 +404,10 @@ public class InboundController extends HttpServlet {
                 return;
             }
             
-            // Manager can only view requests for their assigned warehouse
-            if (isManager(request)) {
-                Long managerWarehouseId = getManagerWarehouseId(request);
-                if (managerWarehouseId == null || !managerWarehouseId.equals(inboundRequest.getDestinationWarehouseId())) {
+            // Staff/Manager can only view requests for their assigned warehouse
+            if (isWarehouseScoped(request)) {
+                Long assignedWarehouseId = getAssignedWarehouseId(request);
+                if (assignedWarehouseId == null || !assignedWarehouseId.equals(inboundRequest.getDestinationWarehouseId())) {
                     request.getSession().setAttribute("errorMessage", "You don't have permission to view this request.");
                     response.sendRedirect(request.getContextPath() + "/inbound");
                     return;
@@ -503,12 +505,12 @@ public class InboundController extends HttpServlet {
         try {
             Long requestId = Long.parseLong(idStr.trim());
             
-            // Manager can only approve requests for their assigned warehouse
-            if (isManager(request)) {
+            // Staff/Manager can only approve requests for their assigned warehouse
+            if (isWarehouseScoped(request)) {
                 Request inboundRequest = inboundService.getRequestById(requestId);
-                Long managerWarehouseId = getManagerWarehouseId(request);
-                if (inboundRequest == null || managerWarehouseId == null
-                        || !managerWarehouseId.equals(inboundRequest.getDestinationWarehouseId())) {
+                Long assignedWarehouseId = getAssignedWarehouseId(request);
+                if (inboundRequest == null || assignedWarehouseId == null
+                        || !assignedWarehouseId.equals(inboundRequest.getDestinationWarehouseId())) {
                     request.getSession().setAttribute("errorMessage", "You don't have permission to approve this request.");
                     response.sendRedirect(request.getContextPath() + "/inbound");
                     return;
@@ -562,12 +564,12 @@ public class InboundController extends HttpServlet {
         try {
             Long requestId = Long.parseLong(idStr.trim());
             
-            // Manager can only reject requests for their assigned warehouse
-            if (isManager(request)) {
+            // Staff/Manager can only reject requests for their assigned warehouse
+            if (isWarehouseScoped(request)) {
                 Request inboundRequest = inboundService.getRequestById(requestId);
-                Long managerWarehouseId = getManagerWarehouseId(request);
-                if (inboundRequest == null || managerWarehouseId == null
-                        || !managerWarehouseId.equals(inboundRequest.getDestinationWarehouseId())) {
+                Long assignedWarehouseId = getAssignedWarehouseId(request);
+                if (inboundRequest == null || assignedWarehouseId == null
+                        || !assignedWarehouseId.equals(inboundRequest.getDestinationWarehouseId())) {
                     request.getSession().setAttribute("errorMessage", "You don't have permission to reject this request.");
                     response.sendRedirect(request.getContextPath() + "/inbound");
                     return;
@@ -625,6 +627,16 @@ public class InboundController extends HttpServlet {
                 request.getSession().setAttribute("errorMessage", "Only approved requests can be executed.");
                 response.sendRedirect(request.getContextPath() + "/inbound?action=details&id=" + requestId);
                 return;
+            }
+            
+            // Staff/Manager can only execute requests for their assigned warehouse
+            if (isWarehouseScoped(request)) {
+                Long assignedWarehouseId = getAssignedWarehouseId(request);
+                if (assignedWarehouseId == null || !assignedWarehouseId.equals(inboundRequest.getDestinationWarehouseId())) {
+                    request.getSession().setAttribute("errorMessage", "You don't have permission to execute this request.");
+                    response.sendRedirect(request.getContextPath() + "/inbound");
+                    return;
+                }
             }
             
             // Get items

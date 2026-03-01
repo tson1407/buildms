@@ -3,6 +3,7 @@ package vn.edu.fpt.swp.service;
 import vn.edu.fpt.swp.dao.*;
 import vn.edu.fpt.swp.model.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,10 +45,12 @@ public class TransferService {
      * @param createdBy User creating the request
      * @param items List of items to transfer
      * @param notes Optional notes
+     * @param expectedDate Optional expected transfer date
      * @return Created transfer request, null if failed
      */
     public Request createTransferRequest(Long sourceWarehouseId, Long destinationWarehouseId,
-                                         Long createdBy, List<RequestItem> items, String notes) {
+                                         Long createdBy, List<RequestItem> items, String notes,
+                                         LocalDateTime expectedDate) {
         // Validate inputs
         if (sourceWarehouseId == null || destinationWarehouseId == null || 
             createdBy == null || items == null || items.isEmpty()) {
@@ -95,6 +98,7 @@ public class TransferService {
         transferRequest.setDestinationWarehouseId(destinationWarehouseId);
         transferRequest.setCreatedBy(createdBy);
         transferRequest.setNotes(notes);
+        transferRequest.setExpectedDate(expectedDate);
         
         Request createdTransfer = requestDAO.create(transferRequest);
         if (createdTransfer == null) {

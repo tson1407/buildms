@@ -49,7 +49,7 @@
                         <c:if test="${not empty sessionScope.successMessage}">
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 <i class="bx bx-check-circle me-2"></i>
-                                ${sessionScope.successMessage}
+                                <c:out value="${sessionScope.successMessage}"/>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <c:remove var="successMessage" scope="session" />
@@ -58,7 +58,7 @@
                         <c:if test="${not empty sessionScope.errorMessage}">
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <i class="bx bx-error-circle me-2"></i>
-                                ${sessionScope.errorMessage}
+                                <c:out value="${sessionScope.errorMessage}"/>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <c:remove var="errorMessage" scope="session" />
@@ -67,7 +67,7 @@
                         <c:if test="${not empty sessionScope.warningMessage}">
                             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                                 <i class="bx bx-info-circle me-2"></i>
-                                ${sessionScope.warningMessage}
+                                <c:out value="${sessionScope.warningMessage}"/>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <c:remove var="warningMessage" scope="session" />
@@ -96,7 +96,7 @@
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="bx bx-search"></i></span>
                                             <input type="text" class="form-control" name="keyword" 
-                                                   value="${keyword}" placeholder="Search by SKU or name..." />
+                                                   value="<c:out value='${keyword}'/>" placeholder="Search by SKU or name..." />
                                         </div>
                                     </div>
                                     
@@ -105,8 +105,8 @@
                                         <select class="form-select" name="categoryId">
                                             <option value="">All Categories</option>
                                             <c:forEach var="cat" items="${categories}">
-                                                <option value="${cat.id}" ${categoryId == cat.id ? 'selected' : ''}>
-                                                    ${cat.name}
+                                                <option value="<c:out value='${cat.id}'/>" <c:out value="${categoryId == cat.id ? 'selected' : ''}"/>>
+                                                    <c:out value="${cat.name}"/>
                                                 </option>
                                             </c:forEach>
                                         </select>
@@ -116,8 +116,8 @@
                                     <div class="col-md-3">
                                         <select class="form-select" name="status">
                                             <option value="">All Status</option>
-                                            <option value="active" ${status == 'active' ? 'selected' : ''}>Active</option>
-                                            <option value="inactive" ${status == 'inactive' ? 'selected' : ''}>Inactive</option>
+                                            <option value="active" <c:out value="${status == 'active' ? 'selected' : ''}"/>>Active</option>
+                                            <option value="inactive" <c:out value="${status == 'inactive' ? 'selected' : ''}"/>>Inactive</option>
                                         </select>
                                     </div>
                                     
@@ -175,7 +175,7 @@
                                                     <c:set var="categoryName" value="${requestScope['categoryName_'.concat(product.categoryId)]}" />
                                                     <c:set var="totalQty" value="${requestScope['totalQty_'.concat(product.id)]}" />
                                                     <tr class="${!product.active ? 'table-secondary' : ''}">
-                                                        <td><strong>${loop.index + 1}</strong></td>
+                                                        <td><strong><c:out value="${loop.index + 1}"/></strong></td>
                                                         <td>
                                                             <a href="${contextPath}/product?action=details&id=${product.id}" 
                                                                class="fw-medium text-primary">
@@ -205,7 +205,7 @@
                                                         </td>
                                                         <td>
                                                             <span class="badge bg-label-${totalQty > 0 ? 'success' : 'secondary'}">
-                                                                ${totalQty}
+                                                                <c:out value="${totalQty}"/>
                                                             </span>
                                                         </td>
                                                         <td>
@@ -237,10 +237,10 @@
                                                                             class="btn btn-sm ${product.active ? 'btn-outline-warning' : 'btn-outline-success'}" 
                                                                             data-bs-toggle="modal" 
                                                                             data-bs-target="#toggleModal"
-                                                                            data-product-id="${product.id}"
-                                                                            data-product-name="${product.name}"
-                                                                            data-product-active="${product.active}"
-                                                                            title="${product.active ? 'Deactivate' : 'Activate'}"
+                                                                            data-product-id="<c:out value='${product.id}'/>"
+                                                                            data-product-name="<c:out value='${product.name}'/>"
+                                                                            data-product-active="<c:out value='${product.active}'/>"
+                                                                            title="<c:out value='${product.active ? 'Deactivate' : 'Activate'}'/>"
                                                                             aria-label="${product.active ? 'Deactivate product' : 'Activate product'}">
                                                                         <i class="bx ${product.active ? 'bx-block' : 'bx-check'}" aria-hidden="true"></i>
                                                                     </button>

@@ -23,8 +23,8 @@ public class SalesOrderDAO {
             return null;
         }
         
-        String sql = "INSERT INTO SalesOrders (OrderNo, CustomerId, Status, CreatedBy, CreatedAt) " +
-                     "VALUES (?, ?, ?, ?, GETDATE())";
+        String sql = "INSERT INTO SalesOrders (OrderNo, CustomerId, Status, CreatedBy, CreatedAt, OrderDate, RequiredDeliveryDate, Notes) " +
+                     "VALUES (?, ?, ?, ?, GETDATE(), ?, ?, ?)";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -33,6 +33,22 @@ public class SalesOrderDAO {
             stmt.setLong(2, salesOrder.getCustomerId());
             stmt.setString(3, salesOrder.getStatus() != null ? salesOrder.getStatus() : "Draft");
             stmt.setLong(4, salesOrder.getCreatedBy());
+            
+            if (salesOrder.getOrderDate() != null) {
+                stmt.setTimestamp(5, Timestamp.valueOf(salesOrder.getOrderDate()));
+            } else {
+                stmt.setNull(5, Types.TIMESTAMP);
+            }
+            if (salesOrder.getRequiredDeliveryDate() != null) {
+                stmt.setTimestamp(6, Timestamp.valueOf(salesOrder.getRequiredDeliveryDate()));
+            } else {
+                stmt.setNull(6, Types.TIMESTAMP);
+            }
+            if (salesOrder.getNotes() != null) {
+                stmt.setString(7, salesOrder.getNotes());
+            } else {
+                stmt.setNull(7, Types.NVARCHAR);
+            }
             
             int affectedRows = stmt.executeUpdate();
             
@@ -62,6 +78,7 @@ public class SalesOrderDAO {
         }
         
         String sql = "SELECT Id, OrderNo, CustomerId, Status, CreatedBy, CreatedAt, " +
+                     "OrderDate, RequiredDeliveryDate, Notes, " +
                      "ConfirmedBy, ConfirmedDate, CancelledBy, CancelledDate, CancellationReason " +
                      "FROM SalesOrders WHERE Id = ?";
         
@@ -93,6 +110,7 @@ public class SalesOrderDAO {
         }
         
         String sql = "SELECT Id, OrderNo, CustomerId, Status, CreatedBy, CreatedAt, " +
+                     "OrderDate, RequiredDeliveryDate, Notes, " +
                      "ConfirmedBy, ConfirmedDate, CancelledBy, CancelledDate, CancellationReason " +
                      "FROM SalesOrders WHERE OrderNo = ?";
         
@@ -121,6 +139,7 @@ public class SalesOrderDAO {
         List<SalesOrder> orders = new ArrayList<>();
         
         String sql = "SELECT Id, OrderNo, CustomerId, Status, CreatedBy, CreatedAt, " +
+                     "OrderDate, RequiredDeliveryDate, Notes, " +
                      "ConfirmedBy, ConfirmedDate, CancelledBy, CancelledDate, CancellationReason " +
                      "FROM SalesOrders ORDER BY CreatedAt DESC";
         
@@ -151,6 +170,7 @@ public class SalesOrderDAO {
         }
         
         String sql = "SELECT Id, OrderNo, CustomerId, Status, CreatedBy, CreatedAt, " +
+                     "OrderDate, RequiredDeliveryDate, Notes, " +
                      "ConfirmedBy, ConfirmedDate, CancelledBy, CancelledDate, CancellationReason " +
                      "FROM SalesOrders WHERE Status = ? ORDER BY CreatedAt DESC";
         
@@ -184,6 +204,7 @@ public class SalesOrderDAO {
         }
         
         String sql = "SELECT Id, OrderNo, CustomerId, Status, CreatedBy, CreatedAt, " +
+                     "OrderDate, RequiredDeliveryDate, Notes, " +
                      "ConfirmedBy, ConfirmedDate, CancelledBy, CancelledDate, CancellationReason " +
                      "FROM SalesOrders WHERE CustomerId = ? ORDER BY CreatedAt DESC";
         
@@ -443,6 +464,18 @@ public class SalesOrderDAO {
         if (createdAt != null) {
             order.setCreatedAt(createdAt.toLocalDateTime());
         }
+        
+        Timestamp orderDate = rs.getTimestamp("OrderDate");
+        if (orderDate != null) {
+            order.setOrderDate(orderDate.toLocalDateTime());
+        }
+        
+        Timestamp requiredDeliveryDate = rs.getTimestamp("RequiredDeliveryDate");
+        if (requiredDeliveryDate != null) {
+            order.setRequiredDeliveryDate(requiredDeliveryDate.toLocalDateTime());
+        }
+        
+        order.setNotes(rs.getString("Notes"));
         
         Long confirmedBy = rs.getLong("ConfirmedBy");
         if (!rs.wasNull()) {

@@ -415,27 +415,27 @@ PRINT 'Inserting Sales Orders...';
 
 SET IDENTITY_INSERT SalesOrders ON;
 
-INSERT INTO SalesOrders (Id, OrderNo, CustomerId, Status, CreatedBy, CreatedAt, ConfirmedBy, ConfirmedDate, CancelledBy, CancelledDate, CancellationReason) VALUES
+INSERT INTO SalesOrders (Id, OrderNo, CustomerId, Status, CreatedBy, CreatedAt, OrderDate, RequiredDeliveryDate, Notes, ConfirmedBy, ConfirmedDate, CancelledBy, CancelledDate, CancellationReason) VALUES
 -- Completed Orders
-(1, 'SO-2025-0001', 1, 'Completed', 4, '2025-01-05 09:00:00', 2, '2025-01-05 14:00:00', NULL, NULL, NULL),
-(2, 'SO-2025-0002', 2, 'Completed', 4, '2025-01-08 10:30:00', 2, '2025-01-08 16:00:00', NULL, NULL, NULL),
-(3, 'SO-2025-0003', 3, 'Completed', 4, '2025-01-10 11:00:00', 2, '2025-01-10 15:30:00', NULL, NULL, NULL),
+(1, 'SO-2025-0001', 1, 'Completed', 4, '2025-01-05 09:00:00', '2025-01-05 09:00:00', '2025-01-10', 'Standard restocking order for ABC Construction', 2, '2025-01-05 14:00:00', NULL, NULL, NULL),
+(2, 'SO-2025-0002', 2, 'Completed', 4, '2025-01-08 10:30:00', '2025-01-08 10:30:00', '2025-01-13', 'Tiles and flooring materials for Vietnam Building Solutions', 2, '2025-01-08 16:00:00', NULL, NULL, NULL),
+(3, 'SO-2025-0003', 3, 'Completed', 4, '2025-01-10 11:00:00', '2025-01-10 11:00:00', '2025-01-15', 'Paints and timber for Green Home Developers', 2, '2025-01-10 15:30:00', NULL, NULL, NULL),
 
 -- Confirmed Orders (pending fulfillment)
-(4, 'SO-2025-0004', 1, 'Confirmed', 4, '2025-01-15 09:30:00', 2, '2025-01-15 14:00:00', NULL, NULL, NULL),
-(5, 'SO-2025-0005', 4, 'Confirmed', 4, '2025-01-18 10:00:00', 2, '2025-01-18 16:30:00', NULL, NULL, NULL),
-(6, 'SO-2025-0006', 5, 'Confirmed', 4, '2025-01-20 11:30:00', 2, '2025-01-20 17:00:00', NULL, NULL, NULL),
+(4, 'SO-2025-0004', 1, 'Confirmed', 4, '2025-01-15 09:30:00', '2025-01-15 09:30:00', '2025-01-25', 'Cement, blocks and rebar for ABC Construction site expansion', 2, '2025-01-15 14:00:00', NULL, NULL, NULL),
+(5, 'SO-2025-0005', 4, 'Confirmed', 4, '2025-01-18 10:00:00', '2025-01-18 10:00:00', '2025-01-28', 'Structural steel and rebar for Metro Infrastructure project', 2, '2025-01-18 16:30:00', NULL, NULL, NULL),
+(6, 'SO-2025-0006', 5, 'Confirmed', 4, '2025-01-20 11:30:00', '2025-01-20 11:30:00', '2025-01-30', 'Roofing materials for Sunrise Property Group', 2, '2025-01-20 17:00:00', NULL, NULL, NULL),
 
 -- FulfillmentRequested (outbound created)
-(7, 'SO-2025-0007', 6, 'FulfillmentRequested', 4, '2025-01-22 09:00:00', 2, '2025-01-22 14:30:00', NULL, NULL, NULL),
-(8, 'SO-2025-0008', 7, 'FulfillmentRequested', 4, '2025-01-25 10:30:00', 2, '2025-01-25 15:00:00', NULL, NULL, NULL),
+(7, 'SO-2025-0007', 6, 'FulfillmentRequested', 4, '2025-01-22 09:00:00', '2025-01-22 09:00:00', '2025-01-26', 'Plumbing supplies for Delta Engineering Corp', 2, '2025-01-22 14:30:00', NULL, NULL, NULL),
+(8, 'SO-2025-0008', 7, 'FulfillmentRequested', 4, '2025-01-25 10:30:00', '2025-01-25 10:30:00', '2025-01-29', 'Interior finishing materials for Harmony Interiors', 2, '2025-01-25 15:00:00', NULL, NULL, NULL),
 
 -- Draft Orders
-(9, 'SO-2025-0009', 8, 'Draft', 4, '2025-01-28 09:00:00', NULL, NULL, NULL, NULL, NULL),
-(10, 'SO-2025-0010', 10, 'Draft', 4, '2025-01-30 11:00:00', NULL, NULL, NULL, NULL, NULL),
+(9, 'SO-2025-0009', 8, 'Draft', 4, '2025-01-28 09:00:00', NULL, NULL, 'Cement and rebar for Foundation First Contractors - awaiting approval', NULL, NULL, NULL, NULL, NULL),
+(10, 'SO-2025-0010', 10, 'Draft', 4, '2025-01-30 11:00:00', NULL, NULL, 'Electrical supplies for Urban Development Partners - pending confirmation', NULL, NULL, NULL, NULL, NULL),
 
 -- Cancelled Order
-(11, 'SO-2025-0011', 9, 'Cancelled', 4, '2025-01-12 10:00:00', 2, '2025-01-12 14:00:00', 2, '2025-01-13 09:00:00', 'Customer requested cancellation due to project postponement');
+(11, 'SO-2025-0011', 9, 'Cancelled', 4, '2025-01-12 10:00:00', '2025-01-12 10:00:00', '2025-01-20', 'Bricks and blocks for Premier Builders Association', 2, '2025-01-12 14:00:00', 2, '2025-01-13 09:00:00', 'Customer requested cancellation due to project postponement');
 
 SET IDENTITY_INSERT SalesOrders OFF;
 
@@ -444,80 +444,80 @@ SET IDENTITY_INSERT SalesOrders OFF;
 -- =====================================================
 PRINT 'Inserting Sales Order Items...';
 
--- SO-2025-0001 (ABC Construction - Completed)
-INSERT INTO SalesOrderItems (SalesOrderId, ProductId, Quantity) VALUES
-(1, 1, 100),  -- OPC Cement x100 bags
-(1, 7, 1000), -- Red Brick x1000 pcs
-(1, 14, 200); -- Rebar 10mm x200 m
+-- SO-2025-0001 (ABC Construction - Completed: FulfilledQuantity = Quantity)
+INSERT INTO SalesOrderItems (SalesOrderId, ProductId, Quantity, FulfilledQuantity) VALUES
+(1, 1, 100, 100),     -- OPC Cement x100 bags
+(1, 7, 1000, 1000),   -- Red Brick x1000 pcs
+(1, 14, 200, 200);    -- Rebar 10mm x200 m
 
--- SO-2025-0002 (Vietnam Building Solutions - Completed)
-INSERT INTO SalesOrderItems (SalesOrderId, ProductId, Quantity) VALUES
-(2, 21, 50),  -- Floor Tile 300 x50 boxes
-(2, 23, 40),  -- Wall Tile 250 x40 boxes
-(2, 26, 20);  -- Grout x20 bags
+-- SO-2025-0002 (Vietnam Building Solutions - Completed: FulfilledQuantity = Quantity)
+INSERT INTO SalesOrderItems (SalesOrderId, ProductId, Quantity, FulfilledQuantity) VALUES
+(2, 21, 50, 50),   -- Floor Tile 300 x50 boxes
+(2, 23, 40, 40),   -- Wall Tile 250 x40 boxes
+(2, 26, 20, 20);   -- Grout x20 bags
 
--- SO-2025-0003 (Green Home - Completed)
-INSERT INTO SalesOrderItems (SalesOrderId, ProductId, Quantity) VALUES
-(3, 33, 30),  -- Paint White 5L x30 cans
-(3, 37, 50),  -- Primer 1L x50 cans
-(3, 28, 25);  -- Plywood 18mm x25 sheets
+-- SO-2025-0003 (Green Home - Completed: FulfilledQuantity = Quantity)
+INSERT INTO SalesOrderItems (SalesOrderId, ProductId, Quantity, FulfilledQuantity) VALUES
+(3, 33, 30, 30),   -- Paint White 5L x30 cans
+(3, 37, 50, 50),   -- Primer 1L x50 cans
+(3, 28, 25, 25);   -- Plywood 18mm x25 sheets
 
--- SO-2025-0004 (ABC Construction - Confirmed)
-INSERT INTO SalesOrderItems (SalesOrderId, ProductId, Quantity) VALUES
-(4, 1, 150),   -- OPC Cement x150 bags
-(4, 2, 100),   -- PPC Cement x100 bags
-(4, 11, 200),  -- Block 200 x200 pcs
-(4, 16, 300);  -- Rebar 16mm x300 m
+-- SO-2025-0004 (ABC Construction - Confirmed: FulfilledQuantity = 0)
+INSERT INTO SalesOrderItems (SalesOrderId, ProductId, Quantity, FulfilledQuantity) VALUES
+(4, 1, 150, 0),    -- OPC Cement x150 bags
+(4, 2, 100, 0),    -- PPC Cement x100 bags
+(4, 11, 200, 0),   -- Block 200 x200 pcs
+(4, 16, 300, 0);   -- Rebar 16mm x300 m
 
--- SO-2025-0005 (Metro Infrastructure - Confirmed)
-INSERT INTO SalesOrderItems (SalesOrderId, ProductId, Quantity) VALUES
-(5, 13, 500),  -- Rebar 8mm x500 m
-(5, 14, 400),  -- Rebar 10mm x400 m
-(5, 15, 300),  -- Rebar 12mm x300 m
-(5, 19, 50);   -- I-Beam x50 m
+-- SO-2025-0005 (Metro Infrastructure - Confirmed: FulfilledQuantity = 0)
+INSERT INTO SalesOrderItems (SalesOrderId, ProductId, Quantity, FulfilledQuantity) VALUES
+(5, 13, 500, 0),   -- Rebar 8mm x500 m
+(5, 14, 400, 0),   -- Rebar 10mm x400 m
+(5, 15, 300, 0),   -- Rebar 12mm x300 m
+(5, 19, 50, 0);    -- I-Beam x50 m
 
--- SO-2025-0006 (Sunrise Property - Confirmed)
-INSERT INTO SalesOrderItems (SalesOrderId, ProductId, Quantity) VALUES
-(6, 40, 100),  -- Roof Sheet 0.6mm x100 sheets
-(6, 42, 80),   -- Color Roof x80 sheets
-(6, 44, 100),  -- PVC Gutter x100 m
-(6, 45, 20);   -- Waterproofing x20 rolls
+-- SO-2025-0006 (Sunrise Property - Confirmed: FulfilledQuantity = 0)
+INSERT INTO SalesOrderItems (SalesOrderId, ProductId, Quantity, FulfilledQuantity) VALUES
+(6, 40, 100, 0),   -- Roof Sheet 0.6mm x100 sheets
+(6, 42, 80, 0),    -- Color Roof x80 sheets
+(6, 44, 100, 0),   -- PVC Gutter x100 m
+(6, 45, 20, 0);    -- Waterproofing x20 rolls
 
--- SO-2025-0007 (Delta Engineering - FulfillmentRequested)
-INSERT INTO SalesOrderItems (SalesOrderId, ProductId, Quantity) VALUES
-(7, 46, 200),  -- PVC 50mm x200 m
-(7, 48, 150),  -- PVC 110mm x150 m
-(7, 49, 100),  -- PVC Elbow 50 x100 pcs
-(7, 50, 80),   -- PVC Elbow 110 x80 pcs
-(7, 53, 20);   -- Gate Valve x20 pcs
+-- SO-2025-0007 (Delta Engineering - FulfillmentRequested: outbound approved, not yet executed)
+INSERT INTO SalesOrderItems (SalesOrderId, ProductId, Quantity, FulfilledQuantity) VALUES
+(7, 46, 200, 0),   -- PVC 50mm x200 m
+(7, 48, 150, 0),   -- PVC 110mm x150 m
+(7, 49, 100, 0),   -- PVC Elbow 50 x100 pcs
+(7, 50, 80, 0),    -- PVC Elbow 110 x80 pcs
+(7, 53, 20, 0);    -- Gate Valve x20 pcs
 
--- SO-2025-0008 (Harmony Interiors - FulfillmentRequested)
-INSERT INTO SalesOrderItems (SalesOrderId, ProductId, Quantity) VALUES
-(8, 21, 80),   -- Floor Tile 300 x80 boxes
-(8, 22, 60),   -- Floor Tile 600 x60 boxes
-(8, 25, 40),   -- Vinyl Plank x40 boxes
-(8, 33, 50),   -- Paint White 5L x50 cans
-(8, 39, 30);   -- Wood Varnish x30 cans
+-- SO-2025-0008 (Harmony Interiors - FulfillmentRequested: outbound approved, not yet executed)
+INSERT INTO SalesOrderItems (SalesOrderId, ProductId, Quantity, FulfilledQuantity) VALUES
+(8, 21, 80, 0),    -- Floor Tile 300 x80 boxes
+(8, 22, 60, 0),    -- Floor Tile 600 x60 boxes
+(8, 25, 40, 0),    -- Vinyl Plank x40 boxes
+(8, 33, 50, 0),    -- Paint White 5L x50 cans
+(8, 39, 30, 0);    -- Wood Varnish x30 cans
 
--- SO-2025-0009 (Foundation First - Draft)
-INSERT INTO SalesOrderItems (SalesOrderId, ProductId, Quantity) VALUES
-(9, 1, 200),   -- OPC Cement x200 bags
-(9, 5, 40),    -- Plasticizer x40 litres
-(9, 14, 500),  -- Rebar 10mm x500 m
-(9, 17, 200);  -- Rebar 20mm x200 m
+-- SO-2025-0009 (Foundation First - Draft: FulfilledQuantity = 0)
+INSERT INTO SalesOrderItems (SalesOrderId, ProductId, Quantity, FulfilledQuantity) VALUES
+(9, 1, 200, 0),    -- OPC Cement x200 bags
+(9, 5, 40, 0),     -- Plasticizer x40 litres
+(9, 14, 500, 0),   -- Rebar 10mm x500 m
+(9, 17, 200, 0);   -- Rebar 20mm x200 m
 
--- SO-2025-0010 (Urban Development - Draft)
-INSERT INTO SalesOrderItems (SalesOrderId, ProductId, Quantity) VALUES
-(10, 54, 10),  -- Cable 1C-2.5 x10 rolls
-(10, 55, 8),   -- Cable 3C-2.5 x8 rolls
-(10, 59, 100), -- Switch 1G x100 pcs
-(10, 62, 150), -- Socket 13A x150 pcs
-(10, 63, 50);  -- MCB 20A x50 pcs
+-- SO-2025-0010 (Urban Development - Draft: FulfilledQuantity = 0)
+INSERT INTO SalesOrderItems (SalesOrderId, ProductId, Quantity, FulfilledQuantity) VALUES
+(10, 54, 10, 0),   -- Cable 1C-2.5 x10 rolls
+(10, 55, 8, 0),    -- Cable 3C-2.5 x8 rolls
+(10, 59, 100, 0),  -- Switch 1G x100 pcs
+(10, 62, 150, 0),  -- Socket 13A x150 pcs
+(10, 63, 50, 0);   -- MCB 20A x50 pcs
 
--- SO-2025-0011 (Premier Builders - Cancelled)
-INSERT INTO SalesOrderItems (SalesOrderId, ProductId, Quantity) VALUES
-(11, 7, 2000),  -- Red Brick x2000 pcs
-(11, 11, 500);  -- Block 200 x500 pcs
+-- SO-2025-0011 (Premier Builders - Cancelled: FulfilledQuantity = 0)
+INSERT INTO SalesOrderItems (SalesOrderId, ProductId, Quantity, FulfilledQuantity) VALUES
+(11, 7, 2000, 0),   -- Red Brick x2000 pcs
+(11, 11, 500, 0);   -- Block 200 x500 pcs
 
 -- =====================================================
 -- 9. REQUESTS (Inbound, Outbound, Transfer, Internal)

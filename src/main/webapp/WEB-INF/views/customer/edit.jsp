@@ -72,7 +72,7 @@
                                         <c:if test="${not empty errorMessage}">
                                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                                 <i class="bx bx-error-circle me-2"></i>
-                                                ${errorMessage}
+                                                <c:out value="${errorMessage}"/>
                                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                             </div>
                                         </c:if>
@@ -88,7 +88,7 @@
                                                 </label>
                                                 <input type="text" class="form-control" id="code" name="code" 
                                                        placeholder="Enter customer code (e.g., CUS001)" 
-                                                       value="${not empty code ? code : customer.code}" 
+                                                       value="<c:out value='${not empty code ? code : customer.code}'/>" 
                                                        maxlength="50" 
                                                        required />
                                             </div>
@@ -100,7 +100,7 @@
                                                 </label>
                                                 <input type="text" class="form-control" id="name" name="name" 
                                                        placeholder="Enter customer name" 
-                                                       value="${not empty name ? name : customer.name}" 
+                                                       value="<c:out value='${not empty name ? name : customer.name}'/>" 
                                                        maxlength="255" 
                                                        required />
                                             </div>
@@ -111,7 +111,7 @@
                                                 <textarea class="form-control" id="contactInfo" name="contactInfo" 
                                                           rows="4" 
                                                           maxlength="500"
-                                                          placeholder="Enter contact details (phone, email, address, etc.)">${not empty contactInfo ? contactInfo : customer.contactInfo}</textarea>
+                                                          placeholder="Enter contact details (phone, email, address, etc.)"><c:out value="${not empty contactInfo ? contactInfo : customer.contactInfo}"/></textarea>
                                             </div>
                                             
                                             <!-- Form Actions -->
@@ -152,7 +152,7 @@
                                         
                                         <div class="d-flex align-items-center mb-3">
                                             <span class="me-3">Total Orders:</span>
-                                            <span class="badge bg-label-info">${orderCount}</span>
+                                            <span class="badge bg-label-info"><c:out value="${orderCount}"/></span>
                                         </div>
                                         
                                         <hr />

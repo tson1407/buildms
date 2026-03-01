@@ -49,7 +49,7 @@
                         <c:if test="${not empty sessionScope.successMessage}">
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 <i class="bx bx-check-circle me-2"></i>
-                                ${sessionScope.successMessage}
+                                <c:out value="${sessionScope.successMessage}"/>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <c:remove var="successMessage" scope="session" />
@@ -58,7 +58,7 @@
                         <c:if test="${not empty sessionScope.errorMessage}">
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <i class="bx bx-error-circle me-2"></i>
-                                ${sessionScope.errorMessage}
+                                <c:out value="${sessionScope.errorMessage}"/>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <c:remove var="errorMessage" scope="session" />
@@ -67,7 +67,7 @@
                         <c:if test="${not empty sessionScope.warningMessage}">
                             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                                 <i class="bx bx-info-circle me-2"></i>
-                                ${sessionScope.warningMessage}
+                                <c:out value="${sessionScope.warningMessage}"/>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <c:remove var="warningMessage" scope="session" />
@@ -97,7 +97,7 @@
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="bx bx-search"></i></span>
                                             <input type="text" class="form-control" name="keyword" 
-                                                   value="${keyword}" placeholder="Search by code..." />
+                                                   value="<c:out value='${keyword}'/>" placeholder="Search by code..." />
                                         </div>
                                     </div>
                                     
@@ -106,8 +106,8 @@
                                         <select class="form-select" name="warehouseId">
                                             <option value="">All Warehouses</option>
                                             <c:forEach var="wh" items="${warehouses}">
-                                                <option value="${wh.id}" ${warehouseId == wh.id ? 'selected' : ''}>
-                                                    ${wh.name}
+                                                <option value="<c:out value='${wh.id}'/>" <c:out value="${warehouseId == wh.id ? 'selected' : ''}"/>>
+                                                    <c:out value="${wh.name}"/>
                                                 </option>
                                             </c:forEach>
                                         </select>
@@ -117,9 +117,9 @@
                                     <div class="col-md-2">
                                         <select class="form-select" name="type">
                                             <option value="">All Types</option>
-                                            <option value="Storage" ${type == 'Storage' ? 'selected' : ''}>Storage</option>
-                                            <option value="Picking" ${type == 'Picking' ? 'selected' : ''}>Picking</option>
-                                            <option value="Staging" ${type == 'Staging' ? 'selected' : ''}>Staging</option>
+                                            <option value="Storage" <c:out value="${type == 'Storage' ? 'selected' : ''}"/>>Storage</option>
+                                            <option value="Picking" <c:out value="${type == 'Picking' ? 'selected' : ''}"/>>Picking</option>
+                                            <option value="Staging" <c:out value="${type == 'Staging' ? 'selected' : ''}"/>>Staging</option>
                                         </select>
                                     </div>
                                     
@@ -127,8 +127,8 @@
                                     <div class="col-md-2">
                                         <select class="form-select" name="status">
                                             <option value="">All Status</option>
-                                            <option value="active" ${status == 'active' ? 'selected' : ''}>Active</option>
-                                            <option value="inactive" ${status == 'inactive' ? 'selected' : ''}>Inactive</option>
+                                            <option value="active" <c:out value="${status == 'active' ? 'selected' : ''}"/>>Active</option>
+                                            <option value="inactive" <c:out value="${status == 'inactive' ? 'selected' : ''}"/>>Inactive</option>
                                         </select>
                                     </div>
                                     
@@ -185,14 +185,14 @@
                                                     <c:set var="warehouseName" value="${requestScope['warehouseName_'.concat(location.warehouseId)]}" />
                                                     <c:set var="inventoryCount" value="${requestScope['inventoryCount_'.concat(location.id)]}" />
                                                     <tr class="${!location.active ? 'table-secondary' : ''}">
-                                                        <td><strong>${loop.index + 1}</strong></td>
+                                                        <td><strong><c:out value="${loop.index + 1}"/></strong></td>
                                                         <td>
-                                                            <span class="fw-medium">${location.code}</span>
+                                                            <span class="fw-medium"><c:out value="${location.code}"/></span>
                                                         </td>
                                                         <td>
                                                             <a href="${contextPath}/location?action=list&warehouseId=${location.warehouseId}" 
                                                                class="text-primary">
-                                                                ${warehouseName}
+                                                                <c:out value="${warehouseName}"/>
                                                             </a>
                                                         </td>
                                                         <td>
@@ -213,13 +213,13 @@
                                                                     </span>
                                                                 </c:when>
                                                                 <c:otherwise>
-                                                                    <span class="badge bg-label-secondary">${location.type}</span>
+                                                                    <span class="badge bg-label-secondary"><c:out value="${location.type}"/></span>
                                                                 </c:otherwise>
                                                             </c:choose>
                                                         </td>
                                                         <td>
                                                             <span class="badge bg-label-${inventoryCount > 0 ? 'success' : 'secondary'}">
-                                                                ${inventoryCount} item(s)
+                                                                <c:out value="${inventoryCount}"/> item(s)
                                                             </span>
                                                         </td>
                                                         <td>
@@ -255,10 +255,10 @@
                                                                                     class="btn btn-sm ${location.active ? 'btn-outline-warning' : 'btn-outline-success'}" 
                                                                                     data-bs-toggle="modal" 
                                                                                     data-bs-target="#toggleModal"
-                                                                                    data-location-id="${location.id}"
-                                                                                    data-location-code="${location.code}"
-                                                                                    data-location-active="${location.active}"
-                                                                                    title="${location.active ? 'Deactivate' : 'Activate'}">
+                                                                                    data-location-id="<c:out value='${location.id}'/>"
+                                                                                    data-location-code="<c:out value='${location.code}'/>"
+                                                                                    data-location-active="<c:out value='${location.active}'/>"
+                                                                                    title="<c:out value='${location.active ? 'Deactivate' : 'Activate'}'/>">
                                                                                 <i class="bx ${location.active ? 'bx-block' : 'bx-check'}"></i>
                                                                             </button>
                                                                         </c:otherwise>

@@ -49,7 +49,7 @@
                         <c:if test="${not empty sessionScope.successMessage}">
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 <i class="bx bx-check-circle me-2"></i>
-                                ${sessionScope.successMessage}
+                                <c:out value="${sessionScope.successMessage}"/>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <c:remove var="successMessage" scope="session" />
@@ -58,7 +58,7 @@
                         <c:if test="${not empty sessionScope.errorMessage}">
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <i class="bx bx-error-circle me-2"></i>
-                                ${sessionScope.errorMessage}
+                                <c:out value="${sessionScope.errorMessage}"/>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <c:remove var="errorMessage" scope="session" />
@@ -85,7 +85,7 @@
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="bx bx-search"></i></span>
                                             <input type="text" class="form-control" name="keyword" 
-                                                   value="${keyword}" placeholder="Search by name or location..." />
+                                                   value="<c:out value='${keyword}'/>" placeholder="Search by name or location..." />
                                         </div>
                                     </div>
                                     <div class="col-md-2">
@@ -157,14 +157,14 @@
                                                         <td>
                                                             <a href="${contextPath}/location?action=list&warehouseId=${warehouse.id}" 
                                                                class="badge bg-label-info">
-                                                                <i class="bx bx-map me-1"></i>${locationCount} location(s)
+                                                                <i class="bx bx-map me-1"></i><c:out value="${locationCount}"/> location(s)
                                                             </a>
                                                         </td>
                                                         <td>
                                                             <small class="text-muted">
                                                                 <c:choose>
                                                                     <c:when test="${not empty warehouse.createdAt}">
-                                                                        ${warehouse.createdAt}
+                                                                        <c:out value="${warehouse.createdAt}"/>
                                                                     </c:when>
                                                                     <c:otherwise>
                                                                         -

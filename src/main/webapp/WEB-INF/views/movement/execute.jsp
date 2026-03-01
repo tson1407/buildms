@@ -45,7 +45,7 @@
                                 <li class="breadcrumb-item">
                                     <a href="${contextPath}/movement">Internal Movements</a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Execute #${movementRequest.id}</li>
+                                <li class="breadcrumb-item active" aria-current="page">Execute #<c:out value="${movementRequest.id}"/></li>
                             </ol>
                         </nav>
                         
@@ -53,7 +53,7 @@
                         <c:if test="${not empty sessionScope.successMessage}">
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 <i class="bx bx-check-circle me-2"></i>
-                                ${sessionScope.successMessage}
+                                <c:out value="${sessionScope.successMessage}"/>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <c:remove var="successMessage" scope="session" />
@@ -62,7 +62,7 @@
                         <c:if test="${not empty sessionScope.errorMessage}">
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <i class="bx bx-error-circle me-2"></i>
-                                ${sessionScope.errorMessage}
+                                <c:out value="${sessionScope.errorMessage}"/>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <c:remove var="errorMessage" scope="session" />
@@ -71,7 +71,7 @@
                         <!-- Page Header -->
                         <div class="d-flex justify-content-between align-items-center mb-6">
                             <h4 class="mb-0">
-                                <i class="bx bx-play-circle me-2"></i>Execute Movement #${movementRequest.id}
+                                <i class="bx bx-play-circle me-2"></i>Execute Movement #<c:out value="${movementRequest.id}"/>
                             </h4>
                             <a href="${contextPath}/movement?action=details&id=${movementRequest.id}" class="btn btn-outline-secondary">
                                 <i class="bx bx-arrow-back me-1"></i>Back to Details
@@ -88,7 +88,7 @@
                                                 <i class="bx bx-transfer bx-lg"></i>
                                             </div>
                                             <div>
-                                                <h6 class="mb-0">Movement #${movementRequest.id}</h6>
+                                                <h6 class="mb-0">Movement #<c:out value="${movementRequest.id}"/></h6>
                                                 <small class="text-muted">
                                                     <i class="bx bx-building-house me-1"></i><c:out value="${warehouse.name}"/>
                                                 </small>
@@ -203,23 +203,23 @@
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <span class="fs-5 fw-bold text-primary">${item.quantity}</span>
+                                                    <span class="fs-5 fw-bold text-primary"><c:out value="${item.quantity}"/></span>
                                                     <span class="text-muted"><c:out value="${product.unit}"/></span>
                                                 </td>
                                                 <td>
                                                     <c:choose>
                                                         <c:when test="${srcQty >= item.quantity}">
-                                                            <span class="text-success">${srcQty}</span>
+                                                            <span class="text-success"><c:out value="${srcQty}"/></span>
                                                             <i class="bx bx-check-circle text-success ms-1"></i>
                                                         </c:when>
                                                         <c:otherwise>
-                                                            <span class="text-danger fw-bold">${srcQty}</span>
+                                                            <span class="text-danger fw-bold"><c:out value="${srcQty}"/></span>
                                                             <i class="bx bx-error-circle text-danger ms-1" 
                                                                title="Insufficient quantity"></i>
                                                         </c:otherwise>
                                                     </c:choose>
                                                 </td>
-                                                <td>${destQty}</td>
+                                                <td><c:out value="${destQty}"/></td>
                                             </tr>
                                         </c:forEach>
                                     </tbody>
@@ -256,17 +256,17 @@
                                                     <td><strong><c:out value="${product.sku}"/></strong></td>
                                                     <td><c:out value="${srcLoc.code}"/></td>
                                                     <td>
-                                                        <span class="text-muted">${srcQty}</span>
+                                                        <span class="text-muted"><c:out value="${srcQty}"/></span>
                                                         <i class="bx bx-right-arrow-alt mx-2"></i>
-                                                        <span class="fw-bold text-danger">${srcQty - item.quantity}</span>
-                                                        <small class="text-danger ms-1">(-${item.quantity})</small>
+                                                        <span class="fw-bold text-danger"><c:out value="${srcQty - item.quantity}"/></span>
+                                                        <small class="text-danger ms-1">(-<c:out value="${item.quantity}"/>)</small>
                                                     </td>
                                                     <td><c:out value="${destLoc.code}"/></td>
                                                     <td>
-                                                        <span class="text-muted">${destQty}</span>
+                                                        <span class="text-muted"><c:out value="${destQty}"/></span>
                                                         <i class="bx bx-right-arrow-alt mx-2"></i>
-                                                        <span class="fw-bold text-success">${destQty + item.quantity}</span>
-                                                        <small class="text-success ms-1">(+${item.quantity})</small>
+                                                        <span class="fw-bold text-success"><c:out value="${destQty + item.quantity}"/></span>
+                                                        <small class="text-success ms-1">(+<c:out value="${item.quantity}"/>)</small>
                                                     </td>
                                                 </tr>
                                             </c:forEach>

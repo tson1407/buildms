@@ -10,6 +10,9 @@ import vn.edu.fpt.swp.model.*;
 import vn.edu.fpt.swp.service.SalesOrderService;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -193,12 +196,37 @@ public class SalesOrderController extends HttpServlet {
             order.setCustomerId(customerId);
             order.setCreatedBy(currentUser.getId());
             
+            // Parse optional fields: orderDate, requiredDeliveryDate, notes
+            String orderDateStr = request.getParameter("orderDate");
+            if (orderDateStr != null && !orderDateStr.trim().isEmpty()) {
+                try {
+                    order.setOrderDate(LocalDateTime.parse(orderDateStr + "T00:00:00"));
+                } catch (DateTimeParseException ex) {
+                    // Ignore parse error, leave null (defaults to now in DB)
+                }
+            }
+            
+            String deliveryDateStr = request.getParameter("requiredDeliveryDate");
+            if (deliveryDateStr != null && !deliveryDateStr.trim().isEmpty()) {
+                try {
+                    order.setRequiredDeliveryDate(LocalDateTime.parse(deliveryDateStr + "T00:00:00"));
+                } catch (DateTimeParseException ex) {
+                    // Ignore parse error, leave null
+                }
+            }
+            
+            String notes = request.getParameter("notes");
+            if (notes != null && !notes.trim().isEmpty()) {
+                order.setNotes(notes.trim());
+            }
+            
             SalesOrder createdOrder = salesOrderService.createSalesOrder(order, items);
             
             if (createdOrder != null) {
+                request.getSession().setAttribute("successMessage", 
+                    "Sales Order " + createdOrder.getOrderNo() + " created successfully");
                 response.sendRedirect(request.getContextPath() + 
-                    "/sales-order?action=view&id=" + createdOrder.getId() + 
-                    "&success=Sales Order " + createdOrder.getOrderNo() + " created successfully");
+                    "/sales-order?action=view&id=" + createdOrder.getId());
             } else {
                 request.setAttribute("errorMessage", "Failed to create sales order. Please check your inputs.");
                 showCreateForm(request, response);
@@ -237,10 +265,14 @@ public class SalesOrderController extends HttpServlet {
             request.setAttribute("items", items);
             request.setAttribute("relatedRequests", relatedRequests);
             
-            // Check success message
-            String success = request.getParameter("success");
-            if (success != null && !success.isEmpty()) {
-                request.setAttribute("successMessage", success);
+            // Consume flash message from session
+            HttpSession viewSession = request.getSession(false);
+            if (viewSession != null) {
+                String flashMsg = (String) viewSession.getAttribute("successMessage");
+                if (flashMsg != null) {
+                    request.setAttribute("successMessage", flashMsg);
+                    viewSession.removeAttribute("successMessage");
+                }
             }
             
             request.getRequestDispatcher("/WEB-INF/views/sales-order/view.jsp")
@@ -266,9 +298,9 @@ public class SalesOrderController extends HttpServlet {
             boolean success = salesOrderService.confirmOrder(orderId, currentUser.getId());
             
             if (success) {
+                request.getSession().setAttribute("successMessage", "Sales order confirmed successfully");
                 response.sendRedirect(request.getContextPath() + 
-                    "/sales-order?action=view&id=" + orderId + 
-                    "&success=Sales order confirmed successfully");
+                    "/sales-order?action=view&id=" + orderId);
             } else {
                 request.setAttribute("errorMessage", "Failed to confirm order. Order must be in Draft status.");
                 viewOrder(request, response);
@@ -372,9 +404,10 @@ public class SalesOrderController extends HttpServlet {
                 quantities.isEmpty() ? null : quantities);
             
             if (outboundRequest != null) {
+                request.getSession().setAttribute("successMessage", 
+                    "Outbound request " + outboundRequest.getId() + " generated successfully");
                 response.sendRedirect(request.getContextPath() + 
-                    "/sales-order?action=view&id=" + orderId + 
-                    "&success=Outbound request " + outboundRequest.getId() + " generated successfully");
+                    "/sales-order?action=view&id=" + orderId);
             } else {
                 request.setAttribute("errorMessage", "Failed to generate outbound request");
                 showGenerateOutboundForm(request, response);

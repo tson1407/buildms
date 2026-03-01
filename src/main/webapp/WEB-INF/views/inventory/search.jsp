@@ -78,7 +78,7 @@
                                         <div class="col-md-6">
                                             <label class="form-label">Search (SKU or Product Name)</label>
                                             <input type="text" class="form-control" name="q" 
-                                                   value="${searchTerm}" placeholder="Enter SKU or product name...">
+                                                   value="<c:out value='${searchTerm}'/>" placeholder="Enter SKU or product name...">
                                         </div>
                                         
                                         <!-- Warehouse Filter -->
@@ -89,7 +89,7 @@
                                                     <c:forEach var="wh" items="${warehouses}">
                                                         <c:if test="${wh.id == selectedWarehouseId}">
                                                             <input type="text" class="form-control" 
-                                                                   value="${wh.name}" readonly disabled />
+                                                                   value="<c:out value='${wh.name}'/>" readonly disabled />
                                                             <input type="hidden" name="warehouseId" value="${selectedWarehouseId}" />
                                                         </c:if>
                                                     </c:forEach>
@@ -98,8 +98,8 @@
                                                     <select class="form-select" name="warehouseId">
                                                         <option value="">All Warehouses</option>
                                                         <c:forEach var="wh" items="${warehouses}">
-                                                            <option value="${wh.id}" ${selectedWarehouseId == wh.id ? 'selected' : ''}>
-                                                                ${wh.name}
+                                                            <option value="<c:out value='${wh.id}'/>" <c:out value="${selectedWarehouseId == wh.id ? 'selected' : ''}"/>>
+                                                                <c:out value="${wh.name}"/>
                                                             </option>
                                                         </c:forEach>
                                                     </select>
@@ -113,8 +113,8 @@
                                             <select class="form-select" name="categoryId">
                                                 <option value="">All Categories</option>
                                                 <c:forEach var="cat" items="${categories}">
-                                                    <option value="${cat.id}" ${selectedCategoryId == cat.id ? 'selected' : ''}>
-                                                        ${cat.name}
+                                                    <option value="<c:out value='${cat.id}'/>" <c:out value="${selectedCategoryId == cat.id ? 'selected' : ''}"/>>
+                                                        <c:out value="${cat.name}"/>
                                                     </option>
                                                 </c:forEach>
                                             </select>
@@ -124,12 +124,12 @@
                                         <div class="col-md-4">
                                             <label class="form-label">Min Quantity</label>
                                             <input type="number" class="form-control" name="minQty" 
-                                                   value="${minQty}" min="0" placeholder="Min">
+                                                   value="<c:out value='${minQty}'/>" min="0" placeholder="Min">
                                         </div>
                                         <div class="col-md-4">
                                             <label class="form-label">Max Quantity</label>
                                             <input type="number" class="form-control" name="maxQty" 
-                                                   value="${maxQty}" min="0" placeholder="Max">
+                                                   value="<c:out value='${maxQty}'/>" min="0" placeholder="Max">
                                         </div>
                                     </div>
                                     
@@ -150,7 +150,7 @@
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">Search Results</h5>
                                 <c:if test="${not empty resultCount}">
-                                    <span class="badge bg-primary">${resultCount} results found</span>
+                                    <span class="badge bg-primary"><c:out value="${resultCount}"/> results found</span>
                                 </c:if>
                             </div>
                             <c:choose>
@@ -194,25 +194,25 @@
                                                     <tr>
                                                         <td>
                                                             <a href="${contextPath}/product?action=details&id=${prod.id}">
-                                                                ${prod.sku}
+                                                                <c:out value="${prod.sku}"/>
                                                             </a>
                                                         </td>
-                                                        <td>${prod.name}</td>
-                                                        <td>${cat != null ? cat.name : '-'}</td>
+                                                        <td><c:out value="${prod.name}"/></td>
+                                                        <td><c:out value="${cat != null ? cat.name : '-'}"/></td>
                                                         <td>
                                                             <i class="bx bx-building-house me-1 text-muted"></i>
-                                                            ${wh.name}
+                                                            <c:out value="${wh.name}"/>
                                                         </td>
                                                         <td>
                                                             <i class="bx bx-map-pin me-1 text-muted"></i>
-                                                            ${loc.code}
+                                                            <c:out value="${loc.code}"/>
                                                         </td>
                                                         <td>
                                                             <span class="fw-bold ${inv.quantity < 10 ? 'text-warning' : ''}">
-                                                                ${inv.quantity}
+                                                                <c:out value="${inv.quantity}"/>
                                                             </span>
                                                         </td>
-                                                        <td>${prod.unit}</td>
+                                                        <td><c:out value="${prod.unit}"/></td>
                                                         <td>
                                                             <a href="${contextPath}/inventory?action=byProduct&productId=${prod.id}" 
                                                                class="btn btn-sm btn-outline-primary" title="View all locations">

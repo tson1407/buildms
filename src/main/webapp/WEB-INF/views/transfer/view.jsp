@@ -44,7 +44,7 @@
                                 <li class="breadcrumb-item">
                                     <a href="${contextPath}/transfer">Transfers</a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">#${transfer.id}</li>
+                                <li class="breadcrumb-item active" aria-current="page">#<c:out value="${transfer.id}"/></li>
                             </ol>
                         </nav>
                         
@@ -55,7 +55,7 @@
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <div>
                                 <h4 class="mb-1">
-                                    <i class="bx bx-transfer me-2"></i>Transfer #${transfer.id}
+                                    <i class="bx bx-transfer me-2"></i>Transfer #<c:out value="${transfer.id}"/>
                                 </h4>
                                 <span class="badge 
                                     <c:choose>
@@ -67,7 +67,7 @@
                                         <c:otherwise>bg-secondary</c:otherwise>
                                     </c:choose>
                                     fs-6">
-                                    ${transfer.status}
+                                    <c:out value="${transfer.status}"/>
                                 </span>
                             </div>
                             <div class="d-flex gap-2">
@@ -129,11 +129,11 @@
                                         <table class="table table-borderless mb-0">
                                             <tr>
                                                 <th class="ps-0" width="40%">Request ID:</th>
-                                                <td><strong>#${transfer.id}</strong></td>
+                                                <td><strong>#<c:out value="${transfer.id}"/></strong></td>
                                             </tr>
                                             <tr>
                                                 <th class="ps-0">Type:</th>
-                                                <td><span class="badge bg-label-info">${transfer.type}</span></td>
+                                                <td><span class="badge bg-label-info"><c:out value="${transfer.type}"/></span></td>
                                             </tr>
                                             <tr>
                                                 <th class="ps-0">Status:</th>
@@ -148,19 +148,19 @@
                                                             <c:otherwise>bg-secondary</c:otherwise>
                                                         </c:choose>
                                                     ">
-                                                        ${transfer.status}
+                                                        <c:out value="${transfer.status}"/>
                                                     </span>
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <th class="ps-0">Created By:</th>
-                                                <td>${not empty creator ? creator.fullName : 'Unknown'}</td>
+                                                <td><c:out value="${not empty creator ? creator.fullName : 'Unknown'}"/></td>
                                             </tr>
                                             <tr>
                                                 <th class="ps-0">Created At:</th>
                                                 <td>
                                                     <c:if test="${not empty transfer.createdAt}">
-                                                        ${transfer.createdAt.toLocalDate()} ${transfer.createdAt.toLocalTime().toString().substring(0, 5)}
+                                                        <c:out value="${transfer.createdAt.toLocalDate()}"/> <c:out value="${transfer.createdAt.toLocalTime().toString().substring(0, 5)}"/>
                                                     </c:if>
                                                 </td>
                                             </tr>
@@ -238,10 +238,10 @@
                                                 <td>
                                                     <c:choose>
                                                         <c:when test="${not empty data.product}">
-                                                            ${data.product.name}
+                                                            <c:out value="${data.product.name}"/>
                                                         </c:when>
                                                         <c:otherwise>
-                                                            Product #${data.item.productId}
+                                                            Product #<c:out value="${data.item.productId}"/>
                                                         </c:otherwise>
                                                     </c:choose>
                                                 </td>
@@ -251,16 +251,16 @@
                                                     </c:if>
                                                 </td>
                                                 <td class="text-center">
-                                                    <span class="badge bg-label-primary">${data.item.quantity}</span>
+                                                    <span class="badge bg-label-primary"><c:out value="${data.item.quantity}"/></span>
                                                 </td>
                                                 <c:if test="${transfer.status == 'InProgress' || transfer.status == 'InTransit' || transfer.status == 'Receiving' || transfer.status == 'Completed'}">
                                                     <td class="text-center">
-                                                        <span class="badge bg-label-info">${data.item.pickedQuantity != null ? data.item.pickedQuantity : 0}</span>
+                                                        <span class="badge bg-label-info"><c:out value="${data.item.pickedQuantity != null ? data.item.pickedQuantity : 0}"/></span>
                                                     </td>
                                                 </c:if>
                                                 <c:if test="${transfer.status == 'Receiving' || transfer.status == 'Completed'}">
                                                     <td class="text-center">
-                                                        <span class="badge bg-label-success">${data.item.receivedQuantity != null ? data.item.receivedQuantity : 0}</span>
+                                                        <span class="badge bg-label-success"><c:out value="${data.item.receivedQuantity != null ? data.item.receivedQuantity : 0}"/></span>
                                                     </td>
                                                 </c:if>
                                             </tr>

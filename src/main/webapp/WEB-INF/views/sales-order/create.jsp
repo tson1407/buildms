@@ -82,7 +82,7 @@
                                                     <select id="customerId" name="customerId" class="form-select" required>
                                                         <option value="">Select Customer</option>
                                                         <c:forEach var="customer" items="${customers}">
-                                                            <option value="${customer.id}">${customer.name} (${customer.code})</option>
+                                                            <option value="<c:out value='${customer.id}'/>"><c:out value="${customer.name}"/> (<c:out value="${customer.code}"/>)</option>
                                                         </c:forEach>
                                                     </select>
                                                 </div>

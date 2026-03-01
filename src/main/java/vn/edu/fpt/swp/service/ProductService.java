@@ -1,18 +1,33 @@
 package vn.edu.fpt.swp.service;
 
+import vn.edu.fpt.swp.dao.InventoryDAO;
+import vn.edu.fpt.swp.dao.LocationDAO;
 import vn.edu.fpt.swp.dao.ProductDAO;
+import vn.edu.fpt.swp.dao.WarehouseDAO;
+import vn.edu.fpt.swp.model.Inventory;
+import vn.edu.fpt.swp.model.Location;
 import vn.edu.fpt.swp.model.Product;
+import vn.edu.fpt.swp.model.Warehouse;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service class for product operations
  */
 public class ProductService {
     private final ProductDAO productDAO;
+    private final InventoryDAO inventoryDAO;
+    private final WarehouseDAO warehouseDAO;
+    private final LocationDAO locationDAO;
     
     public ProductService() {
         this.productDAO = new ProductDAO();
+        this.inventoryDAO = new InventoryDAO();
+        this.warehouseDAO = new WarehouseDAO();
+        this.locationDAO = new LocationDAO();
     }
     
     /**
@@ -188,5 +203,42 @@ public class ProductService {
      */
     public List<Product> getProductsByStatus(boolean isActive) {
         return productDAO.findByStatus(isActive);
+    }
+    
+    /**
+     * Get inventory breakdown for a product, grouped by warehouse with location details.
+     * @param productId Product ID
+     * @param warehouseIdFilter If non-null, only return results for this warehouse (for Staff scoping)
+     * @return List of maps with warehouse, location, and quantity info
+     */
+    public List<Map<String, Object>> getInventoryBreakdown(Long productId, Long warehouseIdFilter) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        if (productId == null) {
+            return result;
+        }
+        
+        List<Inventory> inventories = inventoryDAO.findByProduct(productId);
+        
+        for (Inventory inv : inventories) {
+            if (inv.getQuantity() <= 0) {
+                continue;
+            }
+            if (warehouseIdFilter != null && !warehouseIdFilter.equals(inv.getWarehouseId())) {
+                continue;
+            }
+            
+            Map<String, Object> row = new HashMap<>();
+            row.put("inventory", inv);
+            
+            Warehouse wh = warehouseDAO.findById(inv.getWarehouseId());
+            row.put("warehouseName", wh != null ? wh.getName() : "Unknown");
+            
+            Location loc = locationDAO.findById(inv.getLocationId());
+            row.put("locationCode", loc != null ? loc.getCode() : "Unknown");
+            
+            result.add(row);
+        }
+        
+        return result;
     }
 }

@@ -45,7 +45,7 @@
                                     <a href="${contextPath}/transfer">Transfers</a>
                                 </li>
                                 <li class="breadcrumb-item">
-                                    <a href="${contextPath}/transfer?action=view&id=${transfer.id}">#${transfer.id}</a>
+                                    <a href="${contextPath}/transfer?action=view&id=${transfer.id}">#<c:out value="${transfer.id}"/></a>
                                 </li>
                                 <li class="breadcrumb-item active" aria-current="page">Execute Inbound</li>
                             </ol>
@@ -58,7 +58,7 @@
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <div>
                                 <h4 class="mb-1">
-                                    <i class="bx bx-import me-2"></i>Execute Inbound: #${transfer.id}
+                                    <i class="bx bx-import me-2"></i>Execute Inbound: #<c:out value="${transfer.id}"/>
                                 </h4>
                                 <p class="text-muted mb-0">Receive items into destination warehouse</p>
                             </div>
@@ -78,8 +78,8 @@
                                             </div>
                                             <div>
                                                 <h6 class="text-muted mb-1">From Warehouse</h6>
-                                                <h5 class="mb-0">${sourceWarehouse.name}</h5>
-                                                <small class="text-muted">${sourceWarehouse.location}</small>
+                                                <h5 class="mb-0"><c:out value="${sourceWarehouse.name}"/></h5>
+                                                <small class="text-muted"><c:out value="${sourceWarehouse.location}"/></small>
                                             </div>
                                         </div>
                                     </div>
@@ -94,8 +94,8 @@
                                             </div>
                                             <div>
                                                 <h6 class="text-muted mb-1">To Warehouse (Receiving)</h6>
-                                                <h5 class="mb-0">${destinationWarehouse.name}</h5>
-                                                <small class="text-muted">${destinationWarehouse.location}</small>
+                                                <h5 class="mb-0"><c:out value="${destinationWarehouse.name}"/></h5>
+                                                <small class="text-muted"><c:out value="${destinationWarehouse.location}"/></small>
                                             </div>
                                         </div>
                                     </div>
@@ -138,10 +138,10 @@
                                                                     <c:otherwise>Product #${data.item.productId}</c:otherwise>
                                                                 </c:choose>
                                                             </td>
-                                                            <td><code><c:if test="${not empty data.product}">${data.product.sku}</c:if></code></td>
-                                                            <td class="text-center">${data.item.quantity}</td>
+                                                            <td><code><c:if test="${not empty data.product}"><c:out value="${data.product.sku}"/></c:if></code></td>
+                                                            <td class="text-center"><c:out value="${data.item.quantity}"/></td>
                                                             <td class="text-center">
-                                                                <span class="badge bg-info">${data.item.pickedQuantity != null ? data.item.pickedQuantity : 0}</span>
+                                                                <span class="badge bg-info"><c:out value="${data.item.pickedQuantity != null ? data.item.pickedQuantity : 0}"/></span>
                                                             </td>
                                                         </tr>
                                                     </c:forEach>
@@ -200,21 +200,21 @@
                                                                     </c:choose>
                                                                     <input type="hidden" name="productId[]" value="${data.item.productId}">
                                                                 </td>
-                                                                <td><code><c:if test="${not empty data.product}">${data.product.sku}</c:if></code></td>
+                                                                <td><code><c:if test="${not empty data.product}"><c:out value="${data.product.sku}"/></c:if></code></td>
                                                                 <td class="text-center">
-                                                                    <span class="badge bg-info">${data.item.pickedQuantity != null ? data.item.pickedQuantity : 0}</span>
+                                                                    <span class="badge bg-info"><c:out value="${data.item.pickedQuantity != null ? data.item.pickedQuantity : 0}"/></span>
                                                                 </td>
                                                                 <td class="text-center">
                                                                     <input type="number" name="receivedQty[]" 
                                                                            class="form-control form-control-sm text-center"
-                                                                           value="${data.item.pickedQuantity != null ? data.item.pickedQuantity : data.item.quantity}"
+                                                                           value="<c:out value='${data.item.pickedQuantity != null ? data.item.pickedQuantity : data.item.quantity}'/>"
                                                                            min="0" max="${data.item.pickedQuantity != null ? data.item.pickedQuantity : data.item.quantity}" required>
                                                                 </td>
                                                                 <td>
                                                                     <select name="locationId[]" class="form-select form-select-sm" required>
                                                                         <option value="">Select Location</option>
                                                                         <c:forEach var="loc" items="${locations}">
-                                                                            <option value="${loc.id}">${loc.code} (${loc.type})</option>
+                                                                            <option value="<c:out value='${loc.id}'/>"><c:out value="${loc.code}"/> (<c:out value="${loc.type}"/>)</option>
                                                                         </c:forEach>
                                                                     </select>
                                                                 </td>
@@ -232,7 +232,7 @@
                                             </c:if>
                                             
                                             <div class="text-end">
-                                                <button type="submit" class="btn btn-success btn-lg" ${empty locations ? 'disabled' : ''}>
+                                                <button type="submit" class="btn btn-success btn-lg" <c:out value="${empty locations ? 'disabled' : ''}"/>>
                                                     <i class="bx bx-check-double me-1"></i> Complete Transfer
                                                 </button>
                                             </div>
@@ -245,7 +245,7 @@
                                 <div class="alert alert-info">
                                     <i class="bx bx-info-circle me-2"></i>
                                     This transfer is not in a state that requires inbound execution.
-                                    Current status: <strong>${transfer.status}</strong>
+                                    Current status: <strong><c:out value="${transfer.status}"/></strong>
                                 </div>
                             </c:otherwise>
                         </c:choose>

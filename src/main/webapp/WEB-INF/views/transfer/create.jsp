@@ -74,7 +74,7 @@
                                                 <select name="sourceWarehouseId" class="form-select" disabled>
                                                     <c:forEach var="wh" items="${warehouses}">
                                                         <c:if test="${wh.id == lockedSourceWarehouseId}">
-                                                            <option value="${wh.id}" selected>${wh.name}</option>
+                                                            <option value="<c:out value='${wh.id}'/>" selected><c:out value="${wh.name}"/></option>
                                                         </c:if>
                                                     </c:forEach>
                                                 </select>
@@ -84,8 +84,8 @@
                                                 <select name="sourceWarehouseId" class="form-select" onchange="this.form.submit()">
                                                     <option value="">Select Source Warehouse</option>
                                                     <c:forEach var="wh" items="${warehouses}">
-                                                        <option value="${wh.id}" ${selectedSourceWarehouseId == wh.id ? 'selected' : ''}>
-                                                            ${wh.name}
+                                                        <option value="<c:out value='${wh.id}'/>" <c:out value="${selectedSourceWarehouseId == wh.id ? 'selected' : ''}"/>>
+                                                            <c:out value="${wh.name}"/>
                                                         </option>
                                                     </c:forEach>
                                                 </select>
@@ -124,7 +124,7 @@
                                                     <option value="">Select Destination Warehouse</option>
                                                     <c:forEach var="wh" items="${warehouses}">
                                                         <c:if test="${wh.id != selectedSourceWarehouseId}">
-                                                            <option value="${wh.id}">${wh.name}</option>
+                                                            <option value="<c:out value='${wh.id}'/>"><c:out value="${wh.name}"/></option>
                                                         </c:if>
                                                     </c:forEach>
                                                 </select>

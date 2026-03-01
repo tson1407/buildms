@@ -68,7 +68,7 @@
                                     <div class="col-md-6">
                                         <label class="form-label">Search Product (SKU or Name)</label>
                                         <input type="text" class="form-control" name="search" 
-                                               value="${searchTerm}" placeholder="Enter SKU or product name...">
+                                               value="<c:out value='${searchTerm}'/>" placeholder="Enter SKU or product name...">
                                     </div>
                                     <div class="col-md-3">
                                         <button type="submit" class="btn btn-primary">
@@ -104,9 +104,9 @@
                                         <tbody>
                                             <c:forEach var="product" items="${searchResults}">
                                                 <tr>
-                                                    <td>${product.sku}</td>
-                                                    <td>${product.name}</td>
-                                                    <td>${product.unit}</td>
+                                                    <td><c:out value="${product.sku}"/></td>
+                                                    <td><c:out value="${product.name}"/></td>
+                                                    <td><c:out value="${product.unit}"/></td>
                                                     <td>
                                                         <c:choose>
                                                             <c:when test="${product.active}">
@@ -146,15 +146,15 @@
                                     <div class="row">
                                         <div class="col-md-3">
                                             <p class="text-muted mb-1">SKU</p>
-                                            <p class="fw-bold">${selectedProduct.sku}</p>
+                                            <p class="fw-bold"><c:out value="${selectedProduct.sku}"/></p>
                                         </div>
                                         <div class="col-md-5">
                                             <p class="text-muted mb-1">Product Name</p>
-                                            <p class="fw-bold">${selectedProduct.name}</p>
+                                            <p class="fw-bold"><c:out value="${selectedProduct.name}"/></p>
                                         </div>
                                         <div class="col-md-2">
                                             <p class="text-muted mb-1">Unit</p>
-                                            <p class="fw-bold">${selectedProduct.unit}</p>
+                                            <p class="fw-bold"><c:out value="${selectedProduct.unit}"/></p>
                                         </div>
                                         <div class="col-md-2">
                                             <p class="text-muted mb-1">Status</p>
@@ -183,7 +183,7 @@
                                                     </div>
                                                     <div>
                                                         <h6 class="mb-0 text-muted">Total Quantity</h6>
-                                                        <h3 class="mb-0">${summary.totalQuantity}</h3>
+                                                        <h3 class="mb-0"><c:out value="${summary.totalQuantity}"/></h3>
                                                     </div>
                                                 </div>
                                             </div>
@@ -198,7 +198,7 @@
                                                     </div>
                                                     <div>
                                                         <h6 class="mb-0 text-muted">Locations</h6>
-                                                        <h3 class="mb-0">${summary.locationCount}</h3>
+                                                        <h3 class="mb-0"><c:out value="${summary.locationCount}"/></h3>
                                                     </div>
                                                 </div>
                                             </div>
@@ -213,7 +213,7 @@
                                                     </div>
                                                     <div>
                                                         <h6 class="mb-0 text-muted">Warehouses</h6>
-                                                        <h3 class="mb-0">${summary.warehouseCount}</h3>
+                                                        <h3 class="mb-0"><c:out value="${summary.warehouseCount}"/></h3>
                                                     </div>
                                                 </div>
                                             </div>
@@ -255,16 +255,16 @@
                                                         <tr>
                                                             <td>
                                                                 <i class="bx bx-building-house me-1 text-muted"></i>
-                                                                ${wh.name}
+                                                                <c:out value="${wh.name}"/>
                                                             </td>
                                                             <td>
                                                                 <i class="bx bx-map-pin me-1 text-muted"></i>
-                                                                ${loc.code}
-                                                                <span class="text-muted">(${loc.type})</span>
+                                                                <c:out value="${loc.code}"/>
+                                                                <span class="text-muted">(<c:out value="${loc.type}"/>)</span>
                                                             </td>
                                                             <td>
                                                                 <span class="fw-bold ${inv.quantity < 10 ? 'text-warning' : ''}">
-                                                                    ${inv.quantity}
+                                                                    <c:out value="${inv.quantity}"/>
                                                                 </span>
                                                             </td>
                                                         </tr>

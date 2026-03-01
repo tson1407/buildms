@@ -341,7 +341,8 @@ public class RequestDAO {
             return false;
         }
         
-        String sql = "UPDATE Requests SET Status = 'InProgress' WHERE Id = ? AND Status = 'Approved'";
+        // Allow start from 'Approved' (standard) or 'Created' (internal movements have no approval step)
+        String sql = "UPDATE Requests SET Status = 'InProgress' WHERE Id = ? AND Status IN ('Approved', 'Created')";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -401,6 +402,37 @@ public class RequestDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             
             stmt.setString(1, newStatus);
+            stmt.setLong(2, requestId);
+            
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Update notes on a request
+     * @param requestId Request ID
+     * @param notes New notes text
+     * @return true if successful
+     */
+    public boolean updateNotes(Long requestId, String notes) {
+        if (requestId == null) {
+            return false;
+        }
+        
+        String sql = "UPDATE Requests SET Notes = ? WHERE Id = ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            if (notes != null) {
+                stmt.setString(1, notes);
+            } else {
+                stmt.setNull(1, java.sql.Types.NVARCHAR);
+            }
             stmt.setLong(2, requestId);
             
             return stmt.executeUpdate() > 0;

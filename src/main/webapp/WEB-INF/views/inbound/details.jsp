@@ -45,7 +45,7 @@
                                 <li class="breadcrumb-item">
                                     <a href="${contextPath}/inbound">Inbound Requests</a>
                                 </li>
-                                <li class="breadcrumb-item active" aria-current="page">Request #${inboundRequest.id}</li>
+                                <li class="breadcrumb-item active" aria-current="page">Request #<c:out value="${inboundRequest.id}"/></li>
                             </ol>
                         </nav>
                         
@@ -53,7 +53,7 @@
                         <c:if test="${not empty sessionScope.successMessage}">
                             <div class="alert alert-success alert-dismissible fade show" role="alert">
                                 <i class="bx bx-check-circle me-2"></i>
-                                ${sessionScope.successMessage}
+                                <c:out value="${sessionScope.successMessage}"/>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <c:remove var="successMessage" scope="session" />
@@ -62,7 +62,7 @@
                         <c:if test="${not empty sessionScope.errorMessage}">
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <i class="bx bx-error-circle me-2"></i>
-                                ${sessionScope.errorMessage}
+                                <c:out value="${sessionScope.errorMessage}"/>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             <c:remove var="errorMessage" scope="session" />
@@ -72,7 +72,7 @@
                         <div class="d-flex justify-content-between align-items-center mb-6">
                             <div>
                                 <h4 class="mb-1">
-                                    <i class="bx bx-download me-2"></i>Inbound Request #${inboundRequest.id}
+                                    <i class="bx bx-download me-2"></i>Inbound Request #<c:out value="${inboundRequest.id}"/>
                                 </h4>
                                 <c:choose>
                                     <c:when test="${inboundRequest.status == 'Created'}">
@@ -118,7 +118,7 @@
                                         <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label text-muted">Request ID</label>
-                                                <p class="mb-0 fw-semibold">#${inboundRequest.id}</p>
+                                                <p class="mb-0 fw-semibold">#<c:out value="${inboundRequest.id}"/></p>
                                             </div>
                                             <div class="col-md-6 mb-3">
                                                 <label class="form-label text-muted">Type</label>
@@ -143,7 +143,7 @@
                                                 <p class="mb-0 fw-semibold">
                                                     <c:choose>
                                                         <c:when test="${not empty inboundRequest.expectedDate}">
-                                                            ${inboundRequest.expectedDate.toLocalDate()}
+                                                            <c:out value="${inboundRequest.expectedDate.toLocalDate()}"/>
                                                         </c:when>
                                                         <c:otherwise>-</c:otherwise>
                                                     </c:choose>
@@ -190,19 +190,19 @@
                                                         <td>
                                                             <span class="text-muted"><c:out value="${requestScope['productSku_'.concat(item.productId)]}"/></span>
                                                         </td>
-                                                        <td class="text-center">${item.quantity}</td>
+                                                        <td class="text-center"><c:out value="${item.quantity}"/></td>
                                                         <td class="text-center">
                                                             <c:choose>
                                                                 <c:when test="${not empty item.receivedQuantity}">
                                                                     <c:choose>
                                                                         <c:when test="${item.receivedQuantity == item.quantity}">
-                                                                            <span class="text-success">${item.receivedQuantity}</span>
+                                                                            <span class="text-success"><c:out value="${item.receivedQuantity}"/></span>
                                                                         </c:when>
                                                                         <c:when test="${item.receivedQuantity < item.quantity}">
-                                                                            <span class="text-warning">${item.receivedQuantity}</span>
+                                                                            <span class="text-warning"><c:out value="${item.receivedQuantity}"/></span>
                                                                         </c:when>
                                                                         <c:otherwise>
-                                                                            <span class="text-info">${item.receivedQuantity}</span>
+                                                                            <span class="text-info"><c:out value="${item.receivedQuantity}"/></span>
                                                                         </c:otherwise>
                                                                     </c:choose>
                                                                 </c:when>
@@ -278,7 +278,7 @@
                                                 <p class="mb-0">
                                                     <c:choose>
                                                         <c:when test="${not empty inboundRequest.rejectedDate}">
-                                                            ${inboundRequest.rejectedDate.toLocalDate()}
+                                                            <c:out value="${inboundRequest.rejectedDate.toLocalDate()}"/>
                                                         </c:when>
                                                         <c:otherwise>-</c:otherwise>
                                                     </c:choose>
@@ -313,7 +313,7 @@
                                                             <c:otherwise>User #${inboundRequest.createdBy}</c:otherwise>
                                                         </c:choose>
                                                         <br/>
-                                                        ${inboundRequest.createdAt.toLocalDate()} ${inboundRequest.createdAt.toLocalTime().withNano(0)}
+                                                        <c:out value="${inboundRequest.createdAt.toLocalDate()}"/> <c:out value="${inboundRequest.createdAt.toLocalTime().withNano(0)}"/>
                                                     </p>
                                                 </div>
                                             </li>
@@ -332,7 +332,7 @@
                                                             </c:choose>
                                                             <br/>
                                                             <c:if test="${not empty inboundRequest.approvedDate}">
-                                                                ${inboundRequest.approvedDate.toLocalDate()} ${inboundRequest.approvedDate.toLocalTime().withNano(0)}
+                                                                <c:out value="${inboundRequest.approvedDate.toLocalDate()}"/> <c:out value="${inboundRequest.approvedDate.toLocalTime().withNano(0)}"/>
                                                             </c:if>
                                                         </p>
                                                     </div>
@@ -365,7 +365,7 @@
                                                             </c:choose>
                                                             <br/>
                                                             <c:if test="${not empty inboundRequest.completedDate}">
-                                                                ${inboundRequest.completedDate.toLocalDate()} ${inboundRequest.completedDate.toLocalTime().withNano(0)}
+                                                                <c:out value="${inboundRequest.completedDate.toLocalDate()}"/> <c:out value="${inboundRequest.completedDate.toLocalTime().withNano(0)}"/>
                                                             </c:if>
                                                         </p>
                                                     </div>

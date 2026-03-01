@@ -118,7 +118,7 @@
                                                             <span class="badge bg-label-danger">Cancelled</span>
                                                         </c:when>
                                                         <c:otherwise>
-                                                            <span class="badge bg-label-secondary">${order.status}</span>
+                                                            <span class="badge bg-label-secondary"><c:out value="${order.status}"/></span>
                                                         </c:otherwise>
                                                     </c:choose>
                                                 </td>
@@ -127,7 +127,7 @@
                                                 <th>Created By:</th>
                                                 <td>
                                                     <c:if test="${not empty creator}">
-                                                        ${creator.fullName}
+                                                        <c:out value="${creator.fullName}"/>
                                                     </c:if>
                                                 </td>
                                             </tr>
@@ -135,7 +135,7 @@
                                                 <th>Created At:</th>
                                                 <td>
                                                     <c:if test="${not empty order.createdAt}">
-                                                        ${order.createdAt.toLocalDate()} ${order.createdAt.toLocalTime().toString().substring(0, 5)}
+                                                        <c:out value="${order.createdAt.toLocalDate()}"/> <c:out value="${order.createdAt.toLocalTime().toString().substring(0, 5)}"/>
                                                     </c:if>
                                                 </td>
                                             </tr>
@@ -144,7 +144,7 @@
                                                     <th>Confirmed At:</th>
                                                     <td>
                                                         <c:if test="${not empty order.confirmedDate}">
-                                                            ${order.confirmedDate.toLocalDate()} ${order.confirmedDate.toLocalTime().toString().substring(0, 5)}
+                                                            <c:out value="${order.confirmedDate.toLocalDate()}"/> <c:out value="${order.confirmedDate.toLocalTime().toString().substring(0, 5)}"/>
                                                         </c:if>
                                                     </td>
                                                 </tr>
@@ -154,7 +154,7 @@
                                                     <th>Cancelled At:</th>
                                                     <td>
                                                         <c:if test="${not empty order.cancelledDate}">
-                                                            ${order.cancelledDate.toLocalDate()} ${order.cancelledDate.toLocalTime().toString().substring(0, 5)}
+                                                            <c:out value="${order.cancelledDate.toLocalDate()}"/> <c:out value="${order.cancelledDate.toLocalTime().toString().substring(0, 5)}"/>
                                                         </c:if>
                                                     </td>
                                                 </tr>
@@ -217,7 +217,7 @@
                                                 <td><strong><c:out value="${itemData.product.name}"/></strong></td>
                                                 <td><c:out value="${itemData.product.sku}"/></td>
                                                 <td><c:out value="${itemData.product.unit}"/></td>
-                                                <td class="text-end">${itemData.item.quantity}</td>
+                                                <td class="text-end"><c:out value="${itemData.item.quantity}"/></td>
                                             </tr>
                                         </c:forEach>
                                     </tbody>
@@ -245,8 +245,8 @@
                                         <tbody>
                                             <c:forEach var="req" items="${relatedRequests}">
                                                 <tr>
-                                                    <td>#${req.id}</td>
-                                                    <td>${req.type}</td>
+                                                    <td>#<c:out value="${req.id}"/></td>
+                                                    <td><c:out value="${req.type}"/></td>
                                                     <td>
                                                         <c:choose>
                                                             <c:when test="${req.status == 'Created'}">
@@ -265,13 +265,13 @@
                                                                 <span class="badge bg-label-danger">Rejected</span>
                                                             </c:when>
                                                             <c:otherwise>
-                                                                <span class="badge bg-label-secondary">${req.status}</span>
+                                                                <span class="badge bg-label-secondary"><c:out value="${req.status}"/></span>
                                                             </c:otherwise>
                                                         </c:choose>
                                                     </td>
                                                     <td>
                                                         <c:if test="${not empty req.createdAt}">
-                                                            ${req.createdAt.toLocalDate()} ${req.createdAt.toLocalTime().toString().substring(0, 5)}
+                                                            <c:out value="${req.createdAt.toLocalDate()}"/> <c:out value="${req.createdAt.toLocalTime().toString().substring(0, 5)}"/>
                                                         </c:if>
                                                     </td>
                                                     <td>

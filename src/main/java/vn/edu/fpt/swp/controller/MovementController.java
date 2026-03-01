@@ -384,6 +384,16 @@ public class MovementController extends HttpServlet {
             return;
         }
         
+        // Staff/Manager can only view movements for their assigned warehouse
+        if (isWarehouseScoped(request)) {
+            Long assignedWarehouseId = getAssignedWarehouseId(request);
+            if (assignedWarehouseId == null || !assignedWarehouseId.equals(movementRequest.getSourceWarehouseId())) {
+                request.getSession().setAttribute("errorMessage", "You don't have permission to view this movement.");
+                response.sendRedirect(request.getContextPath() + "/movement");
+                return;
+            }
+        }
+        
         // Get request items with details
         List<Map<String, Object>> itemsWithDetails = movementService.getRequestItemsWithDetails(requestId);
         
@@ -444,6 +454,16 @@ public class MovementController extends HttpServlet {
                     "This request cannot be executed. Current status: " + status);
             response.sendRedirect(request.getContextPath() + "/movement?action=details&id=" + requestId);
             return;
+        }
+        
+        // Staff/Manager can only execute movements for their assigned warehouse
+        if (isWarehouseScoped(request)) {
+            Long assignedWarehouseId = getAssignedWarehouseId(request);
+            if (assignedWarehouseId == null || !assignedWarehouseId.equals(movementRequest.getSourceWarehouseId())) {
+                request.getSession().setAttribute("errorMessage", "You don't have permission to execute this movement.");
+                response.sendRedirect(request.getContextPath() + "/movement");
+                return;
+            }
         }
         
         // Get request items with details

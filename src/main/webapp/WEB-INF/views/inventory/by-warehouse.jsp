@@ -71,7 +71,7 @@
                                             <div class="col-md-6">
                                                 <label class="form-label">Warehouse</label>
                                                 <input type="text" class="form-control" 
-                                                       value="${selectedWarehouse.name}" readonly disabled />
+                                                       value="<c:out value='${selectedWarehouse.name}'/>" readonly disabled />
                                                 <input type="hidden" name="warehouseId" value="${selectedWarehouseId}" />
                                             </div>
                                         </c:when>
@@ -81,8 +81,8 @@
                                                 <select class="form-select" name="warehouseId" onchange="this.form.submit()">
                                                     <option value="">-- Select Warehouse --</option>
                                                     <c:forEach var="wh" items="${warehouses}">
-                                                        <option value="${wh.id}" ${selectedWarehouseId == wh.id ? 'selected' : ''}>
-                                                            ${wh.name}
+                                                        <option value="<c:out value='${wh.id}'/>" <c:out value="${selectedWarehouseId == wh.id ? 'selected' : ''}"/>>
+                                                            <c:out value="${wh.name}"/>
                                                         </option>
                                                     </c:forEach>
                                                 </select>
@@ -94,7 +94,7 @@
                                         <div class="col-md-4">
                                             <label class="form-label">Search SKU/Product Name</label>
                                             <input type="text" class="form-control" name="search" 
-                                                   value="${searchTerm}" placeholder="Search...">
+                                                   value="<c:out value='${searchTerm}'/>" placeholder="Search...">
                                         </div>
                                         <div class="col-md-2">
                                             <button type="submit" class="btn btn-primary">
@@ -118,7 +118,7 @@
                                                 </div>
                                                 <div>
                                                     <h6 class="mb-0 text-muted">Total Products</h6>
-                                                    <h3 class="mb-0">${summary.totalProducts}</h3>
+                                                    <h3 class="mb-0"><c:out value="${summary.totalProducts}"/></h3>
                                                 </div>
                                             </div>
                                         </div>
@@ -133,7 +133,7 @@
                                                 </div>
                                                 <div>
                                                     <h6 class="mb-0 text-muted">Total Quantity</h6>
-                                                    <h3 class="mb-0">${summary.totalQuantity}</h3>
+                                                    <h3 class="mb-0"><c:out value="${summary.totalQuantity}"/></h3>
                                                 </div>
                                             </div>
                                         </div>
@@ -148,7 +148,7 @@
                                                 </div>
                                                 <div>
                                                     <h6 class="mb-0 text-muted">Active Locations</h6>
-                                                    <h3 class="mb-0">${summary.locationCount}</h3>
+                                                    <h3 class="mb-0"><c:out value="${summary.locationCount}"/></h3>
                                                 </div>
                                             </div>
                                         </div>
@@ -182,12 +182,12 @@
                                             <h2 class="accordion-header">
                                                 <button class="accordion-button ${status.first ? '' : 'collapsed'}" 
                                                         type="button" data-bs-toggle="collapse" 
-                                                        data-bs-target="#location_${entry.key.id}">
+                                                        data-bs-target="#location_<c:out value='${entry.key.id}'/>">
                                                     <div class="d-flex align-items-center w-100 justify-content-between pe-3">
                                                         <span>
                                                             <i class="bx bx-map-pin me-2"></i>
-                                                            <strong>${entry.key.code}</strong>
-                                                            <span class="text-muted ms-2">(${entry.key.type})</span>
+                                                            <strong><c:out value="${entry.key.code}"/></strong>
+                                                            <span class="text-muted ms-2">(<c:out value="${entry.key.type}"/>)</span>
                                                         </span>
                                                         <span class="badge bg-primary">${fn:length(entry.value)} products</span>
                                                     </div>
@@ -217,16 +217,16 @@
                                                                         <tr>
                                                                             <td>
                                                                                 <a href="${contextPath}/product?action=details&id=${prod.id}">
-                                                                                    ${prod.sku}
+                                                                                    <c:out value="${prod.sku}"/>
                                                                                 </a>
                                                                             </td>
-                                                                            <td>${prod.name}</td>
+                                                                            <td><c:out value="${prod.name}"/></td>
                                                                             <td>
                                                                                 <span class="fw-bold ${inv.quantity < 10 ? 'text-warning' : ''}">
-                                                                                    ${inv.quantity}
+                                                                                    <c:out value="${inv.quantity}"/>
                                                                                 </span>
                                                                             </td>
-                                                                            <td>${prod.unit}</td>
+                                                                            <td><c:out value="${prod.unit}"/></td>
                                                                         </tr>
                                                                     </c:if>
                                                                 </c:forEach>

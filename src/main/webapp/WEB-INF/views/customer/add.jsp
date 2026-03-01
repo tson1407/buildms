@@ -72,7 +72,7 @@
                                         <c:if test="${not empty errorMessage}">
                                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                                 <i class="bx bx-error-circle me-2"></i>
-                                                ${errorMessage}
+                                                <c:out value="${errorMessage}"/>
                                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                             </div>
                                         </c:if>
@@ -87,7 +87,7 @@
                                                 </label>
                                                 <input type="text" class="form-control" id="code" name="code" 
                                                        placeholder="Enter customer code (e.g., CUS001)" 
-                                                       value="${code}" 
+                                                       value="<c:out value='${code}'/>" 
                                                        maxlength="50" 
                                                        required />
                                                 <div class="form-text">
@@ -103,7 +103,7 @@
                                                 </label>
                                                 <input type="text" class="form-control" id="name" name="name" 
                                                        placeholder="Enter customer name" 
-                                                       value="${name}" 
+                                                       value="<c:out value='${name}'/>" 
                                                        maxlength="255" 
                                                        required />
                                             </div>
@@ -114,7 +114,7 @@
                                                 <textarea class="form-control" id="contactInfo" name="contactInfo" 
                                                           rows="4" 
                                                           maxlength="500"
-                                                          placeholder="Enter contact details (phone, email, address, etc.)">${contactInfo}</textarea>
+                                                          placeholder="Enter contact details (phone, email, address, etc.)"><c:out value="${contactInfo}"/></textarea>
                                                 <div class="form-text">
                                                     <i class="bx bx-info-circle me-1"></i>
                                                     Optional. Include phone numbers, email addresses, or physical address.
