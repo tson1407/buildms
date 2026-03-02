@@ -258,7 +258,7 @@
                                                                                     data-location-id="<c:out value='${location.id}'/>"
                                                                                     data-location-code="<c:out value='${location.code}'/>"
                                                                                     data-location-active="<c:out value='${location.active}'/>"
-                                                                                    title="<c:out value='${location.active ? 'Deactivate' : 'Activate'}'/>">
+                                                                                    title="${location.active ? 'Deactivate' : 'Activate'}">
                                                                                 <i class="bx ${location.active ? 'bx-block' : 'bx-check'}"></i>
                                                                             </button>
                                                                         </c:otherwise>

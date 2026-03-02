@@ -209,7 +209,7 @@
                                                                             data-customer-id="<c:out value='${customer.id}'/>"
                                                                             data-customer-name="<c:out value='${customer.name}'/>"
                                                                             data-customer-status="<c:out value='${customer.status}'/>"
-                                                                            title="<c:out value='${customer.status == 'Active' ? 'Deactivate' : 'Activate'}'/>"
+                                                                            title="${customer.status == 'Active' ? 'Deactivate' : 'Activate'}"
                                                                             aria-label="${customer.status == 'Active' ? 'Deactivate customer' : 'Activate customer'}">
                                                                         <i class="bx ${customer.status == 'Active' ? 'bx-block' : 'bx-check'}" aria-hidden="true"></i>
                                                                     </button>

@@ -86,7 +86,7 @@
                                             <div class="mb-4">
                                                 <label for="warehouseName" class="form-label">Warehouse</label>
                                                 <input type="text" class="form-control" id="warehouseName" 
-                                                       value="<c:out value='${not empty warehouse ? warehouse.name : ''}'/>" readonly disabled />
+                                                       value="${not empty warehouse ? warehouse.name : ''}" readonly disabled />
                                                 <div class="form-text">
                                                     <i class="bx bx-info-circle me-1"></i>
                                                     Warehouse cannot be changed after creation.

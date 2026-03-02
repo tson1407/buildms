@@ -250,7 +250,7 @@
                                                                                 data-user-id="<c:out value='${u.id}'/>"
                                                                                 data-user-name="<c:out value='${u.username}'/>"
                                                                                 data-user-status="<c:out value='${u.status}'/>"
-                                                                                title="<c:out value='${u.status == 'Active' ? 'Deactivate' : 'Activate'}'/>">
+                                                                                title="${u.status == 'Active' ? 'Deactivate' : 'Activate'}">
                                                                             <i class="bx ${u.status == 'Active' ? 'bx-block' : 'bx-check'}"></i>
                                                                         </button>
                                                                     </c:otherwise>

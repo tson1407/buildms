@@ -240,7 +240,7 @@
                                                                             data-product-id="<c:out value='${product.id}'/>"
                                                                             data-product-name="<c:out value='${product.name}'/>"
                                                                             data-product-active="<c:out value='${product.active}'/>"
-                                                                            title="<c:out value='${product.active ? 'Deactivate' : 'Activate'}'/>"
+                                                                            title="${product.active ? 'Deactivate' : 'Activate'}"
                                                                             aria-label="${product.active ? 'Deactivate product' : 'Activate product'}">
                                                                         <i class="bx ${product.active ? 'bx-block' : 'bx-check'}" aria-hidden="true"></i>
                                                                     </button>
