@@ -3,6 +3,8 @@
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="currentUser" value="${sessionScope.user}" />
+<%-- Track whether ANY item has insufficient inventory so the Complete button can be disabled --%>
+<c:set var="hasInsufficientStock" value="false" scope="page" />
 
 <!DOCTYPE html>
 <html lang="en" class="layout-menu-fixed layout-compact" 
@@ -266,18 +268,39 @@
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <h6 class="mb-1">Complete Outbound</h6>
-                                            <p class="text-muted mb-0">
-                                                Mark this outbound request as completed. Inventory will be deducted based on picked quantities.
-                                            </p>
+                                            <c:choose>
+                                                <c:when test="${hasInsufficientStock}">
+                                                    <p class="text-danger mb-0">
+                                                        <i class="bx bx-error-circle me-1"></i>
+                                                        Cannot complete — one or more items do not have enough inventory.
+                                                        Resolve the shortages highlighted above first.
+                                                    </p>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <p class="text-muted mb-0">
+                                                        Mark this outbound request as completed. Inventory will be deducted based on picked quantities.
+                                                    </p>
+                                                </c:otherwise>
+                                            </c:choose>
                                         </div>
-                                        <form action="${contextPath}/outbound" method="post" 
-                                              onsubmit="return confirm('Complete this outbound request? Inventory will be deducted. This cannot be undone.');">
-                                            <input type="hidden" name="action" value="complete" />
-                                            <input type="hidden" name="id" value="${outboundRequest.id}" />
-                                            <button type="submit" class="btn btn-success">
-                                                <i class="bx bx-check-double me-1"></i>Complete Outbound
-                                            </button>
-                                        </form>
+                                        <c:choose>
+                                            <c:when test="${hasInsufficientStock}">
+                                                <button type="button" class="btn btn-success" disabled
+                                                        title="Resolve inventory shortages before completing">
+                                                    <i class="bx bx-check-double me-1"></i>Complete Outbound
+                                                </button>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <form action="${contextPath}/outbound" method="post"
+                                                      onsubmit="return confirm('Complete this outbound request? Inventory will be deducted. This cannot be undone.');">
+                                                    <input type="hidden" name="action" value="complete" />
+                                                    <input type="hidden" name="id" value="${outboundRequest.id}" />
+                                                    <button type="submit" class="btn btn-success">
+                                                        <i class="bx bx-check-double me-1"></i>Complete Outbound
+                                                    </button>
+                                                </form>
+                                            </c:otherwise>
+                                        </c:choose>
                                     </div>
                                 </div>
                             </div>

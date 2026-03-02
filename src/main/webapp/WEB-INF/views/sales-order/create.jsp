@@ -63,7 +63,7 @@
                                 <div class="alert alert-warning">
                                     <i class="bx bx-info-circle me-2"></i>
                                     No customers available. 
-                                    <a href="${contextPath}/customer?action=create">Create a customer first</a>.
+                                    <a href="${contextPath}/customer?action=add">Create a customer first</a>.
                                 </div>
                             </c:when>
                             <c:otherwise>

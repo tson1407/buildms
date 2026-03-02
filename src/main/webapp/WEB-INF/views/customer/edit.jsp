@@ -20,7 +20,6 @@
             <!-- Sidebar -->
             <jsp:include page="/WEB-INF/common/sidebar.jsp">
                 <jsp:param name="activeMenu" value="customers" />
-                <jsp:param name="activeSubMenu" value="customer-list" />
             </jsp:include>
             
             <!-- Layout container -->
@@ -157,7 +156,7 @@
                                         
                                         <hr />
                                         
-                                        <c:if test="${currentUser.role == 'Admin'}">
+                                        <c:if test="${currentUser.role == 'Manager'}">
                                             <c:choose>
                                                 <c:when test="${customer.status == 'Active'}">
                                                     <form action="${contextPath}/customer" method="post" class="w-100">
@@ -182,10 +181,10 @@
                                             </c:choose>
                                         </c:if>
                                         
-                                        <c:if test="${currentUser.role != 'Admin'}">
+                                        <c:if test="${currentUser.role != 'Manager'}">
                                             <div class="alert alert-light mb-0">
                                                 <i class="bx bx-info-circle me-1"></i>
-                                                Only Admin can change customer status.
+                                                Only Manager can change customer status.
                                             </div>
                                         </c:if>
                                     </div>

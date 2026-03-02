@@ -21,7 +21,6 @@
             <!-- Sidebar -->
             <jsp:include page="/WEB-INF/common/sidebar.jsp">
                 <jsp:param name="activeMenu" value="customers" />
-                <jsp:param name="activeSubMenu" value="customer-list" />
             </jsp:include>
             
             <!-- Layout container -->
@@ -201,7 +200,7 @@
                                                                    aria-label="Edit customer">
                                                                     <i class="bx bx-edit-alt" aria-hidden="true"></i>
                                                                 </a>
-                                                                <c:if test="${currentUser.role == 'Admin'}">
+                                                                <c:if test="${currentUser.role == 'Manager'}">
                                                                     <button type="button" 
                                                                             class="btn btn-sm ${customer.status == 'Active' ? 'btn-outline-warning' : 'btn-outline-success'}" 
                                                                             data-bs-toggle="modal" 
@@ -244,7 +243,7 @@
     <!-- / Layout wrapper -->
     
     <!-- Toggle Status Confirmation Modal -->
-    <c:if test="${currentUser.role == 'Admin'}">
+    <c:if test="${currentUser.role == 'Manager'}">
         <div class="modal fade" id="toggleModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">

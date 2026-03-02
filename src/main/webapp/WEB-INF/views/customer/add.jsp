@@ -20,7 +20,6 @@
             <!-- Sidebar -->
             <jsp:include page="/WEB-INF/common/sidebar.jsp">
                 <jsp:param name="activeMenu" value="customers" />
-                <jsp:param name="activeSubMenu" value="customer-add" />
             </jsp:include>
             
             <!-- Layout container -->
@@ -193,7 +192,7 @@
                                                 New customers are <strong>Active</strong> by default
                                             </li>
                                             <li class="mb-2">
-                                                Only <strong>Admin</strong> can deactivate customers
+                                                Only <strong>Manager</strong> can deactivate customers
                                             </li>
                                             <li class="mb-2">
                                                 Inactive customers cannot have new sales orders

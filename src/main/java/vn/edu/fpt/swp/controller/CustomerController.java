@@ -93,6 +93,10 @@ public class CustomerController extends HttpServlet {
                 processEdit(request, response);
                 break;
             case "toggle":
+                if (!hasToggleAccess(request)) {
+                    response.sendRedirect(request.getContextPath() + "/customer?action=list");
+                    return;
+                }
                 toggleStatus(request, response);
                 break;
             default:
@@ -344,12 +348,12 @@ public class CustomerController extends HttpServlet {
         if (user == null) return false;
         
         String role = user.getRole();
-        return "Admin".equals(role) || "Manager".equals(role) || "Sales".equals(role);
+        return "Manager".equals(role) || "Sales".equals(role);
     }
     
     /**
      * Check if user has access to add/edit customers
-     * Allowed: Admin, Manager, Sales
+     * Allowed: Manager, Sales
      */
     private boolean hasManageAccess(HttpServletRequest request) {
         return hasAccess(request); // Same as view access for customers
@@ -357,13 +361,13 @@ public class CustomerController extends HttpServlet {
     
     /**
      * Check if user has access to toggle customer status
-     * Allowed: Admin only
+     * Allowed: Manager only
      */
     private boolean hasToggleAccess(HttpServletRequest request) {
         User user = getCurrentUser(request);
         if (user == null) return false;
         
-        return "Admin".equals(user.getRole());
+        return "Manager".equals(user.getRole());
     }
     
     /**

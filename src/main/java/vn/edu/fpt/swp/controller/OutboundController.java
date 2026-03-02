@@ -769,7 +769,30 @@ public class OutboundController extends HttpServlet {
         try {
             Long requestId = Long.parseLong(idStr.trim());
             Long userId = getCurrentUserId(request);
-            
+
+            // BR-EXO-006: Block completion when any item has insufficient inventory
+            vn.edu.fpt.swp.model.Request outReqCheck = outboundService.getRequestById(requestId);
+            if (outReqCheck != null && outReqCheck.getSourceWarehouseId() != null) {
+                java.util.List<vn.edu.fpt.swp.model.RequestItem> itemsCheck =
+                        outboundService.getRequestItems(requestId);
+                Long whId = outReqCheck.getSourceWarehouseId();
+                for (vn.edu.fpt.swp.model.RequestItem itm : itemsCheck) {
+                    int stillNeeded = itm.getQuantity()
+                            - (itm.getPickedQuantity() != null ? itm.getPickedQuantity() : 0);
+                    if (stillNeeded > 0) {
+                        int available = outboundService.getInventoryQuantity(itm.getProductId(), whId);
+                        if (available < stillNeeded) {
+                            request.getSession().setAttribute("errorMessage",
+                                    "Cannot complete: one or more items do not have enough inventory. "
+                                    + "Resolve the shortages shown on the execute page first.");
+                            response.sendRedirect(request.getContextPath()
+                                    + "/outbound?action=execute&id=" + requestId);
+                            return;
+                        }
+                    }
+                }
+            }
+
             // Save dispatch notes if provided
             String dispatchNotes = request.getParameter("dispatchNotes");
             if (dispatchNotes != null && !dispatchNotes.trim().isEmpty()) {
