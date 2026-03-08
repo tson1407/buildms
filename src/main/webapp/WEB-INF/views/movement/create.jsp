@@ -240,36 +240,36 @@
             
             itemCounter++;
             const itemHtml = `
-                <div class="movement-item border rounded p-3 mb-3" id="item_${itemCounter}">
+                <div class="movement-item border rounded p-3 mb-3" id="item_\${itemCounter}">
                     <div class="d-flex justify-content-between align-items-start mb-3">
-                        <h6 class="mb-0">Item #${itemCounter}</h6>
-                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeItem(${itemCounter})" aria-label="Remove item">
+                        <h6 class="mb-0">Item #\${itemCounter}</h6>
+                        <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeItem(\${itemCounter})" aria-label="Remove item">
                             <i class="bx bx-trash" aria-hidden="true"></i>
                         </button>
                     </div>
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Product <span class="text-danger">*</span></label>
-                            <select class="form-select" name="productId" required onchange="onProductChange(${itemCounter}, this)">
+                            <select class="form-select" name="productId" required onchange="onProductChange(\${itemCounter}, this)">
                                 <option value="">-- Select Product --</option>
                             </select>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Quantity <span class="text-danger">*</span></label>
                             <input type="number" class="form-control" name="quantity" min="1" required 
-                                   placeholder="Enter quantity" id="qty_${itemCounter}">
-                            <small class="text-muted" id="availableQty_${itemCounter}"></small>
+                                   placeholder="Enter quantity" id="qty_\${itemCounter}">
+                            <small class="text-muted" id="availableQty_\${itemCounter}"></small>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Source Location <span class="text-danger">*</span></label>
                             <select class="form-select" name="sourceLocationId" required 
-                                    id="sourceLocation_${itemCounter}" onchange="onSourceChange(${itemCounter}, this)">
+                                    id="sourceLocation_\${itemCounter}" onchange="onSourceChange(\${itemCounter}, this)">
                                 <option value="">-- Select Source Location --</option>
                             </select>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label">Destination Location <span class="text-danger">*</span></label>
-                            <select class="form-select" name="destinationLocationId" required id="destLocation_${itemCounter}">
+                            <select class="form-select" name="destinationLocationId" required id="destLocation_\${itemCounter}">
                                 <option value="">-- Select Destination Location --</option>
                             </select>
                         </div>
@@ -280,20 +280,20 @@
             document.getElementById('movementItems').insertAdjacentHTML('beforeend', itemHtml);
             
             // Populate product dropdown
-            const productSelect = document.querySelector(`#item_${itemCounter} select[name="productId"]`);
+            const productSelect = document.querySelector(`#item_\${itemCounter} select[name="productId"]`);
             productsWithInventory.forEach(p => {
                 const option = document.createElement('option');
                 option.value = p.id;
-                option.textContent = `${p.sku} - ${p.name} (Total: ${p.totalQty})`;
+                option.textContent = `\${p.sku} - \${p.name} (Total: \${p.totalQty})`;
                 productSelect.appendChild(option);
             });
             
             // Populate destination location dropdown
-            const destSelect = document.getElementById(`destLocation_${itemCounter}`);
+            const destSelect = document.getElementById(`destLocation_\${itemCounter}`);
             locations.forEach(l => {
                 const option = document.createElement('option');
                 option.value = l.id;
-                option.textContent = `${l.code} (${l.type})`;
+                option.textContent = `\${l.code} (\${l.type})`;
                 destSelect.appendChild(option);
             });
         }
@@ -326,7 +326,7 @@
                 if (loc && inv.quantity > 0) {
                     const option = document.createElement('option');
                     option.value = inv.locationId;
-                    option.textContent = `${loc.code} (${loc.type}) - Qty: ${inv.quantity}`;
+                    option.textContent = `\${loc.code} (\${loc.type}) - Qty: \${inv.quantity}`;
                     option.dataset.quantity = inv.quantity;
                     sourceSelect.appendChild(option);
                 }
@@ -339,7 +339,7 @@
             const availableQtyEl = document.getElementById('availableQty_' + itemId);
             const qtyInput = document.getElementById('qty_' + itemId);
             
-            availableQtyEl.textContent = `Available: ${availableQty}`;
+            availableQtyEl.textContent = `Available: \${availableQty}`;
             qtyInput.max = availableQty;
         }
         
@@ -359,7 +359,7 @@
                 const destSelect = item.querySelector('[name="destinationLocationId"]');
                 
                 if (sourceSelect.value && destSelect.value && sourceSelect.value === destSelect.value) {
-                    alert(`Item #${index + 1}: Source and destination locations must be different.`);
+                    alert(`Item #\${index + 1}: Source and destination locations must be different.`);
                     hasError = true;
                 }
             });

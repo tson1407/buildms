@@ -118,13 +118,13 @@ public class MovementController extends HttpServlet {
     }
     
     /**
-     * Check if user is warehouse-scoped (Staff or Manager — restricted to assigned warehouse)
+     * Check if user is warehouse-scoped (Staff or Manager with an assigned warehouse)
      */
     private boolean isWarehouseScoped(HttpServletRequest request) {
         User user = getCurrentUser(request);
         if (user == null) return false;
         String role = user.getRole();
-        return "Staff".equals(role) || "Manager".equals(role);
+        return ("Staff".equals(role) || "Manager".equals(role)) && user.getWarehouseId() != null;
     }
     
     /**
@@ -297,6 +297,7 @@ public class MovementController extends HttpServlet {
         }
         
         List<RequestItem> items = new ArrayList<>();
+        java.util.Set<Long> seenProductIds = new java.util.HashSet<>();
         
         for (int i = 0; i < productIds.length; i++) {
             try {
@@ -304,6 +305,14 @@ public class MovementController extends HttpServlet {
                 Long sourceLocationId = Long.parseLong(sourceLocationIds[i]);
                 Long destLocationId = Long.parseLong(destinationLocationIds[i]);
                 Integer quantity = Integer.parseInt(quantities[i]);
+                
+                // Check for duplicate product (PK is RequestId + ProductId)
+                if (!seenProductIds.add(productId)) {
+                    request.getSession().setAttribute("errorMessage", 
+                            "Duplicate product in item " + (i + 1) + ". Each product can only appear once per movement request.");
+                    response.sendRedirect(request.getContextPath() + "/movement?action=create&warehouseId=" + warehouseId);
+                    return;
+                }
                 
                 // Validate item
                 String validationError = movementService.validateMovementItem(
@@ -493,6 +502,10 @@ public class MovementController extends HttpServlet {
         }
         
         String idStr = request.getParameter("id");
+        if (idStr == null || idStr.trim().isEmpty()) {
+            response.sendRedirect(request.getContextPath() + "/movement");
+            return;
+        }
         Long requestId;
         try {
             requestId = Long.parseLong(idStr.trim());
@@ -531,6 +544,10 @@ public class MovementController extends HttpServlet {
         }
         
         String idStr = request.getParameter("id");
+        if (idStr == null || idStr.trim().isEmpty()) {
+            response.sendRedirect(request.getContextPath() + "/movement");
+            return;
+        }
         Long requestId;
         try {
             requestId = Long.parseLong(idStr.trim());

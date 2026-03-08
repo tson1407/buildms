@@ -2,7 +2,12 @@ package vn.edu.fpt.swp.service;
 
 import vn.edu.fpt.swp.dao.*;
 import vn.edu.fpt.swp.model.*;
+import vn.edu.fpt.swp.util.DBConnection;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -126,7 +131,8 @@ public class MovementService {
         
         boolean itemsCreated = requestItemDAO.createBatch(items);
         if (!itemsCreated) {
-            // TODO: Consider rollback
+            // Clean up orphaned request since items failed
+            requestDAO.deleteById(createdRequest.getId());
             return null;
         }
         
@@ -223,7 +229,7 @@ public class MovementService {
     }
     
     /**
-     * Complete internal movement execution
+     * Complete internal movement execution (transactional - all-or-nothing)
      * @param requestId Request ID
      * @param completedBy User ID completing the movement
      * @return true if successful
@@ -242,38 +248,118 @@ public class MovementService {
         Long warehouseId = request.getSourceWarehouseId();
         List<RequestItem> items = requestItemDAO.findByRequestId(requestId);
         
-        // Execute each movement
+        if (items.isEmpty()) {
+            return false;
+        }
+        
+        // Pre-validate all items before starting transaction
         for (RequestItem item : items) {
-            int quantityToMove = item.getQuantity();
-            
-            // Verify source still has enough (concurrent changes)
             Inventory sourceInventory = inventoryDAO.findByProductAndLocation(
                     item.getProductId(), warehouseId, item.getSourceLocationId());
-            if (sourceInventory == null || sourceInventory.getQuantity() < quantityToMove) {
-                // Not enough inventory - cannot complete
-                return false;
-            }
-            
-            // Decrease source
-            boolean decreased = inventoryDAO.decreaseQuantity(
-                    item.getProductId(), warehouseId, item.getSourceLocationId(), quantityToMove);
-            if (!decreased) {
-                return false;
-            }
-            
-            // Increase destination
-            boolean increased = inventoryDAO.increaseQuantity(
-                    item.getProductId(), warehouseId, item.getDestinationLocationId(), quantityToMove);
-            if (!increased) {
-                // Rollback source decrease
-                inventoryDAO.increaseQuantity(
-                        item.getProductId(), warehouseId, item.getSourceLocationId(), quantityToMove);
-                return false;
+            if (sourceInventory == null || sourceInventory.getQuantity() < item.getQuantity()) {
+                return false; // Not enough inventory - reject before any changes
             }
         }
         
-        // Mark request as completed
-        return requestDAO.complete(requestId, completedBy);
+        // Execute all inventory changes in a single transaction
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
+            
+            for (RequestItem item : items) {
+                int quantityToMove = item.getQuantity();
+                
+                // Decrease source
+                String decreaseSql = "UPDATE Inventory SET Quantity = Quantity - ? " +
+                        "WHERE ProductId = ? AND WarehouseId = ? AND LocationId = ? AND Quantity >= ?";
+                try (PreparedStatement stmt = conn.prepareStatement(decreaseSql)) {
+                    stmt.setInt(1, quantityToMove);
+                    stmt.setLong(2, item.getProductId());
+                    stmt.setLong(3, warehouseId);
+                    stmt.setLong(4, item.getSourceLocationId());
+                    stmt.setInt(5, quantityToMove);
+                    if (stmt.executeUpdate() == 0) {
+                        conn.rollback();
+                        return false; // Insufficient inventory (concurrent change)
+                    }
+                }
+                
+                // Check if destination record exists
+                String checkSql = "SELECT Quantity FROM Inventory " +
+                        "WHERE ProductId = ? AND WarehouseId = ? AND LocationId = ?";
+                boolean destExists = false;
+                try (PreparedStatement stmt = conn.prepareStatement(checkSql)) {
+                    stmt.setLong(1, item.getProductId());
+                    stmt.setLong(2, warehouseId);
+                    stmt.setLong(3, item.getDestinationLocationId());
+                    try (ResultSet rs = stmt.executeQuery()) {
+                        destExists = rs.next();
+                    }
+                }
+                
+                if (destExists) {
+                    // Increase destination
+                    String increaseSql = "UPDATE Inventory SET Quantity = Quantity + ? " +
+                            "WHERE ProductId = ? AND WarehouseId = ? AND LocationId = ?";
+                    try (PreparedStatement stmt = conn.prepareStatement(increaseSql)) {
+                        stmt.setInt(1, quantityToMove);
+                        stmt.setLong(2, item.getProductId());
+                        stmt.setLong(3, warehouseId);
+                        stmt.setLong(4, item.getDestinationLocationId());
+                        if (stmt.executeUpdate() == 0) {
+                            conn.rollback();
+                            return false;
+                        }
+                    }
+                } else {
+                    // Create destination inventory record
+                    String insertSql = "INSERT INTO Inventory (ProductId, WarehouseId, LocationId, Quantity) " +
+                            "VALUES (?, ?, ?, ?)";
+                    try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
+                        stmt.setLong(1, item.getProductId());
+                        stmt.setLong(2, warehouseId);
+                        stmt.setLong(3, item.getDestinationLocationId());
+                        stmt.setInt(4, quantityToMove);
+                        if (stmt.executeUpdate() == 0) {
+                            conn.rollback();
+                            return false;
+                        }
+                    }
+                }
+            }
+            
+            // Mark request as completed within the same transaction
+            String completeSql = "UPDATE Requests SET Status = 'Completed', CompletedBy = ?, " +
+                    "CompletedDate = GETDATE() WHERE Id = ? AND Status = 'InProgress'";
+            try (PreparedStatement stmt = conn.prepareStatement(completeSql)) {
+                stmt.setLong(1, completedBy);
+                stmt.setLong(2, requestId);
+                if (stmt.executeUpdate() == 0) {
+                    conn.rollback();
+                    return false;
+                }
+            }
+            
+            conn.commit();
+            return true;
+            
+        } catch (SQLException e) {
+            if (conn != null) {
+                try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
     
     /**
