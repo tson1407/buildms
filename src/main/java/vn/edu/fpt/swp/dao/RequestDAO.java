@@ -369,7 +369,7 @@ public class RequestDAO {
         }
         
         String sql = "UPDATE Requests SET Status = 'Completed', CompletedBy = ?, CompletedDate = GETDATE() " +
-                     "WHERE Id = ? AND Status = 'InProgress'";
+                     "WHERE Id = ? AND Status IN ('InProgress', 'Receiving')";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -522,6 +522,29 @@ public class RequestDAO {
         }
         
         return requests;
+    }
+    
+    /**
+     * Delete a request by ID (used for cleanup when item creation fails)
+     * @param id Request ID
+     * @return true if deleted successfully
+     */
+    public boolean deleteById(Long id) {
+        if (id == null) {
+            return false;
+        }
+        
+        String sql = "DELETE FROM Requests WHERE Id = ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setLong(1, id);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
     
     /**

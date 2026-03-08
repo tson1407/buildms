@@ -21,8 +21,12 @@ import java.util.stream.Collectors;
  * Controller for Inter-Warehouse Transfer Management
  * 
  * UC-TRF-001: Create Inter-Warehouse Transfer Request
- * UC-TRF-002: Execute Transfer Outbound
- * UC-TRF-003: Execute Transfer Inbound
+ * UC-TRF-002: Approve/Reject Transfer Request (destination warehouse)
+ * UC-TRF-003: Execute Transfer Outbound (source warehouse)
+ * UC-TRF-004: Execute Transfer Inbound & Complete (destination warehouse)
+ *
+ * Cross-warehouse collaborative workflow:
+ * Source WH creates → Dest WH approves → Source WH outbound → Dest WH inbound & completes
  */
 @WebServlet("/transfer")
 public class TransferController extends HttpServlet {
@@ -118,12 +122,13 @@ public class TransferController extends HttpServlet {
             transfers = transferService.getAllTransferRequests();
         }
         
-        // Manager: filter to only show transfers related to their warehouse
-        if ("Manager".equals(currentUser.getRole()) && currentUser.getWarehouseId() != null) {
-            Long managerWarehouseId = currentUser.getWarehouseId();
+        // Manager/Staff: filter to only show transfers related to their warehouse
+        if (("Manager".equals(currentUser.getRole()) || "Staff".equals(currentUser.getRole()))
+                && currentUser.getWarehouseId() != null) {
+            Long userWarehouseId = currentUser.getWarehouseId();
             transfers = transfers.stream()
-                .filter(t -> managerWarehouseId.equals(t.getSourceWarehouseId()) 
-                          || managerWarehouseId.equals(t.getDestinationWarehouseId()))
+                .filter(t -> userWarehouseId.equals(t.getSourceWarehouseId()) 
+                          || userWarehouseId.equals(t.getDestinationWarehouseId()))
                 .collect(Collectors.toList());
         }
         
@@ -137,7 +142,10 @@ public class TransferController extends HttpServlet {
             userMap.put(u.getId(), u);
         }
 
-        // Enrich with warehouse info
+        // Enrich with warehouse info and per-row access flags
+        Long userWarehouseId = currentUser.getWarehouseId();
+        boolean isAdmin = "Admin".equals(currentUser.getRole());
+        
         List<Map<String, Object>> transfersWithDetails = new ArrayList<>();
         for (Request transfer : transfers) {
             Map<String, Object> data = new HashMap<>();
@@ -145,6 +153,12 @@ public class TransferController extends HttpServlet {
             data.put("sourceWarehouse", warehouseMap.get(transfer.getSourceWarehouseId()));
             data.put("destinationWarehouse", warehouseMap.get(transfer.getDestinationWarehouseId()));
             data.put("creator", userMap.get(transfer.getCreatedBy()));
+            // Per-row warehouse flags for action visibility
+            data.put("isAtSourceWH", userWarehouseId != null 
+                && userWarehouseId.equals(transfer.getSourceWarehouseId()));
+            data.put("isAtDestWH", userWarehouseId != null 
+                && userWarehouseId.equals(transfer.getDestinationWarehouseId()));
+            data.put("isAdmin", isAdmin);
             transfersWithDetails.add(data);
         }
         
@@ -307,14 +321,14 @@ public class TransferController extends HttpServlet {
                 return;
             }
             
-            // Manager can only view transfers related to their warehouse
+            // Manager/Staff can only view transfers related to their warehouse
             HttpSession session = request.getSession(false);
             User currentUser = (User) session.getAttribute("user");
-            if ("Manager".equals(currentUser.getRole())) {
-                Long managerWarehouseId = currentUser.getWarehouseId();
-                if (managerWarehouseId == null
-                        || (!managerWarehouseId.equals(transfer.getSourceWarehouseId())
-                            && !managerWarehouseId.equals(transfer.getDestinationWarehouseId()))) {
+            if ("Manager".equals(currentUser.getRole()) || "Staff".equals(currentUser.getRole())) {
+                Long userWarehouseId = currentUser.getWarehouseId();
+                if (userWarehouseId == null
+                        || (!userWarehouseId.equals(transfer.getSourceWarehouseId())
+                            && !userWarehouseId.equals(transfer.getDestinationWarehouseId()))) {
                     request.setAttribute("errorMessage", "You don't have permission to view this transfer.");
                     listTransfers(request, response);
                     return;
@@ -331,6 +345,17 @@ public class TransferController extends HttpServlet {
             request.setAttribute("destinationWarehouse", dest);
             request.setAttribute("creator", creator);
             request.setAttribute("items", items);
+            
+            // Pass warehouse flags for the JSP to control button visibility
+            Long userWarehouseId = currentUser.getWarehouseId();
+            boolean isAdmin = "Admin".equals(currentUser.getRole());
+            boolean isAtSourceWH = userWarehouseId != null 
+                && userWarehouseId.equals(transfer.getSourceWarehouseId());
+            boolean isAtDestWH = userWarehouseId != null 
+                && userWarehouseId.equals(transfer.getDestinationWarehouseId());
+            request.setAttribute("isAtSourceWH", isAtSourceWH);
+            request.setAttribute("isAtDestWH", isAtDestWH);
+            request.setAttribute("isAdmin", isAdmin);
             
             // Check success message from session flash
             HttpSession viewSession = request.getSession(false);
@@ -349,7 +374,8 @@ public class TransferController extends HttpServlet {
     }
     
     /**
-     * Approve transfer request
+     * UC-TRF-002: Approve transfer request
+     * Only destination warehouse Manager or Admin can approve.
      */
     private void approveTransfer(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -357,7 +383,7 @@ public class TransferController extends HttpServlet {
         User currentUser = (User) session.getAttribute("user");
         
         if (!"Manager".equals(currentUser.getRole()) && !"Admin".equals(currentUser.getRole())) {
-            request.setAttribute("errorMessage", "Only Managers can approve transfers");
+            request.setAttribute("errorMessage", "Only Managers and Admins can approve transfers");
             listTransfers(request, response);
             return;
         }
@@ -365,14 +391,14 @@ public class TransferController extends HttpServlet {
         try {
             Long requestId = Long.parseLong(request.getParameter("id"));
             
-            // Manager can only approve transfers related to their warehouse
+            // Manager can only approve transfers destined to their warehouse
             if ("Manager".equals(currentUser.getRole())) {
                 Request transfer = transferService.getTransferRequestById(requestId);
                 Long managerWarehouseId = currentUser.getWarehouseId();
                 if (transfer == null || managerWarehouseId == null
-                        || (!managerWarehouseId.equals(transfer.getSourceWarehouseId())
-                            && !managerWarehouseId.equals(transfer.getDestinationWarehouseId()))) {
-                    request.setAttribute("errorMessage", "You don't have permission to approve this transfer.");
+                        || !managerWarehouseId.equals(transfer.getDestinationWarehouseId())) {
+                    request.setAttribute("errorMessage", 
+                        "Only the destination warehouse Manager can approve this transfer.");
                     listTransfers(request, response);
                     return;
                 }
@@ -385,7 +411,7 @@ public class TransferController extends HttpServlet {
                 response.sendRedirect(request.getContextPath() + 
                     "/transfer?action=view&id=" + requestId);
             } else {
-                request.setAttribute("errorMessage", "Failed to approve transfer");
+                request.setAttribute("errorMessage", "Failed to approve transfer. Only transfers with status 'Created' can be approved.");
                 viewTransfer(request, response);
             }
             
@@ -396,7 +422,8 @@ public class TransferController extends HttpServlet {
     }
     
     /**
-     * Reject transfer request
+     * UC-TRF-002: Reject transfer request
+     * Only destination warehouse Manager or Admin can reject.
      */
     private void rejectTransfer(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -404,7 +431,7 @@ public class TransferController extends HttpServlet {
         User currentUser = (User) session.getAttribute("user");
         
         if (!"Manager".equals(currentUser.getRole()) && !"Admin".equals(currentUser.getRole())) {
-            request.setAttribute("errorMessage", "Only Managers can reject transfers");
+            request.setAttribute("errorMessage", "Only Managers and Admins can reject transfers");
             listTransfers(request, response);
             return;
         }
@@ -419,14 +446,14 @@ public class TransferController extends HttpServlet {
                 return;
             }
             
-            // Manager can only reject transfers related to their warehouse
+            // Manager can only reject transfers destined to their warehouse
             if ("Manager".equals(currentUser.getRole())) {
                 Request transfer = transferService.getTransferRequestById(requestId);
                 Long managerWarehouseId = currentUser.getWarehouseId();
                 if (transfer == null || managerWarehouseId == null
-                        || (!managerWarehouseId.equals(transfer.getSourceWarehouseId())
-                            && !managerWarehouseId.equals(transfer.getDestinationWarehouseId()))) {
-                    request.setAttribute("errorMessage", "You don't have permission to reject this transfer.");
+                        || !managerWarehouseId.equals(transfer.getDestinationWarehouseId())) {
+                    request.setAttribute("errorMessage", 
+                        "Only the destination warehouse Manager can reject this transfer.");
                     listTransfers(request, response);
                     return;
                 }
@@ -435,8 +462,8 @@ public class TransferController extends HttpServlet {
             boolean success = transferService.rejectTransfer(requestId, currentUser.getId(), reason);
             
             if (success) {
-                response.sendRedirect(request.getContextPath() + 
-                    "/transfer?success=Transfer rejected");
+                request.getSession().setAttribute("successMessage", "Transfer rejected successfully");
+                response.sendRedirect(request.getContextPath() + "/transfer");
             } else {
                 request.setAttribute("errorMessage", "Failed to reject transfer");
                 viewTransfer(request, response);
@@ -449,7 +476,8 @@ public class TransferController extends HttpServlet {
     }
     
     /**
-     * UC-TRF-002: Show outbound execution form
+     * UC-TRF-003: Show outbound execution form
+     * Only source warehouse Staff/Manager or Admin can execute outbound.
      */
     private void showOutboundExecutionForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -468,6 +496,18 @@ public class TransferController extends HttpServlet {
                 request.setAttribute("errorMessage", "Transfer request not found");
                 listTransfers(request, response);
                 return;
+            }
+            
+            // Verify user is at source warehouse (or Admin)
+            User currentUser = (User) request.getSession(false).getAttribute("user");
+            if (!"Admin".equals(currentUser.getRole())) {
+                Long userWarehouseId = currentUser.getWarehouseId();
+                if (userWarehouseId == null || !userWarehouseId.equals(transfer.getSourceWarehouseId())) {
+                    request.setAttribute("errorMessage", 
+                        "Only source warehouse staff can execute transfer outbound.");
+                    viewTransfer(request, response);
+                    return;
+                }
             }
             
             // Must be Approved or InProgress
@@ -496,12 +536,26 @@ public class TransferController extends HttpServlet {
     }
     
     /**
-     * UC-TRF-002: Start outbound execution
+     * UC-TRF-003: Start outbound execution
      */
     private void startOutbound(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
             Long requestId = Long.parseLong(request.getParameter("id"));
+            
+            // Verify user is at source warehouse (or Admin)
+            User currentUser = (User) request.getSession(false).getAttribute("user");
+            Request transfer = transferService.getTransferRequestById(requestId);
+            if (!"Admin".equals(currentUser.getRole())) {
+                Long userWarehouseId = currentUser.getWarehouseId();
+                if (transfer == null || userWarehouseId == null 
+                        || !userWarehouseId.equals(transfer.getSourceWarehouseId())) {
+                    request.setAttribute("errorMessage", 
+                        "Only source warehouse staff can start transfer outbound.");
+                    listTransfers(request, response);
+                    return;
+                }
+            }
             
             boolean success = transferService.startOutboundExecution(requestId);
             
@@ -521,7 +575,7 @@ public class TransferController extends HttpServlet {
     }
     
     /**
-     * UC-TRF-002: Complete outbound execution
+     * UC-TRF-003: Complete outbound execution
      */
     private void completeOutbound(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -530,6 +584,19 @@ public class TransferController extends HttpServlet {
         
         try {
             Long requestId = Long.parseLong(request.getParameter("id"));
+            
+            // Verify user is at source warehouse (or Admin)
+            Request transferCheck = transferService.getTransferRequestById(requestId);
+            if (!"Admin".equals(currentUser.getRole())) {
+                Long userWarehouseId = currentUser.getWarehouseId();
+                if (transferCheck == null || userWarehouseId == null 
+                        || !userWarehouseId.equals(transferCheck.getSourceWarehouseId())) {
+                    request.setAttribute("errorMessage", 
+                        "Only source warehouse staff can complete transfer outbound.");
+                    listTransfers(request, response);
+                    return;
+                }
+            }
             
             // Parse per-item picked quantities from form
             String[] productIds = request.getParameterValues("productId[]");
@@ -563,7 +630,8 @@ public class TransferController extends HttpServlet {
     }
     
     /**
-     * UC-TRF-003: Show inbound execution form
+     * UC-TRF-004: Show inbound execution form
+     * Only destination warehouse Staff/Manager or Admin can execute inbound.
      */
     private void showInboundExecutionForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -582,6 +650,18 @@ public class TransferController extends HttpServlet {
                 request.setAttribute("errorMessage", "Transfer request not found");
                 listTransfers(request, response);
                 return;
+            }
+            
+            // Verify user is at destination warehouse (or Admin)
+            User currentUser = (User) request.getSession(false).getAttribute("user");
+            if (!"Admin".equals(currentUser.getRole())) {
+                Long userWarehouseId = currentUser.getWarehouseId();
+                if (userWarehouseId == null || !userWarehouseId.equals(transfer.getDestinationWarehouseId())) {
+                    request.setAttribute("errorMessage", 
+                        "Only destination warehouse staff can execute transfer inbound.");
+                    viewTransfer(request, response);
+                    return;
+                }
             }
             
             // Must be InTransit or Receiving
@@ -612,12 +692,26 @@ public class TransferController extends HttpServlet {
     }
     
     /**
-     * UC-TRF-003: Start inbound execution
+     * UC-TRF-004: Start inbound execution
      */
     private void startInbound(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
             Long requestId = Long.parseLong(request.getParameter("id"));
+            
+            // Verify user is at destination warehouse (or Admin)
+            User currentUser = (User) request.getSession(false).getAttribute("user");
+            Request transfer = transferService.getTransferRequestById(requestId);
+            if (!"Admin".equals(currentUser.getRole())) {
+                Long userWarehouseId = currentUser.getWarehouseId();
+                if (transfer == null || userWarehouseId == null 
+                        || !userWarehouseId.equals(transfer.getDestinationWarehouseId())) {
+                    request.setAttribute("errorMessage", 
+                        "Only destination warehouse staff can start transfer inbound.");
+                    listTransfers(request, response);
+                    return;
+                }
+            }
             
             boolean success = transferService.startInboundExecution(requestId);
             
@@ -637,7 +731,7 @@ public class TransferController extends HttpServlet {
     }
     
     /**
-     * UC-TRF-003: Complete inbound execution
+     * UC-TRF-004: Complete inbound execution — destination WH completes the transfer
      */
     private void completeInbound(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -646,6 +740,19 @@ public class TransferController extends HttpServlet {
         
         try {
             Long requestId = Long.parseLong(request.getParameter("id"));
+            
+            // Verify user is at destination warehouse (or Admin)
+            Request transferCheck = transferService.getTransferRequestById(requestId);
+            if (!"Admin".equals(currentUser.getRole())) {
+                Long userWarehouseId = currentUser.getWarehouseId();
+                if (transferCheck == null || userWarehouseId == null 
+                        || !userWarehouseId.equals(transferCheck.getDestinationWarehouseId())) {
+                    request.setAttribute("errorMessage", 
+                        "Only destination warehouse staff can complete transfer inbound.");
+                    listTransfers(request, response);
+                    return;
+                }
+            }
             
             // Parse per-item location assignments and received quantities
             String[] productIds = request.getParameterValues("productId[]");

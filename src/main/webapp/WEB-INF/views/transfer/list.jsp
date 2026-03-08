@@ -175,7 +175,8 @@
                                                                         <i class="bx bx-show me-1"></i> View Details
                                                                     </a>
                                                                     
-                                                                    <c:if test="${data.request.status == 'Created' && (currentUser.role == 'Admin' || currentUser.role == 'Manager')}">
+                                                                    <%-- Approve: only dest WH Manager or Admin, status=Created --%>
+                                                                    <c:if test="${data.request.status == 'Created' && (data.isAdmin || (data.isAtDestWH && currentUser.role == 'Manager'))}">
                                                                         <form action="${contextPath}/transfer" method="post" style="display: inline;">
                                                                             <input type="hidden" name="action" value="approve">
                                                                             <input type="hidden" name="id" value="${data.request.id}">
@@ -185,13 +186,15 @@
                                                                         </form>
                                                                     </c:if>
                                                                     
-                                                                    <c:if test="${data.request.status == 'Approved' || data.request.status == 'InProgress'}">
+                                                                    <%-- Execute Outbound: only source WH Staff/Manager or Admin --%>
+                                                                    <c:if test="${(data.request.status == 'Approved' || data.request.status == 'InProgress') && (data.isAdmin || data.isAtSourceWH)}">
                                                                         <a class="dropdown-item" href="${contextPath}/transfer?action=execute-outbound&id=${data.request.id}">
                                                                             <i class="bx bx-export me-1"></i> Execute Outbound
                                                                         </a>
                                                                     </c:if>
                                                                     
-                                                                    <c:if test="${data.request.status == 'InTransit' || data.request.status == 'Receiving'}">
+                                                                    <%-- Execute Inbound: only dest WH Staff/Manager or Admin --%>
+                                                                    <c:if test="${(data.request.status == 'InTransit' || data.request.status == 'Receiving') && (data.isAdmin || data.isAtDestWH)}">
                                                                         <a class="dropdown-item" href="${contextPath}/transfer?action=execute-inbound&id=${data.request.id}">
                                                                             <i class="bx bx-import me-1"></i> Execute Inbound
                                                                         </a>

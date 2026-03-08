@@ -5,7 +5,7 @@ Smart WMS is a **Java 17 + Jakarta Servlet 6.0** web application for warehouse m
 
 **Base package:** `vn.edu.fpt.swp`  
 **WAR artifact:** `buildms.war`  
-**All 48 use cases across 13 modules are fully implemented.**
+**All 48 use cases across 13 modules are implemented. Transfer module (TRF) is being updated to enforce destination-warehouse approval (49 UCs total).**
 
 ## Architecture (MVC Layered)
 ```
@@ -377,11 +377,13 @@ Cancelled  Cancelled
 - Sales creates order → Confirms → Generates outbound request → Warehouse executes
 
 ### Transfer Workflow
-Transfer requests move goods between warehouses via a two-phase execution:
-1. **Create** (Admin/Manager) — specify source/destination warehouses and items
-2. **Approve** (Admin/Manager) — approve or reject
-3. **Execute outbound** (Staff at source) — pick items from source warehouse
-4. **Execute inbound** (Staff at destination) — receive items at destination warehouse
+Transfer requests move goods between warehouses via a **cross-warehouse collaborative workflow**:
+1. **Create** (Source WH Manager/Admin) — specify source/destination warehouses and items → Status: Created
+2. **Approve/Reject** (**Destination WH Manager**/Admin) — destination warehouse decides whether to accept → Status: Approved/Rejected
+3. **Execute outbound** (Source WH Staff/Manager) — pick items from source warehouse → Status: InProgress → InTransit
+4. **Execute inbound & complete** (Dest WH Staff/Manager) — receive items at destination, complete the transfer → Status: Receiving → Completed
+
+**Key rule:** Only the **destination warehouse Manager** can approve/reject a transfer (source WH Manager cannot approve their own transfer). This ensures the receiving warehouse agrees to accept the goods.
 
 ### Inbound Execution
 - Staff enters `receivedQuantity` per item (may differ from requested)
@@ -396,7 +398,7 @@ Transfer requests move goods between warehouses via a two-phase execution:
 - Uses `sourceLocationId` → `destinationLocationId` on `RequestItem`
 - No approval step required — directly created and executed
 
-## Implemented Modules (48 Use Cases — All Complete)
+## Implemented Modules (49 Use Cases — 48 Complete, TRF updating)
 
 | Module | UCs | Controllers | Description |
 |--------|-----|-------------|-------------|
@@ -412,7 +414,7 @@ Transfer requests move goods between warehouses via a two-phase execution:
 | MOV | 2 | MovementController | Create, Execute |
 | INV | 3 | InventoryController | By Warehouse, By Product, Search |
 | SO | 4 | SalesOrderController | Create, Confirm, Generate Outbound, Cancel |
-| TRF | 3 | TransferController | Create, Execute Outbound, Execute Inbound |
+| TRF | 4 | TransferController | Create, Approve/Reject (dest WH), Execute Outbound (source WH), Execute Inbound (dest WH) |
 
 ## When Adding New Features
 1. **Read the detail design** in `document/detail-design/UC-*.md` for exact requirements

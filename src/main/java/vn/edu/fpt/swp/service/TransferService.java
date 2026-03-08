@@ -13,8 +13,12 @@ import java.util.Map;
  * Service layer for Inter-Warehouse Transfer Management
  * 
  * UC-TRF-001: Create Inter-Warehouse Transfer Request
- * UC-TRF-002: Execute Transfer Outbound
- * UC-TRF-003: Execute Transfer Inbound
+ * UC-TRF-002: Approve/Reject Transfer Request (destination warehouse)
+ * UC-TRF-003: Execute Transfer Outbound (source warehouse)
+ * UC-TRF-004: Execute Transfer Inbound & Complete (destination warehouse)
+ *
+ * Cross-warehouse collaborative workflow:
+ * Source WH creates → Dest WH approves → Source WH outbound → Dest WH inbound & completes
  */
 public class TransferService {
     
@@ -246,7 +250,7 @@ public class TransferService {
         return requestDAO.reject(requestId, rejectorId, reason);
     }
     
-    // ========== UC-TRF-002: Execute Transfer Outbound ==========
+    // ========== UC-TRF-003: Execute Transfer Outbound ==========
     
     /**
      * Start outbound execution (picking)
@@ -339,7 +343,7 @@ public class TransferService {
         return requestDAO.updateStatus(requestId, "InTransit");
     }
     
-    // ========== UC-TRF-003: Execute Transfer Inbound ==========
+    // ========== UC-TRF-004: Execute Transfer Inbound ==========
     
     /**
      * Start inbound execution (receiving)
