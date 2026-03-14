@@ -193,7 +193,7 @@
                                                         <td class="text-center"><c:out value="${item.quantity}"/></td>
                                                         <td class="text-center">
                                                             <c:choose>
-                                                                <c:when test="${not empty item.receivedQuantity}">
+                                                                <c:when test="${item.receivedQuantity != null}">
                                                                     <c:choose>
                                                                         <c:when test="${item.receivedQuantity == item.quantity}">
                                                                             <span class="text-success"><c:out value="${item.receivedQuantity}"/></span>

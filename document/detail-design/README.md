@@ -53,8 +53,9 @@ Each use case document includes:
 | ID | Name | File |
 |----|------|------|
 | UC-TRF-001 | Create Transfer Request | [UC-TRF-001-Create-Transfer-Request.md](UC-TRF-001-Create-Transfer-Request.md) |
-| UC-TRF-002 | Execute Transfer Outbound | [UC-TRF-002-Execute-Transfer-Outbound.md](UC-TRF-002-Execute-Transfer-Outbound.md) |
-| UC-TRF-003 | Execute Transfer Inbound | [UC-TRF-003-Execute-Transfer-Inbound.md](UC-TRF-003-Execute-Transfer-Inbound.md) |
+| UC-TRF-002 | Approve/Reject Transfer Request | [UC-TRF-002-Approve-Transfer-Request.md](UC-TRF-002-Approve-Transfer-Request.md) |
+| UC-TRF-003 | Execute Transfer Outbound | [UC-TRF-003-Execute-Transfer-Outbound.md](UC-TRF-003-Execute-Transfer-Outbound.md) |
+| UC-TRF-004 | Execute Transfer Inbound & Complete | [UC-TRF-004-Execute-Transfer-Inbound.md](UC-TRF-004-Execute-Transfer-Inbound.md) |
 
 ### Internal Movement (UC-MOV)
 | ID | Name | File |

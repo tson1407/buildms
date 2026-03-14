@@ -125,10 +125,10 @@
                                                                 <small class="text-muted">SKU: <c:out value="${requestScope['productSku_'.concat(item.productId)]}"/></small>
                                                             </div>
                                                             <c:choose>
-                                                                <c:when test="${not empty item.receivedQuantity && item.receivedQuantity == item.quantity}">
+                                                                <c:when test="${item.receivedQuantity != null && item.receivedQuantity == item.quantity}">
                                                                     <span class="badge bg-success"><i class="bx bx-check me-1"></i>Complete</span>
                                                                 </c:when>
-                                                                <c:when test="${not empty item.receivedQuantity && item.receivedQuantity > 0}">
+                                                                <c:when test="${item.receivedQuantity != null && item.receivedQuantity > 0}">
                                                                     <span class="badge bg-warning">Partial</span>
                                                                 </c:when>
                                                                 <c:otherwise>
@@ -137,7 +137,7 @@
                                                             </c:choose>
                                                         </div>
                                                         
-                                                        <form action="${contextPath}/inbound" method="post" class="row g-3 align-items-end">
+                                                        <form action="${contextPath}/inbound" method="post" class="row g-3 align-items-end item-update-form">
                                                             <input type="hidden" name="action" value="updateItem" />
                                                             <input type="hidden" name="id" value="${inboundRequest.id}" />
                                                             <input type="hidden" name="productId" value="${item.productId}" />
@@ -150,7 +150,7 @@
                                                             <div class="col-md-3">
                                                                 <label class="form-label">Received Qty <span class="text-danger">*</span></label>
                                                                 <input type="number" class="form-control" name="receivedQuantity" 
-                                                                       min="0" value="<c:out value='${not empty item.receivedQuantity ? item.receivedQuantity : item.quantity}'/>" required />
+                                                                     min="0" value="<c:out value='${item.receivedQuantity != null ? item.receivedQuantity : item.quantity}'/>" required />
                                                             </div>
                                                             
                                                             <div class="col-md-4">
@@ -182,7 +182,7 @@
                                     <!-- Complete Button -->
                                     <div class="card">
                                         <div class="card-body">
-                                            <form action="${contextPath}/inbound" method="post">
+                                            <form id="completeForm" action="${contextPath}/inbound" method="post">
                                                 <input type="hidden" name="action" value="complete" />
                                                 <input type="hidden" name="id" value="${inboundRequest.id}" />
                                                 <button type="submit" class="btn btn-success btn-lg w-100" 
@@ -269,5 +269,46 @@
     <!-- / Layout wrapper -->
     
     <jsp:include page="/WEB-INF/common/scripts.jsp" />
+    <script>
+        (function () {
+            const completeForm = document.getElementById('completeForm');
+            if (!completeForm) {
+                return;
+            }
+
+            completeForm.addEventListener('submit', function () {
+                const oldGeneratedInputs = completeForm.querySelectorAll('.generated-item-sync');
+                oldGeneratedInputs.forEach(function (input) {
+                    input.remove();
+                });
+
+                const itemForms = document.querySelectorAll('.item-update-form');
+                itemForms.forEach(function (itemForm) {
+                    const productIdInput = itemForm.querySelector('input[name="productId"]');
+                    const receivedQtyInput = itemForm.querySelector('input[name="receivedQuantity"]');
+                    const locationIdInput = itemForm.querySelector('select[name="locationId"]');
+
+                    if (!productIdInput || !receivedQtyInput || !locationIdInput) {
+                        return;
+                    }
+
+                    const payload = [
+                        { name: 'productId', value: productIdInput.value },
+                        { name: 'receivedQuantity', value: receivedQtyInput.value },
+                        { name: 'locationId', value: locationIdInput.value }
+                    ];
+
+                    payload.forEach(function (entry) {
+                        const hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = entry.name;
+                        hiddenInput.value = entry.value;
+                        hiddenInput.className = 'generated-item-sync';
+                        completeForm.appendChild(hiddenInput);
+                    });
+                });
+            });
+        })();
+    </script>
 </body>
 </html>

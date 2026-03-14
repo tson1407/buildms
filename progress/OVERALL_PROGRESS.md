@@ -4,10 +4,10 @@
 This document provides a comprehensive overview of the implementation progress for all Use Cases in the Smart WMS project.
 
 **Project Start Date:** Academic project for warehouse management system  
-**Current Date:** January 31, 2026  
-**Total Use Cases:** 48  
-**Completed Use Cases:** 48  
-**Completion Percentage:** 100% ✅
+**Current Date:** March 8, 2026  
+**Total Use Cases:** 49  
+**Completed Use Cases:** 49  
+**Completion Percentage:** 100%
 
 ## Module Status Summary
 
@@ -25,7 +25,7 @@ This document provides a comprehensive overview of the implementation progress f
 | MOV (Internal Movement) | 2 | 2 | ✅ Complete | Create/Execute implemented |
 | OUT (Outbound Requests) | 3 | 3 | ✅ Complete | Create/Approve/Execute implemented |
 | SO (Sales Orders) | 4 | 4 | ✅ Complete | Create/Confirm/Generate Outbound/Cancel |
-| TRF (Transfer Requests) | 3 | 3 | ✅ Complete | Create/Execute Outbound/Execute Inbound |
+| TRF (Transfer Requests) | 4 | 4 | ✅ Complete | Create/Approve(Dest WH)/Execute Outbound(Source WH)/Execute Inbound(Dest WH) |
 
 ## Detailed Use Case Status
 
@@ -126,13 +126,18 @@ This document provides a comprehensive overview of the implementation progress f
 | UC ID | Use Case Name | Status | Implementation Date |
 |-------|--------------|--------|-------------------|
 | UC-TRF-001 | Create Transfer Request | ✅ Completed | January 31, 2026 |
-| UC-TRF-002 | Execute Transfer Outbound | ✅ Completed | January 31, 2026 |
-| UC-TRF-003 | Execute Transfer Inbound | ✅ Completed | January 31, 2026 |
+| UC-TRF-002 | Approve/Reject Transfer Request (Dest WH) | ✅ Completed | March 8, 2026 |
+| UC-TRF-003 | Execute Transfer Outbound (Source WH) | ✅ Completed | March 8, 2026 |
+| UC-TRF-004 | Execute Transfer Inbound & Complete (Dest WH) | ✅ Completed | March 8, 2026 |
+
+**Change (March 2026):** Transfer workflow updated to require **destination warehouse** Manager approval.  
+- Source WH creates → Dest WH approves → Source WH outbound → Dest WH inbound & completes  
+- Key rule: Only destination WH Manager can approve/reject (not source WH Manager)
 
 
 ## Project Completion Summary 🎉
 
-All 48 use cases across 13 modules have been successfully implemented!
+All 49 use cases across 13 modules have been fully implemented. The TRF module was updated on March 8, 2026 to enforce destination-warehouse-only approval for inter-warehouse transfers.
 
 ## Implementation Notes
 - All completed modules follow the MVC pattern with Jakarta EE 10

@@ -779,6 +779,13 @@ public class InboundController extends HttpServlet {
         try {
             Long requestId = Long.parseLong(idStr.trim());
             Long userId = getCurrentUserId(request);
+
+            boolean syncUpdated = syncReceivedItemsForCompletion(request, requestId);
+            if (!syncUpdated) {
+                request.getSession().setAttribute("errorMessage", "Failed to save received quantities. Please review item data and try again.");
+                response.sendRedirect(request.getContextPath() + "/inbound?action=execute&id=" + requestId);
+                return;
+            }
             
             boolean completed = inboundService.completeExecution(requestId, userId);
             
@@ -794,5 +801,52 @@ public class InboundController extends HttpServlet {
             request.getSession().setAttribute("errorMessage", "Invalid request ID.");
             response.sendRedirect(request.getContextPath() + "/inbound");
         }
+    }
+
+    /**
+     * Save received quantities sent from complete form before finishing execution.
+     */
+    private boolean syncReceivedItemsForCompletion(HttpServletRequest request, Long requestId) {
+        String[] productIds = request.getParameterValues("productId");
+        String[] receivedQuantities = request.getParameterValues("receivedQuantity");
+        String[] locationIds = request.getParameterValues("locationId");
+
+        if (productIds == null || receivedQuantities == null || locationIds == null) {
+            return true;
+        }
+
+        if (productIds.length != receivedQuantities.length || productIds.length != locationIds.length) {
+            return false;
+        }
+
+        for (int i = 0; i < productIds.length; i++) {
+            String productIdStr = productIds[i];
+            String receivedQtyStr = receivedQuantities[i];
+            String locationIdStr = locationIds[i];
+
+            if (productIdStr == null || productIdStr.trim().isEmpty() ||
+                receivedQtyStr == null || receivedQtyStr.trim().isEmpty()) {
+                return false;
+            }
+
+            try {
+                Long productId = Long.parseLong(productIdStr.trim());
+                Integer receivedQuantity = Integer.parseInt(receivedQtyStr.trim());
+                Long locationId = null;
+
+                if (locationIdStr != null && !locationIdStr.trim().isEmpty()) {
+                    locationId = Long.parseLong(locationIdStr.trim());
+                }
+
+                boolean updated = inboundService.updateReceivedQuantity(requestId, productId, receivedQuantity, locationId);
+                if (!updated) {
+                    return false;
+                }
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
