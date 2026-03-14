@@ -2,6 +2,8 @@ package vn.edu.fpt.swp.service;
 
 import vn.edu.fpt.swp.dao.*;
 import vn.edu.fpt.swp.model.*;
+import vn.edu.fpt.swp.util.PageRequest;
+import vn.edu.fpt.swp.util.PageResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -123,6 +125,10 @@ public class SalesOrderService {
      */
     public List<SalesOrder> getSalesOrdersByStatus(String status) {
         return salesOrderDAO.findByStatus(status);
+    }
+
+    public PageResult<SalesOrder> getSalesOrdersPaginated(String status, PageRequest pageRequest) {
+        return salesOrderDAO.findPaginated(status, pageRequest);
     }
     
     /**

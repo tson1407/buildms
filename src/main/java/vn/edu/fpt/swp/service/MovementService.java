@@ -3,6 +3,8 @@ package vn.edu.fpt.swp.service;
 import vn.edu.fpt.swp.dao.*;
 import vn.edu.fpt.swp.model.*;
 import vn.edu.fpt.swp.util.DBConnection;
+import vn.edu.fpt.swp.util.PageRequest;
+import vn.edu.fpt.swp.util.PageResult;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -403,6 +405,10 @@ public class MovementService {
             return getAllMovementRequests();
         }
         return requestDAO.search("Internal", status, warehouseId);
+    }
+    
+    public PageResult<Request> searchMovementRequestsPaginated(String status, Long warehouseId, PageRequest pageRequest) {
+        return requestDAO.searchPaginated("Internal", status, warehouseId, pageRequest);
     }
     
     /**

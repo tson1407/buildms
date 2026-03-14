@@ -2,6 +2,8 @@ package vn.edu.fpt.swp.service;
 
 import vn.edu.fpt.swp.dao.*;
 import vn.edu.fpt.swp.model.*;
+import vn.edu.fpt.swp.util.PageRequest;
+import vn.edu.fpt.swp.util.PageResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -293,6 +295,10 @@ public class InboundService {
      */
     public List<Request> searchInboundRequests(String status, Long warehouseId) {
         return requestDAO.search("Inbound", status, warehouseId);
+    }
+
+    public PageResult<Request> searchInboundRequestsPaginated(String status, Long warehouseId, PageRequest pageRequest) {
+        return requestDAO.searchPaginated("Inbound", status, warehouseId, pageRequest);
     }
     
     /**

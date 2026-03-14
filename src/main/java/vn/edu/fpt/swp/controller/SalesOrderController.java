@@ -8,6 +8,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import vn.edu.fpt.swp.model.*;
 import vn.edu.fpt.swp.service.SalesOrderService;
+import vn.edu.fpt.swp.util.PageRequest;
+import vn.edu.fpt.swp.util.PageResult;
+import vn.edu.fpt.swp.util.PaginationUtil;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -15,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -101,13 +105,15 @@ public class SalesOrderController extends HttpServlet {
     private void listOrders(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String status = request.getParameter("status");
-        
-        List<SalesOrder> orders;
-        if (status != null && !status.isEmpty()) {
-            orders = salesOrderService.getSalesOrdersByStatus(status);
-        } else {
-            orders = salesOrderService.getAllSalesOrders();
+
+        String selectedStatus = status != null ? status.trim() : null;
+        if (selectedStatus != null && selectedStatus.isEmpty()) {
+            selectedStatus = null;
         }
+
+        PageRequest pageRequest = PaginationUtil.resolvePageRequest(request);
+        PageResult<SalesOrder> orderPage = salesOrderService.getSalesOrdersPaginated(selectedStatus, pageRequest);
+        List<SalesOrder> orders = orderPage.getItems();
         
         // Build lookup maps once — avoids N+1 DB calls per order
         java.util.Map<Long, Customer> customerMap = new java.util.HashMap<>();
@@ -130,7 +136,16 @@ public class SalesOrderController extends HttpServlet {
         }
         
         request.setAttribute("orders", ordersWithDetails);
-        request.setAttribute("selectedStatus", status);
+        request.setAttribute("selectedStatus", selectedStatus);
+        request.setAttribute("currentPage", orderPage.getCurrentPage());
+        request.setAttribute("totalPages", orderPage.getTotalPages());
+        request.setAttribute("pageSize", orderPage.getPageSize());
+        request.setAttribute("totalItems", orderPage.getTotalItems());
+
+        Map<String, String> paginationParams = new LinkedHashMap<>();
+        paginationParams.put("status", selectedStatus);
+        paginationParams.put("size", String.valueOf(pageRequest.getSize()));
+        request.setAttribute("paginationBaseUrl", PaginationUtil.buildBaseUrl(request, "/sales-order", paginationParams));
         
         request.getRequestDispatcher("/WEB-INF/views/sales-order/list.jsp")
                .forward(request, response);

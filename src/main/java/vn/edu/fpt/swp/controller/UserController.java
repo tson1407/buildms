@@ -11,9 +11,14 @@ import vn.edu.fpt.swp.model.Warehouse;
 import vn.edu.fpt.swp.service.AuthService;
 import vn.edu.fpt.swp.service.UserService;
 import vn.edu.fpt.swp.service.WarehouseService;
+import vn.edu.fpt.swp.util.PageRequest;
+import vn.edu.fpt.swp.util.PageResult;
+import vn.edu.fpt.swp.util.PaginationUtil;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Controller for User management
@@ -116,17 +121,28 @@ public class UserController extends HttpServlet {
                 // Ignore invalid warehouse ID
             }
         }
-        
-        List<User> users;
-        
-        if ((keyword != null && !keyword.trim().isEmpty()) || 
-            (role != null && !role.trim().isEmpty()) ||
-            (status != null && !status.trim().isEmpty()) ||
-            warehouseId != null) {
-            users = userService.searchUsers(keyword, role, status, warehouseId);
-        } else {
-            users = userService.getAllUsers();
+
+        String selectedKeyword = keyword != null ? keyword.trim() : null;
+        String selectedRole = role != null ? role.trim() : null;
+        String selectedStatus = status != null ? status.trim() : null;
+        if (selectedKeyword != null && selectedKeyword.isEmpty()) {
+            selectedKeyword = null;
         }
+        if (selectedRole != null && selectedRole.isEmpty()) {
+            selectedRole = null;
+        }
+        if (selectedStatus != null && selectedStatus.isEmpty()) {
+            selectedStatus = null;
+        }
+
+        PageRequest pageRequest = PaginationUtil.resolvePageRequest(request);
+        PageResult<User> userPage = userService.searchUsersPaginated(
+            selectedKeyword,
+            selectedRole,
+            selectedStatus,
+            warehouseId,
+            pageRequest
+        );
         
         // Get warehouses for filter dropdown and to display warehouse names
         List<Warehouse> warehouses = warehouseService.getAllWarehouses();
@@ -141,14 +157,26 @@ public class UserController extends HttpServlet {
         // Get current user ID for highlighting
         User currentUser = getCurrentUser(request);
 
-        request.setAttribute("users", users);
+        Map<String, String> paginationParams = new LinkedHashMap<>();
+        paginationParams.put("keyword", selectedKeyword);
+        paginationParams.put("role", selectedRole);
+        paginationParams.put("status", selectedStatus);
+        paginationParams.put("warehouseId", warehouseId != null ? String.valueOf(warehouseId) : null);
+        paginationParams.put("size", String.valueOf(pageRequest.getSize()));
+
+        request.setAttribute("users", userPage.getItems());
         request.setAttribute("warehouses", warehouses);
-        request.setAttribute("keyword", keyword);
-        request.setAttribute("role", role);
-        request.setAttribute("status", status);
+        request.setAttribute("keyword", selectedKeyword);
+        request.setAttribute("role", selectedRole);
+        request.setAttribute("status", selectedStatus);
         request.setAttribute("warehouseId", warehouseId);
         request.setAttribute("currentUserId", currentUser != null ? currentUser.getId() : null);
         request.setAttribute("roles", userService.getValidRoles());
+        request.setAttribute("currentPage", userPage.getCurrentPage());
+        request.setAttribute("totalPages", userPage.getTotalPages());
+        request.setAttribute("pageSize", userPage.getPageSize());
+        request.setAttribute("totalItems", userPage.getTotalItems());
+        request.setAttribute("paginationBaseUrl", PaginationUtil.buildBaseUrl(request, "/user", paginationParams));
         
         request.getRequestDispatcher("/WEB-INF/views/user/list.jsp")
                .forward(request, response);

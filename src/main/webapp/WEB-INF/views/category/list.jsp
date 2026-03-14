@@ -99,7 +99,7 @@
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">Categories</h5>
-                                <span class="badge bg-primary">${fn:length(categories)} total</span>
+                                <span class="badge bg-primary">${totalItems} total</span>
                             </div>
                             <div class="table-responsive text-nowrap">
                                 <table class="table table-hover">
@@ -136,7 +136,7 @@
                                                 <c:forEach var="category" items="${categories}" varStatus="status">
                                                     <c:set var="productCount" value="${productCountMap[category.id]}" />
                                                     <tr>
-                                                        <td><strong>${status.index + 1}</strong></td>
+                                                        <td><strong>${(currentPage - 1) * pageSize + status.index + 1}</strong></td>
                                                         <td>
                                                             <span class="fw-medium"><c:out value="${category.name}"/></span>
                                                         </td>
@@ -200,6 +200,13 @@
                                         </c:choose>
                                     </tbody>
                                 </table>
+                            </div>
+                            <div class="card-footer">
+                                <jsp:include page="/WEB-INF/common/pagination.jsp">
+                                    <jsp:param name="currentPage" value="${currentPage}" />
+                                    <jsp:param name="totalPages" value="${totalPages}" />
+                                    <jsp:param name="baseUrl" value="${paginationBaseUrl}" />
+                                </jsp:include>
                             </div>
                         </div>
                     </main>

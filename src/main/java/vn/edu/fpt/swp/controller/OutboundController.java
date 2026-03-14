@@ -8,10 +8,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import vn.edu.fpt.swp.model.*;
 import vn.edu.fpt.swp.service.OutboundService;
+import vn.edu.fpt.swp.util.PageRequest;
+import vn.edu.fpt.swp.util.PageResult;
+import vn.edu.fpt.swp.util.PaginationUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Controller for Outbound Request Management
@@ -188,12 +193,13 @@ public class OutboundController extends HttpServlet {
             }
         }
         
-        List<Request> requests;
-        if ((status != null && !status.trim().isEmpty()) || warehouseId != null) {
-            requests = outboundService.searchOutboundRequests(status, warehouseId);
-        } else {
-            requests = outboundService.getAllOutboundRequests();
+        String selectedStatus = status != null ? status.trim() : null;
+        if (selectedStatus != null && selectedStatus.isEmpty()) {
+            selectedStatus = null;
         }
+
+        PageRequest pageRequest = PaginationUtil.resolvePageRequest(request);
+        PageResult<Request> requestPage = outboundService.searchOutboundRequestsPaginated(selectedStatus, warehouseId, pageRequest);
         
         // Get warehouses for filter
         List<Warehouse> warehouses = outboundService.getAllWarehouses();
@@ -211,11 +217,23 @@ public class OutboundController extends HttpServlet {
         request.setAttribute("warehouseMap", warehouseMap);
         request.setAttribute("userMap", userMap);
         
-        request.setAttribute("requests", requests);
+        Map<String, String> paginationParams = new LinkedHashMap<>();
+        paginationParams.put("status", selectedStatus);
+        if (!isWarehouseScoped(request)) {
+            paginationParams.put("warehouseId", warehouseId != null ? String.valueOf(warehouseId) : null);
+        }
+        paginationParams.put("size", String.valueOf(pageRequest.getSize()));
+
+        request.setAttribute("requests", requestPage.getItems());
         request.setAttribute("warehouses", warehouses);
-        request.setAttribute("selectedStatus", status);
+        request.setAttribute("selectedStatus", selectedStatus);
         request.setAttribute("selectedWarehouseId", warehouseId);
         request.setAttribute("isManager", isWarehouseScoped(request));
+        request.setAttribute("currentPage", requestPage.getCurrentPage());
+        request.setAttribute("totalPages", requestPage.getTotalPages());
+        request.setAttribute("pageSize", requestPage.getPageSize());
+        request.setAttribute("totalItems", requestPage.getTotalItems());
+        request.setAttribute("paginationBaseUrl", PaginationUtil.buildBaseUrl(request, "/outbound", paginationParams));
         
         request.getRequestDispatcher("/WEB-INF/views/outbound/list.jsp").forward(request, response);
     }

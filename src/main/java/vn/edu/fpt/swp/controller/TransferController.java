@@ -8,14 +8,17 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import vn.edu.fpt.swp.model.*;
 import vn.edu.fpt.swp.service.TransferService;
+import vn.edu.fpt.swp.util.PageRequest;
+import vn.edu.fpt.swp.util.PageResult;
+import vn.edu.fpt.swp.util.PaginationUtil;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Controller for Inter-Warehouse Transfer Management
@@ -114,23 +117,22 @@ public class TransferController extends HttpServlet {
         String status = request.getParameter("status");
         HttpSession session = request.getSession(false);
         User currentUser = (User) session.getAttribute("user");
-        
-        List<Request> transfers;
-        if (status != null && !status.isEmpty()) {
-            transfers = transferService.getTransferRequestsByStatus(status);
-        } else {
-            transfers = transferService.getAllTransferRequests();
+
+        String selectedStatus = status != null ? status.trim() : null;
+        if (selectedStatus != null && selectedStatus.isEmpty()) {
+            selectedStatus = null;
         }
-        
-        // Manager/Staff: filter to only show transfers related to their warehouse
+
+        Long userWarehouseId = currentUser.getWarehouseId();
+        Long warehouseFilter = null;
         if (("Manager".equals(currentUser.getRole()) || "Staff".equals(currentUser.getRole()))
-                && currentUser.getWarehouseId() != null) {
-            Long userWarehouseId = currentUser.getWarehouseId();
-            transfers = transfers.stream()
-                .filter(t -> userWarehouseId.equals(t.getSourceWarehouseId()) 
-                          || userWarehouseId.equals(t.getDestinationWarehouseId()))
-                .collect(Collectors.toList());
+                && userWarehouseId != null) {
+            warehouseFilter = userWarehouseId;
         }
+
+        PageRequest pageRequest = PaginationUtil.resolvePageRequest(request);
+        PageResult<Request> transferPage = transferService.getTransferRequestsPaginated(selectedStatus, warehouseFilter, pageRequest);
+        List<Request> transfers = transferPage.getItems();
         
         // Build lookup maps once — avoids N+1 DB calls per transfer
         java.util.Map<Long, Warehouse> warehouseMap = new java.util.HashMap<>();
@@ -143,7 +145,6 @@ public class TransferController extends HttpServlet {
         }
 
         // Enrich with warehouse info and per-row access flags
-        Long userWarehouseId = currentUser.getWarehouseId();
         boolean isAdmin = "Admin".equals(currentUser.getRole());
         
         List<Map<String, Object>> transfersWithDetails = new ArrayList<>();
@@ -163,7 +164,16 @@ public class TransferController extends HttpServlet {
         }
         
         request.setAttribute("transfers", transfersWithDetails);
-        request.setAttribute("selectedStatus", status);
+        request.setAttribute("selectedStatus", selectedStatus);
+        request.setAttribute("currentPage", transferPage.getCurrentPage());
+        request.setAttribute("totalPages", transferPage.getTotalPages());
+        request.setAttribute("pageSize", transferPage.getPageSize());
+        request.setAttribute("totalItems", transferPage.getTotalItems());
+
+        Map<String, String> paginationParams = new LinkedHashMap<>();
+        paginationParams.put("status", selectedStatus);
+        paginationParams.put("size", String.valueOf(pageRequest.getSize()));
+        request.setAttribute("paginationBaseUrl", PaginationUtil.buildBaseUrl(request, "/transfer", paginationParams));
         
         request.getRequestDispatcher("/WEB-INF/views/transfer/list.jsp")
                .forward(request, response);

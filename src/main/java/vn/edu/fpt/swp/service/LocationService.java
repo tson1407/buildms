@@ -2,6 +2,8 @@ package vn.edu.fpt.swp.service;
 
 import vn.edu.fpt.swp.dao.LocationDAO;
 import vn.edu.fpt.swp.model.Location;
+import vn.edu.fpt.swp.util.PageRequest;
+import vn.edu.fpt.swp.util.PageResult;
 
 import java.util.Collections;
 import java.util.List;
@@ -83,6 +85,11 @@ public class LocationService {
      */
     public List<Location> searchLocations(String keyword) {
         return locationDAO.search(keyword);
+    }
+
+    public PageResult<Location> searchLocationsPaginated(Long warehouseId, String type, Boolean isActive,
+                                                         String keyword, PageRequest pageRequest) {
+        return locationDAO.searchPaginated(warehouseId, type, isActive, keyword, pageRequest);
     }
     
     /**

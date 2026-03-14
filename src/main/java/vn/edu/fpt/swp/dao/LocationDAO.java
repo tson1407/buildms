@@ -2,6 +2,8 @@ package vn.edu.fpt.swp.dao;
 
 import vn.edu.fpt.swp.model.Location;
 import vn.edu.fpt.swp.util.DBConnection;
+import vn.edu.fpt.swp.util.PageRequest;
+import vn.edu.fpt.swp.util.PageResult;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -452,6 +454,71 @@ public class LocationDAO {
         }
 
         return result;
+    }
+
+    public PageResult<Location> searchPaginated(Long warehouseId, String type, Boolean isActive, String keyword,
+                                                PageRequest pageRequest) {
+        List<Location> locations = new ArrayList<>();
+        StringBuilder fromClause = new StringBuilder(" FROM Locations WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+
+        if (warehouseId != null && warehouseId > 0) {
+            fromClause.append(" AND WarehouseId = ?");
+            params.add(warehouseId);
+        }
+
+        if (type != null && !type.trim().isEmpty()) {
+            fromClause.append(" AND Type = ?");
+            params.add(type.trim());
+        }
+
+        if (isActive != null) {
+            fromClause.append(" AND IsActive = ?");
+            params.add(isActive);
+        }
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            fromClause.append(" AND Code LIKE ?");
+            params.add("%" + keyword.trim() + "%");
+        }
+
+        String countSql = "SELECT COUNT(*)" + fromClause;
+        String dataSql = "SELECT Id, WarehouseId, Code, Type, IsActive" + fromClause
+            + " ORDER BY WarehouseId, Code OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        long totalItems = 0L;
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement countStmt = conn.prepareStatement(countSql)) {
+
+            for (int i = 0; i < params.size(); i++) {
+                countStmt.setObject(i + 1, params.get(i));
+            }
+
+            try (ResultSet rs = countStmt.executeQuery()) {
+                if (rs.next()) {
+                    totalItems = rs.getLong(1);
+                }
+            }
+
+            try (PreparedStatement dataStmt = conn.prepareStatement(dataSql)) {
+                int index = 1;
+                for (Object param : params) {
+                    dataStmt.setObject(index++, param);
+                }
+                dataStmt.setInt(index++, pageRequest.getOffset());
+                dataStmt.setInt(index, pageRequest.getSize());
+
+                try (ResultSet rs = dataStmt.executeQuery()) {
+                    while (rs.next()) {
+                        locations.add(mapResultSetToLocation(rs));
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return PageResult.of(locations, totalItems, pageRequest);
     }
 
     /**

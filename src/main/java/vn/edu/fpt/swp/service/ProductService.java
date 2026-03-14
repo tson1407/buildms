@@ -8,6 +8,8 @@ import vn.edu.fpt.swp.model.Inventory;
 import vn.edu.fpt.swp.model.Location;
 import vn.edu.fpt.swp.model.Product;
 import vn.edu.fpt.swp.model.Warehouse;
+import vn.edu.fpt.swp.util.PageRequest;
+import vn.edu.fpt.swp.util.PageResult;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -215,6 +217,11 @@ public class ProductService {
      */
     public List<Product> getProductsByStatus(boolean isActive) {
         return productDAO.findByStatus(isActive);
+    }
+
+    public PageResult<Product> searchProductsPaginated(String keyword, Long categoryId, Boolean isActive,
+                                                       PageRequest pageRequest) {
+        return productDAO.searchPaginated(keyword, categoryId, isActive, pageRequest);
     }
     
     /**

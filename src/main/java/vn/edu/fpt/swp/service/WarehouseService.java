@@ -2,6 +2,8 @@ package vn.edu.fpt.swp.service;
 
 import vn.edu.fpt.swp.dao.WarehouseDAO;
 import vn.edu.fpt.swp.model.Warehouse;
+import vn.edu.fpt.swp.util.PageRequest;
+import vn.edu.fpt.swp.util.PageResult;
 
 import java.util.List;
 
@@ -39,6 +41,10 @@ public class WarehouseService {
      */
     public List<Warehouse> searchWarehouses(String keyword) {
         return warehouseDAO.search(keyword);
+    }
+
+    public PageResult<Warehouse> searchWarehousesPaginated(String keyword, PageRequest pageRequest) {
+        return warehouseDAO.searchPaginated(keyword, pageRequest);
     }
     
     /**

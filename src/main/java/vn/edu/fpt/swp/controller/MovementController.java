@@ -8,11 +8,15 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import vn.edu.fpt.swp.model.*;
 import vn.edu.fpt.swp.service.MovementService;
+import vn.edu.fpt.swp.util.PageRequest;
+import vn.edu.fpt.swp.util.PageResult;
+import vn.edu.fpt.swp.util.PaginationUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.LinkedHashMap;
 
 /**
  * Controller for Internal Movement Management
@@ -164,7 +168,13 @@ public class MovementController extends HttpServlet {
             }
         }
         
-        List<Request> requests = movementService.searchMovementRequests(status, warehouseId);
+        String selectedStatus = status != null ? status.trim() : null;
+        if (selectedStatus != null && selectedStatus.isEmpty()) {
+            selectedStatus = null;
+        }
+
+        PageRequest pageRequest = PaginationUtil.resolvePageRequest(request);
+        PageResult<Request> requestPage = movementService.searchMovementRequestsPaginated(selectedStatus, warehouseId, pageRequest);
         
         // Get warehouses for filter
         List<Warehouse> warehouses = movementService.getAllWarehouses();
@@ -182,11 +192,23 @@ public class MovementController extends HttpServlet {
         request.setAttribute("warehouseMap", warehouseMap);
         request.setAttribute("userMap", userMap);
         
-        request.setAttribute("requests", requests);
+        Map<String, String> paginationParams = new LinkedHashMap<>();
+        paginationParams.put("status", selectedStatus);
+        if (!isWarehouseScoped(request)) {
+            paginationParams.put("warehouseId", warehouseId != null ? String.valueOf(warehouseId) : null);
+        }
+        paginationParams.put("size", String.valueOf(pageRequest.getSize()));
+
+        request.setAttribute("requests", requestPage.getItems());
         request.setAttribute("warehouses", warehouses);
-        request.setAttribute("selectedStatus", status);
+        request.setAttribute("selectedStatus", selectedStatus);
         request.setAttribute("selectedWarehouseId", warehouseId);
         request.setAttribute("isWarehouseScoped", isWarehouseScoped(request));
+        request.setAttribute("currentPage", requestPage.getCurrentPage());
+        request.setAttribute("totalPages", requestPage.getTotalPages());
+        request.setAttribute("pageSize", requestPage.getPageSize());
+        request.setAttribute("totalItems", requestPage.getTotalItems());
+        request.setAttribute("paginationBaseUrl", PaginationUtil.buildBaseUrl(request, "/movement", paginationParams));
         
         request.getRequestDispatcher("/WEB-INF/views/movement/list.jsp").forward(request, response);
     }

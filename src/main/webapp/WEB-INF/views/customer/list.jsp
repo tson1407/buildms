@@ -125,7 +125,7 @@
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">Customers</h5>
-                                <span class="badge bg-primary">${fn:length(customers)} total</span>
+                                <span class="badge bg-primary">${totalItems} total</span>
                             </div>
                             <div class="table-responsive text-nowrap">
                                 <table class="table table-hover">
@@ -159,7 +159,7 @@
                                                 <c:forEach var="customer" items="${customers}" varStatus="loop">
                                                     <c:set var="orderCount" value="${orderCountMap[customer.id]}" />
                                                     <tr class="${customer.status == 'Inactive' ? 'table-secondary' : ''}">
-                                                        <td><strong><c:out value="${loop.index + 1}"/></strong></td>
+                                                        <td><strong><c:out value="${(currentPage - 1) * pageSize + loop.index + 1}"/></strong></td>
                                                         <td>
                                                             <span class="fw-medium"><c:out value="${customer.code}"/></span>
                                                         </td>
@@ -221,6 +221,13 @@
                                         </c:choose>
                                     </tbody>
                                 </table>
+                            </div>
+                            <div class="card-footer">
+                                <jsp:include page="/WEB-INF/common/pagination.jsp">
+                                    <jsp:param name="currentPage" value="${currentPage}" />
+                                    <jsp:param name="totalPages" value="${totalPages}" />
+                                    <jsp:param name="baseUrl" value="${paginationBaseUrl}" />
+                                </jsp:include>
                             </div>
                         </div>
                         

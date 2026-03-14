@@ -2,6 +2,8 @@ package vn.edu.fpt.swp.service;
 
 import vn.edu.fpt.swp.dao.CategoryDAO;
 import vn.edu.fpt.swp.model.Category;
+import vn.edu.fpt.swp.util.PageRequest;
+import vn.edu.fpt.swp.util.PageResult;
 
 import java.util.List;
 
@@ -139,5 +141,9 @@ public class CategoryService {
      */
     public List<Category> searchCategories(String keyword) {
         return categoryDAO.search(keyword);
+    }
+
+    public PageResult<Category> searchCategoriesPaginated(String keyword, PageRequest pageRequest) {
+        return categoryDAO.searchPaginated(keyword, pageRequest);
     }
 }

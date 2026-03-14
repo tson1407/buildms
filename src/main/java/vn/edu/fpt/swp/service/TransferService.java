@@ -2,6 +2,8 @@ package vn.edu.fpt.swp.service;
 
 import vn.edu.fpt.swp.dao.*;
 import vn.edu.fpt.swp.model.*;
+import vn.edu.fpt.swp.util.PageRequest;
+import vn.edu.fpt.swp.util.PageResult;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -137,6 +139,10 @@ public class TransferService {
      */
     public List<Request> getTransferRequestsByStatus(String status) {
         return requestDAO.findByTypeAndStatus("Transfer", status);
+    }
+
+    public PageResult<Request> getTransferRequestsPaginated(String status, Long warehouseId, PageRequest pageRequest) {
+        return requestDAO.searchPaginated("Transfer", status, warehouseId, pageRequest);
     }
     
     /**

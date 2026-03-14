@@ -211,24 +211,20 @@
                                                                 <c:forEach var="item" items="${entry.value}">
                                                                     <c:set var="inv" value="${item.inventory}" />
                                                                     <c:set var="prod" value="${item.product}" />
-                                                                    <c:if test="${empty searchTerm or 
-                                                                        (prod.sku.toLowerCase().contains(searchTerm.toLowerCase()) or 
-                                                                         prod.name.toLowerCase().contains(searchTerm.toLowerCase()))}">
-                                                                        <tr>
-                                                                            <td>
-                                                                                <a href="${contextPath}/product?action=details&id=${prod.id}">
-                                                                                    <c:out value="${prod.sku}"/>
-                                                                                </a>
-                                                                            </td>
-                                                                            <td><c:out value="${prod.name}"/></td>
-                                                                            <td>
-                                                                                <span class="fw-bold ${inv.quantity < 10 ? 'text-warning' : ''}">
-                                                                                    <c:out value="${inv.quantity}"/>
-                                                                                </span>
-                                                                            </td>
-                                                                            <td><c:out value="${prod.unit}"/></td>
-                                                                        </tr>
-                                                                    </c:if>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <a href="${contextPath}/product?action=details&id=${prod.id}">
+                                                                                <c:out value="${prod.sku}"/>
+                                                                            </a>
+                                                                        </td>
+                                                                        <td><c:out value="${prod.name}"/></td>
+                                                                        <td>
+                                                                            <span class="fw-bold ${inv.quantity < 10 ? 'text-warning' : ''}">
+                                                                                <c:out value="${inv.quantity}"/>
+                                                                            </span>
+                                                                        </td>
+                                                                        <td><c:out value="${prod.unit}"/></td>
+                                                                    </tr>
                                                                 </c:forEach>
                                                             </tbody>
                                                         </table>
@@ -237,6 +233,15 @@
                                             </div>
                                         </div>
                                     </c:forEach>
+                                </div>
+                                <div class="card mt-3">
+                                    <div class="card-body py-3">
+                                        <jsp:include page="/WEB-INF/common/pagination.jsp">
+                                            <jsp:param name="currentPage" value="${currentPage}" />
+                                            <jsp:param name="totalPages" value="${totalPages}" />
+                                            <jsp:param name="baseUrl" value="${paginationBaseUrl}" />
+                                        </jsp:include>
+                                    </div>
                                 </div>
                             </c:otherwise>
                         </c:choose>

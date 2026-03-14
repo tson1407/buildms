@@ -2,6 +2,8 @@ package vn.edu.fpt.swp.service;
 
 import vn.edu.fpt.swp.dao.CustomerDAO;
 import vn.edu.fpt.swp.model.Customer;
+import vn.edu.fpt.swp.util.PageRequest;
+import vn.edu.fpt.swp.util.PageResult;
 
 import java.util.List;
 
@@ -157,6 +159,10 @@ public class CustomerService {
      */
     public List<Customer> searchCustomers(String keyword, String status) {
         return customerDAO.search(keyword, status);
+    }
+
+    public PageResult<Customer> searchCustomersPaginated(String keyword, String status, PageRequest pageRequest) {
+        return customerDAO.searchPaginated(keyword, status, pageRequest);
     }
     
     /**
