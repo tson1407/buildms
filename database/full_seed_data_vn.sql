@@ -236,19 +236,39 @@ VALUES
 
 COMMIT TRANSACTION;
 
+DECLARE @Count INT;
+
 PRINT N'';
 PRINT N'=================================================';
 PRINT N'ĐÃ TẠO DỮ LIỆU MẪU TIẾNG VIỆT CHO BuildMS THÀNH CÔNG';
 PRINT N'=================================================';
-PRINT N'Số kho: ' + CAST((SELECT COUNT(*) FROM Warehouses) AS NVARCHAR(20));
-PRINT N'Số người dùng: ' + CAST((SELECT COUNT(*) FROM Users) AS NVARCHAR(20));
-PRINT N'Số danh mục: ' + CAST((SELECT COUNT(*) FROM Categories) AS NVARCHAR(20));
-PRINT N'Số sản phẩm: ' + CAST((SELECT COUNT(*) FROM Products) AS NVARCHAR(20));
-PRINT N'Số vị trí: ' + CAST((SELECT COUNT(*) FROM Locations) AS NVARCHAR(20));
-PRINT N'Số tồn kho: ' + CAST((SELECT COUNT(*) FROM Inventory) AS NVARCHAR(20));
-PRINT N'Số khách hàng: ' + CAST((SELECT COUNT(*) FROM Customers) AS NVARCHAR(20));
-PRINT N'Số đơn bán: ' + CAST((SELECT COUNT(*) FROM SalesOrders) AS NVARCHAR(20));
-PRINT N'Số yêu cầu: ' + CAST((SELECT COUNT(*) FROM Requests) AS NVARCHAR(20));
+
+SELECT @Count = COUNT(*) FROM Warehouses;
+PRINT N'Số kho: ' + CAST(@Count AS NVARCHAR(20));
+
+SELECT @Count = COUNT(*) FROM Users;
+PRINT N'Số người dùng: ' + CAST(@Count AS NVARCHAR(20));
+
+SELECT @Count = COUNT(*) FROM Categories;
+PRINT N'Số danh mục: ' + CAST(@Count AS NVARCHAR(20));
+
+SELECT @Count = COUNT(*) FROM Products;
+PRINT N'Số sản phẩm: ' + CAST(@Count AS NVARCHAR(20));
+
+SELECT @Count = COUNT(*) FROM Locations;
+PRINT N'Số vị trí: ' + CAST(@Count AS NVARCHAR(20));
+
+SELECT @Count = COUNT(*) FROM Inventory;
+PRINT N'Số tồn kho: ' + CAST(@Count AS NVARCHAR(20));
+
+SELECT @Count = COUNT(*) FROM Customers;
+PRINT N'Số khách hàng: ' + CAST(@Count AS NVARCHAR(20));
+
+SELECT @Count = COUNT(*) FROM SalesOrders;
+PRINT N'Số đơn bán: ' + CAST(@Count AS NVARCHAR(20));
+
+SELECT @Count = COUNT(*) FROM Requests;
+PRINT N'Số yêu cầu: ' + CAST(@Count AS NVARCHAR(20));
 PRINT N'=================================================';
 
 SELECT Id, Username, Name, Role, WarehouseId, Status
