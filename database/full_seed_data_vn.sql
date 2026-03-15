@@ -23,7 +23,6 @@ DELETE FROM Locations;
 DELETE FROM Products;
 DELETE FROM Categories;
 DELETE FROM Customers;
-DELETE FROM Users;
 DELETE FROM Warehouses;
 
 PRINT N'Thêm kho hàng...';
@@ -38,21 +37,6 @@ VALUES
     (4, N'Kho vệ tinh Bình Dương', N'VSIP 1, Thuận An, Bình Dương', GETDATE());
 
 SET IDENTITY_INSERT Warehouses OFF;
-
-PRINT N'Thêm người dùng...';
-
-SET IDENTITY_INSERT Users ON;
-
-INSERT INTO Users (Id, Username, Name, Email, PasswordHash, Role, Status, WarehouseId, CreatedAt, LastLogin)
-VALUES
-    (1, N'admin', N'Quản trị hệ thống', N'admin@buildms.vn', N'ySH1msblDV9A5mIhccyCyA==:qpNUJGRQUR2j/NDJ9RR0HjIPqqGingQMxu9zgbQMDOQ=', N'Admin', N'Active', NULL, GETDATE(), NULL),
-    (2, N'manager', N'Nguyễn Minh Tuấn', N'manager@buildms.vn', N'HtP9svA7PCLX+KbNSg6SLg==:GrYU4rhzbSwCeRRWVLAePvk22fZ/CyukvK0LztFHbo8=', N'Manager', N'Active', 1, GETDATE(), NULL),
-    (3, N'staff', N'Trần Quốc Bảo', N'staff@buildms.vn', N'+v2UFEWbu2OH5fjtrrg/2A==:B7gfAxygBXVOpVmuTkJQybApgOSOJVTrxE3whcIJ2Zs=', N'Staff', N'Active', 1, GETDATE(), NULL),
-    (4, N'sales', N'Lê Thu Hà', N'sales@buildms.vn', N'Y+til+fcii/WiLxxWssyOg==:9kNxa9TkKpG8Hz59fOr9QX9PbCgisbbSOAtKEJJbB/U=', N'Sales', N'Active', NULL, GETDATE(), NULL),
-    (5, N'manager_hn', N'Phạm Đức Anh', N'manager.hn@buildms.vn', N'HtP9svA7PCLX+KbNSg6SLg==:GrYU4rhzbSwCeRRWVLAePvk22fZ/CyukvK0LztFHbo8=', N'Manager', N'Active', 2, GETDATE(), NULL),
-    (6, N'staff_dn', N'Võ Thị Lan', N'staff.dn@buildms.vn', N'+v2UFEWbu2OH5fjtrrg/2A==:B7gfAxygBXVOpVmuTkJQybApgOSOJVTrxE3whcIJ2Zs=', N'Staff', N'Active', 3, GETDATE(), NULL);
-
-SET IDENTITY_INSERT Users OFF;
 
 PRINT N'Thêm danh mục...';
 
