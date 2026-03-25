@@ -350,15 +350,18 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <span class="badge bg-label-primary"><c:out value="${data.item.quantity}"/></span>
+                                                    <c:if test="${not empty data.product}"><span class="text-muted small"><c:out value="${data.product.unit}"/></span></c:if>
                                                 </td>
                                                 <c:if test="${transfer.status == 'InProgress' || transfer.status == 'InTransit' || transfer.status == 'Receiving' || transfer.status == 'Completed'}">
                                                     <td class="text-center">
                                                         <span class="badge bg-label-info"><c:out value="${data.item.pickedQuantity != null ? data.item.pickedQuantity : 0}"/></span>
+                                                        <c:if test="${not empty data.product}"><span class="text-muted small"><c:out value="${data.product.unit}"/></span></c:if>
                                                     </td>
                                                 </c:if>
                                                 <c:if test="${transfer.status == 'Receiving' || transfer.status == 'Completed'}">
                                                     <td class="text-center">
                                                         <span class="badge bg-label-success"><c:out value="${data.item.receivedQuantity != null ? data.item.receivedQuantity : 0}"/></span>
+                                                        <c:if test="${not empty data.product}"><span class="text-muted small"><c:out value="${data.product.unit}"/></span></c:if>
                                                     </td>
                                                 </c:if>
                                             </tr>

@@ -139,9 +139,10 @@
                                                                 </c:choose>
                                                             </td>
                                                             <td><code><c:if test="${not empty data.product}"><c:out value="${data.product.sku}"/></c:if></code></td>
-                                                            <td class="text-center"><c:out value="${data.item.quantity}"/></td>
+                                                            <td class="text-center"><c:out value="${data.item.quantity}"/> <c:if test="${not empty data.product}"><span class="text-muted"><c:out value="${data.product.unit}"/></span></c:if></td>
                                                             <td class="text-center">
                                                                 <span class="badge bg-info"><c:out value="${data.item.pickedQuantity != null ? data.item.pickedQuantity : 0}"/></span>
+                                                                <c:if test="${not empty data.product}"><span class="text-muted small"><c:out value="${data.product.unit}"/></span></c:if>
                                                             </td>
                                                         </tr>
                                                     </c:forEach>
@@ -203,6 +204,7 @@
                                                                 <td><code><c:if test="${not empty data.product}"><c:out value="${data.product.sku}"/></c:if></code></td>
                                                                 <td class="text-center">
                                                                     <span class="badge bg-info"><c:out value="${data.item.pickedQuantity != null ? data.item.pickedQuantity : 0}"/></span>
+                                                                    <c:if test="${not empty data.product}"><span class="text-muted small"><c:out value="${data.product.unit}"/></span></c:if>
                                                                 </td>
                                                                 <td class="text-center">
                                                                     <input type="number" name="receivedQty[]" 

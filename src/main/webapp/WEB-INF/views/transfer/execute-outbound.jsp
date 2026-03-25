@@ -149,8 +149,8 @@
                                                                     <code><c:out value="${check.product.sku}"/></code>
                                                                 </c:if>
                                                             </td>
-                                                            <td class="text-center"><c:out value="${check.item.quantity}"/></td>
-                                                            <td class="text-center"><c:out value="${check.available}"/></td>
+                                                            <td class="text-center"><c:out value="${check.item.quantity}"/> <c:if test="${not empty check.product}"><span class="text-muted"><c:out value="${check.product.unit}"/></span></c:if></td>
+                                                            <td class="text-center"><c:out value="${check.available}"/> <c:if test="${not empty check.product}"><span class="text-muted"><c:out value="${check.product.unit}"/></span></c:if></td>
                                                             <td class="text-center">
                                                                 <c:choose>
                                                                     <c:when test="${check.available >= check.item.quantity}">
@@ -240,8 +240,8 @@
                                                                         <code><c:out value="${check.product.sku}"/></code>
                                                                     </c:if>
                                                                 </td>
-                                                                <td class="text-center"><c:out value="${check.item.quantity}"/></td>
-                                                                <td class="text-center"><c:out value="${check.available}"/></td>
+                                                                <td class="text-center"><c:out value="${check.item.quantity}"/> <c:if test="${not empty check.product}"><span class="text-muted"><c:out value="${check.product.unit}"/></span></c:if></td>
+                                                                <td class="text-center"><c:out value="${check.available}"/> <c:if test="${not empty check.product}"><span class="text-muted"><c:out value="${check.product.unit}"/></span></c:if></td>
                                                                 <td class="text-center">
                                                                     <input type="number" name="pickedQty[]" 
                                                                            class="form-control form-control-sm text-center"

@@ -291,11 +291,11 @@
                                                             <br />
                                                             <small class="text-muted"><c:out value="${requestScope['productSku_'.concat(item.productId)]}"/></small>
                                                         </td>
-                                                        <td class="text-center"><c:out value="${item.quantity}"/></td>
+                                                        <td class="text-center"><c:out value="${item.quantity}"/> <span class="text-muted"><c:out value="${requestScope['productUnit_'.concat(item.productId)]}"/></span></td>
                                                         <td class="text-center">
                                                             <c:choose>
                                                                 <c:when test="${outboundRequest.status == 'InProgress' || outboundRequest.status == 'Completed'}">
-                                                                    <c:out value="${item.pickedQuantity != null ? item.pickedQuantity : 0}"/>
+                                                                    <c:out value="${item.pickedQuantity != null ? item.pickedQuantity : 0}"/> <span class="text-muted"><c:out value="${requestScope['productUnit_'.concat(item.productId)]}"/></span>
                                                                 </c:when>
                                                                 <c:otherwise>-</c:otherwise>
                                                             </c:choose>
@@ -304,13 +304,13 @@
                                                             <c:set var="available" value="${requestScope['available_'.concat(item.productId)]}" />
                                                             <c:choose>
                                                                 <c:when test="${available >= item.quantity}">
-                                                                    <span class="text-success"><c:out value="${available}"/></span>
+                                                                    <span class="text-success"><c:out value="${available}"/> <span class="text-muted"><c:out value="${requestScope['productUnit_'.concat(item.productId)]}"/></span></span>
                                                                 </c:when>
                                                                 <c:when test="${available > 0}">
-                                                                    <span class="text-warning"><c:out value="${available}"/></span>
+                                                                    <span class="text-warning"><c:out value="${available}"/> <span class="text-muted"><c:out value="${requestScope['productUnit_'.concat(item.productId)]}"/></span></span>
                                                                 </c:when>
                                                                 <c:otherwise>
-                                                                    <span class="text-danger"><c:out value="${available != null ? available : 0}"/></span>
+                                                                    <span class="text-danger"><c:out value="${available != null ? available : 0}"/> <span class="text-muted"><c:out value="${requestScope['productUnit_'.concat(item.productId)]}"/></span></span>
                                                                 </c:otherwise>
                                                             </c:choose>
                                                         </td>

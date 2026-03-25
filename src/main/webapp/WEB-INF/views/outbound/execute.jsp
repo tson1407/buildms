@@ -158,6 +158,7 @@
                                                     <div class="col-md-2 text-center">
                                                         <span class="text-muted small d-block">Requested</span>
                                                         <strong class="fs-5"><c:out value="${item.quantity}"/></strong>
+                                                        <span class="text-muted small"><c:out value="${requestScope['productUnit_'.concat(item.productId)]}"/></span>
                                                     </div>
                                                     <div class="col-md-2 text-center">
                                                         <span class="text-muted small d-block">Available</span>
@@ -172,10 +173,12 @@
                                                                 <strong class="fs-5 text-danger"><c:out value="${available != null ? available : 0}"/></strong>
                                                             </c:otherwise>
                                                         </c:choose>
+                                                        <span class="text-muted small"><c:out value="${requestScope['productUnit_'.concat(item.productId)]}"/></span>
                                                     </div>
                                                     <div class="col-md-2 text-center">
                                                         <span class="text-muted small d-block">Picked</span>
                                                         <strong class="fs-5"><c:out value="${item.pickedQuantity != null ? item.pickedQuantity : 0}"/></strong>
+                                                        <span class="text-muted small"><c:out value="${requestScope['productUnit_'.concat(item.productId)]}"/></span>
                                                     </div>
                                                     <div class="col-md-2">
                                                         <c:choose>
