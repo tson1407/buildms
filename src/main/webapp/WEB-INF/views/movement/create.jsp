@@ -213,6 +213,7 @@
                 id: ${pi.product.id},
                 sku: '<c:out value="${pi.product.sku}" escapeXml="true"/>',
                 name: '<c:out value="${pi.product.name}" escapeXml="true"/>',
+                unit: '<c:out value="${pi.product.unit}" escapeXml="true"/>',
                 totalQty: ${pi.totalQuantity},
                 inventories: [
                     <c:forEach var="inv" items="${pi.inventories}" varStatus="invStatus">
@@ -284,7 +285,7 @@
             productsWithInventory.forEach(p => {
                 const option = document.createElement('option');
                 option.value = p.id;
-                option.textContent = `\${p.sku} - \${p.name} (Total: \${p.totalQty})`;
+                option.textContent = `\${p.sku} - \${p.name} (Total: \${p.totalQty} \${p.unit})`;
                 productSelect.appendChild(option);
             });
             
@@ -326,7 +327,7 @@
                 if (loc && inv.quantity > 0) {
                     const option = document.createElement('option');
                     option.value = inv.locationId;
-                    option.textContent = `\${loc.code} (\${loc.type}) - Qty: \${inv.quantity}`;
+                    option.textContent = `\${loc.code} (\${loc.type}) - Qty: \${inv.quantity} \${product.unit}`;
                     option.dataset.quantity = inv.quantity;
                     sourceSelect.appendChild(option);
                 }
@@ -339,7 +340,8 @@
             const availableQtyEl = document.getElementById('availableQty_' + itemId);
             const qtyInput = document.getElementById('qty_' + itemId);
             
-            availableQtyEl.textContent = `Available: \${availableQty}`;
+            const product = productsWithInventory.find(p => p.id === parseInt(document.querySelector(`#item_\${itemId} select[name="productId"]`).value));
+            availableQtyEl.textContent = `Available: \${availableQty}` + (product ? ` \${product.unit}` : '');
             qtyInput.max = availableQty;
         }
         

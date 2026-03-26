@@ -216,7 +216,7 @@
             // Products with inventory
             const products = [
                 <c:forEach var="p" items="${products}" varStatus="status">
-                {id: ${p.product.id}, name: "<c:out value='${p.product.name}'/>", sku: "<c:out value='${p.product.sku}'/>", available: ${p.totalQuantity}}<c:if test="${!status.last}">,</c:if>
+                {id: ${p.product.id}, name: "<c:out value='${p.product.name}'/>", sku: "<c:out value='${p.product.sku}'/>", available: ${p.totalQuantity}, unit: "<c:out value='${p.product.unit}'/>"}<c:if test="${!status.last}">,</c:if>
                 </c:forEach>
             ];
             
@@ -277,7 +277,7 @@
                     const option = document.createElement('option');
                     option.value = p.id;
                     option.setAttribute('data-available', p.available);
-                    option.textContent = p.name + ' (' + p.sku + ') - Available: ' + p.available;
+                    option.textContent = p.name + ' (' + p.sku + ') - Available: ' + p.available + ' ' + p.unit;
                     option.disabled = selectedIds.includes(p.id);
                     select.appendChild(option);
                 });
@@ -326,7 +326,8 @@
                 row.querySelector('.product-select').addEventListener('change', function() {
                     const selected = this.options[this.selectedIndex];
                     const available = selected.getAttribute('data-available') || '-';
-                    row.querySelector('.available-display').value = available;
+                    const product = products.find(p => p.id === parseInt(row.querySelector('.product-select').value));
+                    row.querySelector('.available-display').value = available + (product ? ' ' + product.unit : '');
                     
                     const qtyInput = row.querySelector('.quantity-input');
                     if (available !== '-') {
