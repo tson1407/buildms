@@ -131,9 +131,13 @@ public class TransferController extends HttpServlet {
         }
 
         PageRequest pageRequest = PaginationUtil.resolvePageRequest(request);
-        Long currentUserId = ("Manager".equals(currentUser.getRole()) || "Staff".equals(currentUser.getRole())) ? currentUser.getId() : null;
-        PageResult<Request> transferPage = transferService.getTransferRequestsPaginated(selectedStatus, warehouseFilter, currentUserId, pageRequest);
-        List<Request> transfers = transferPage.getItems();
+        PageResult<Request> transferPage = transferService.getTransferRequestsPaginated(selectedStatus, warehouseFilter, pageRequest);
+        List<Request> transfers = new ArrayList<>(transferPage.getItems());
+        // Enhancement: hide 'Created' transfers from users who did not create them
+        if (!"Admin".equals(currentUser.getRole())) {
+            transfers.removeIf(t -> "Created".equals(t.getStatus())
+                    && !currentUser.getId().equals(t.getCreatedBy()));
+        }
         
         // Build lookup maps once — avoids N+1 DB calls per transfer
         java.util.Map<Long, Warehouse> warehouseMap = new java.util.HashMap<>();
