@@ -340,9 +340,9 @@ public class SalesOrderController extends HttpServlet {
         HttpSession session = request.getSession(false);
         User currentUser = (User) session.getAttribute("user");
         
-        // Only Sales/Manager/Admin can generate outbound
-        if (!"Manager".equals(currentUser.getRole()) && !"Admin".equals(currentUser.getRole()) && !"Sales".equals(currentUser.getRole())) {
-            request.setAttribute("errorMessage", "Only Sales and Managers can generate outbound requests");
+        // Only Admin/Sales can generate outbound
+        if (!"Admin".equals(currentUser.getRole()) && !"Sales".equals(currentUser.getRole())) {
+            request.setAttribute("errorMessage", "Only Sales can generate outbound requests");
             listOrders(request, response);
             return;
         }
@@ -393,9 +393,9 @@ public class SalesOrderController extends HttpServlet {
         HttpSession session = request.getSession(false);
         User currentUser = (User) session.getAttribute("user");
         
-        // Only Sales/Manager/Admin can generate outbound
-        if (!"Manager".equals(currentUser.getRole()) && !"Admin".equals(currentUser.getRole()) && !"Sales".equals(currentUser.getRole())) {
-            request.setAttribute("errorMessage", "Only Sales and Managers can generate outbound requests");
+        // Only Admin/Sales can generate outbound
+        if (!"Admin".equals(currentUser.getRole()) && !"Sales".equals(currentUser.getRole())) {
+            request.setAttribute("errorMessage", "Only Sales can generate outbound requests");
             listOrders(request, response);
             return;
         }

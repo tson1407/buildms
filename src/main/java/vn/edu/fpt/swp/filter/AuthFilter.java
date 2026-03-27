@@ -60,8 +60,8 @@ public class AuthFilter implements Filter {
         ROLE_ACCESS_MAP.put("/movement", managerStaff);
         ROLE_ACCESS_MAP.put("/inventory", managerStaff);
         
-        // Sales routes (Manager and Sales only)
-        Set<String> salesAccess = new HashSet<>(Arrays.asList("Manager", "Sales"));
+        // Sales routes (Admin and Sales only — Managers do not have sales access)
+        Set<String> salesAccess = new HashSet<>(Arrays.asList("Admin", "Sales"));
         ROLE_ACCESS_MAP.put("/sales-order", salesAccess);
         ROLE_ACCESS_MAP.put("/customer", salesAccess);
         ROLE_ACCESS_MAP.put("/customers", salesAccess);

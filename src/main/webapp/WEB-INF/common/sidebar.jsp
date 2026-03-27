@@ -221,11 +221,9 @@
             </li>
         </c:if>
 
-        <!-- ═══════════════════════════════════════════
-             SALES — Manager and Sales only
-             Admin does not handle commercial operations
-             ═══════════════════════════════════════════ -->
-        <c:if test="${currentUser.role == 'Manager' || currentUser.role == 'Sales'}">
+        <%-- SALES — Admin and Sales only --%>
+        <%-- Manager does not handle commercial/sales operations --%>
+        <c:if test="${currentUser.role == 'Admin' || currentUser.role == 'Sales'}">
             <li class="menu-header small text-uppercase">
                 <span class="menu-header-text">Sales</span>
             </li>
