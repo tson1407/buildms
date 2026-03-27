@@ -8,7 +8,7 @@
 | **Primary Actor** | Staff |
 | **Description** | Create a request to move goods between locations within the same warehouse |
 | **Preconditions** | Staff is logged in; Warehouse has multiple locations; Inventory exists at source location |
-| **Postconditions** | Internal movement request created |
+| **Postconditions** | Internal movement request created with status **Created**, awaiting Manager/Admin approval (see UC-MOV-003) |
 
 ---
 
@@ -76,8 +76,8 @@
     - Quantity
 
 ### Step 10: Display Confirmation
-- System displays: "Internal Movement Request [ID] created"
-- Request may auto-execute or require approval based on configuration
+- System displays: "Internal Movement Request [ID] created successfully"
+- Request is now awaiting Manager/Admin approval before execution (see UC-MOV-003)
 
 ---
 
