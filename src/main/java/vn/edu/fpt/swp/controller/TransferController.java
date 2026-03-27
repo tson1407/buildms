@@ -133,9 +133,11 @@ public class TransferController extends HttpServlet {
         PageRequest pageRequest = PaginationUtil.resolvePageRequest(request);
         PageResult<Request> transferPage = transferService.getTransferRequestsPaginated(selectedStatus, warehouseFilter, pageRequest);
         List<Request> transfers = new ArrayList<>(transferPage.getItems());
-        // Enhancement: hide 'Created' transfers from users who did not create them
-        if (!"Admin".equals(currentUser.getRole())) {
+        // Enhancement: hide 'Created' transfers from source-warehouse users who did not create them.
+        // Destination-warehouse users always see 'Created' transfers so they can approve.
+        if (!"Admin".equals(currentUser.getRole()) && currentUser.getWarehouseId() != null) {
             transfers.removeIf(t -> "Created".equals(t.getStatus())
+                    && currentUser.getWarehouseId().equals(t.getSourceWarehouseId())
                     && !currentUser.getId().equals(t.getCreatedBy()));
         }
         
@@ -350,8 +352,12 @@ public class TransferController extends HttpServlet {
                     listTransfers(request, response);
                     return;
                 }
-                // A transfer in 'Created' status is only visible to its creator.
+                // A 'Created' transfer is hidden from source-warehouse users who didn't create it.
+                // Destination-warehouse users can always view 'Created' transfers (needed for approval).
+                boolean isOnlyAtSource = userWarehouseId.equals(transfer.getSourceWarehouseId())
+                        && !userWarehouseId.equals(transfer.getDestinationWarehouseId());
                 if ("Created".equals(transfer.getStatus())
+                        && isOnlyAtSource
                         && !currentUser.getId().equals(transfer.getCreatedBy())) {
                     request.setAttribute("errorMessage", "This transfer has not been approved yet and is not visible to you.");
                     listTransfers(request, response);
