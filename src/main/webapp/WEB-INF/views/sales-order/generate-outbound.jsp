@@ -124,6 +124,7 @@
                                                 <tr>
                                                     <th>Product</th>
                                                     <th>SKU</th>
+                                                    <th>Unit</th>
                                                     <th class="text-end">Ordered Qty</th>
                                                     <th class="text-end">Available</th>
                                                     <th class="text-end">Fulfill Qty</th>
@@ -138,6 +139,7 @@
                                                             <input type="hidden" name="productId[]" value="${avail.product.id}">
                                                         </td>
                                                         <td><c:out value="${avail.product.sku}"/></td>
+                                                        <td><c:out value="${avail.product.unit}"/></td>
                                                         <td class="text-end"><c:out value="${avail.requested}"/></td>
                                                         <td class="text-end">
                                                             <c:choose>

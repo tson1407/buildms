@@ -71,7 +71,7 @@
                                     </form>
                                 </c:if>
                                 
-                                <c:if test="${order.status == 'Confirmed' && (currentUser.role == 'Admin' || currentUser.role == 'Manager')}">
+                                <c:if test="${order.status == 'Confirmed' && (currentUser.role == 'Admin' || currentUser.role == 'Manager' || currentUser.role == 'Sales')}">
                                     <a href="${contextPath}/sales-order?action=generate-outbound&id=${order.id}" class="btn btn-primary">
                                         <i class="bx bx-export me-1"></i> Generate Outbound
                                     </a>

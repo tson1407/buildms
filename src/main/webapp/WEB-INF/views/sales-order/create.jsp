@@ -153,7 +153,7 @@
             // Products data
             const products = [
                 <c:forEach var="product" items="${products}" varStatus="status">
-                    {id: ${product.id}, name: '<c:out value="${product.name}" escapeXml="true"/>', sku: '<c:out value="${product.sku}" escapeXml="true"/>'}<c:if test="${!status.last}">,</c:if>
+                    {id: ${product.id}, name: '<c:out value="${product.name}" escapeXml="true"/>', sku: '<c:out value="${product.sku}" escapeXml="true"/>', unit: '<c:out value="${product.unit}" escapeXml="true"/>'}<c:if test="${!status.last}">,</c:if>
                 </c:forEach>
             ];
             
@@ -174,9 +174,12 @@
                             <option value="">Select Product</option>
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <label class="form-label">Quantity <span class="text-danger">*</span></label>
                         <input type="number" name="quantity[]" class="form-control" min="1" value="1" required>
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end pb-1">
+                        <span class="unit-badge text-muted fst-italic"></span>
                     </div>
                     <div class="col-md-3">
                         <button type="button" class="btn btn-outline-danger remove-item-btn">
@@ -187,10 +190,12 @@
                 
                 // Populate product dropdown safely
                 const productSelect = row.querySelector('.product-select');
+                const unitBadge = row.querySelector('.unit-badge');
                 products.forEach(p => {
                     const option = document.createElement('option');
                     option.value = p.id;
                     option.textContent = p.name + ' (' + p.sku + ')';
+                    option.dataset.unit = p.unit;
                     productSelect.appendChild(option);
                 });
                 
@@ -200,8 +205,10 @@
                     updateUI();
                 });
                 
-                // Check for duplicate products
-                row.querySelector('.product-select').addEventListener('change', function() {
+                // Show unit when product is selected
+                productSelect.addEventListener('change', function() {
+                    const selected = this.options[this.selectedIndex];
+                    unitBadge.textContent = selected.dataset.unit || '';
                     validateDuplicates();
                 });
                 

@@ -131,7 +131,8 @@ public class TransferController extends HttpServlet {
         }
 
         PageRequest pageRequest = PaginationUtil.resolvePageRequest(request);
-        PageResult<Request> transferPage = transferService.getTransferRequestsPaginated(selectedStatus, warehouseFilter, pageRequest);
+        Long currentUserId = ("Manager".equals(currentUser.getRole()) || "Staff".equals(currentUser.getRole())) ? currentUser.getId() : null;
+        PageResult<Request> transferPage = transferService.getTransferRequestsPaginated(selectedStatus, warehouseFilter, currentUserId, pageRequest);
         List<Request> transfers = transferPage.getItems();
         
         // Build lookup maps once — avoids N+1 DB calls per transfer
@@ -331,7 +332,9 @@ public class TransferController extends HttpServlet {
                 return;
             }
             
-            // Manager/Staff can only view transfers related to their warehouse
+            // Manager/Staff can only view transfers related to their warehouse.
+            // Additionally, a transfer in 'Created' status is only visible to
+            // the user who created it (creator-based visibility rule).
             HttpSession session = request.getSession(false);
             User currentUser = (User) session.getAttribute("user");
             if ("Manager".equals(currentUser.getRole()) || "Staff".equals(currentUser.getRole())) {
@@ -340,6 +343,13 @@ public class TransferController extends HttpServlet {
                         || (!userWarehouseId.equals(transfer.getSourceWarehouseId())
                             && !userWarehouseId.equals(transfer.getDestinationWarehouseId()))) {
                     request.setAttribute("errorMessage", "You don't have permission to view this transfer.");
+                    listTransfers(request, response);
+                    return;
+                }
+                // A transfer in 'Created' status is only visible to its creator.
+                if ("Created".equals(transfer.getStatus())
+                        && !currentUser.getId().equals(transfer.getCreatedBy())) {
+                    request.setAttribute("errorMessage", "This transfer has not been approved yet and is not visible to you.");
                     listTransfers(request, response);
                     return;
                 }
