@@ -23,6 +23,7 @@ DELETE FROM Locations;
 DELETE FROM Products;
 DELETE FROM Categories;
 DELETE FROM Customers;
+DELETE FROM Providers;
 DELETE FROM Warehouses;
 
 PRINT N'Thêm kho hàng...';
@@ -133,6 +134,19 @@ VALUES
 
 SET IDENTITY_INSERT Customers OFF;
 
+PRINT N'Thêm nhà cung cấp...';
+
+SET IDENTITY_INSERT Providers ON;
+
+INSERT INTO Providers (Id, Code, Name, ContactInfo, Status)
+VALUES
+    (1, N'NCC-001', N'Tập đoàn Xi Măng Sao Mai', N'Điện thoại: 028-1111-2001 | Email: sales@saomai.vn | Địa chỉ: Quận 1, TP.HCM', N'Active'),
+    (2, N'NCC-002', N'Công ty Thép Việt', N'Điện thoại: 028-2222-3002 | Email: vietsteel@vietsteel.vn | Địa chỉ: Bình Dương', N'Active'),
+    (3, N'NCC-003', N'Gốm Sứ Đồng Tâm', N'Điện thoại: 072-3333-4003 | Email: lienhe@dongtam.vn | Địa chỉ: Long An', N'Active'),
+    (4, N'NCC-004', N'Sơn Nippon', N'Điện thoại: 028-4444-5004 | Email: info@nippon.vn | Địa chỉ: Đồng Nai', N'Inactive');
+
+SET IDENTITY_INSERT Providers OFF;
+
 PRINT N'Thêm tồn kho...';
 
 INSERT INTO Inventory (ProductId, WarehouseId, LocationId, Quantity)
@@ -188,25 +202,25 @@ SET IDENTITY_INSERT Requests ON;
 
 INSERT INTO Requests
     (Id, Type, Status, CreatedBy, ApprovedBy, ApprovedDate, RejectedBy, RejectedDate, RejectionReason,
-     CompletedBy, CompletedDate, SalesOrderId, SourceWarehouseId, DestinationWarehouseId, ExpectedDate, Notes, Reason, CreatedAt)
+     CompletedBy, CompletedDate, SalesOrderId, SourceWarehouseId, DestinationWarehouseId, ProviderId, ExpectedDate, Notes, Reason, CreatedAt)
 VALUES
     (1, N'Inbound', N'Approved', 2, 2, DATEADD(DAY, -1, GETDATE()), NULL, NULL, NULL,
-     NULL, NULL, NULL, NULL, 1, DATEADD(DAY, 2, GETDATE()), N'Nhập lô xi măng tháng 3 từ nhà cung cấp miền Nam', NULL, DATEADD(DAY, -2, GETDATE())),
+     NULL, NULL, NULL, NULL, 1, 1, DATEADD(DAY, 2, GETDATE()), N'Nhập lô xi măng tháng 3 từ nhà cung cấp miền Nam', NULL, DATEADD(DAY, -2, GETDATE())),
 
     (2, N'Outbound', N'Created', 2, NULL, NULL, NULL, NULL, NULL,
-     NULL, NULL, 1, 1, NULL, DATEADD(DAY, 1, GETDATE()), N'Xuất hàng theo SO-2026-0001', N'Cấp cho công trình dân dụng', DATEADD(HOUR, -8, GETDATE())),
+     NULL, NULL, 1, 1, NULL, NULL, DATEADD(DAY, 1, GETDATE()), N'Xuất hàng theo SO-2026-0001', N'Cấp cho công trình dân dụng', DATEADD(HOUR, -8, GETDATE())),
 
     (3, N'Outbound', N'InProgress', 2, 2, DATEADD(DAY, -1, GETDATE()), NULL, NULL, NULL,
-     3, DATEADD(HOUR, -6, GETDATE()), 3, 1, NULL, DATEADD(HOUR, 12, GETDATE()), N'Xuất hàng theo SO-2026-0003', N'Ưu tiên giao trong ngày', DATEADD(DAY, -2, GETDATE())),
+     3, DATEADD(HOUR, -6, GETDATE()), 3, 1, NULL, NULL, DATEADD(HOUR, 12, GETDATE()), N'Xuất hàng theo SO-2026-0003', N'Ưu tiên giao trong ngày', DATEADD(DAY, -2, GETDATE())),
 
     (4, N'Transfer', N'Approved', 2, 5, DATEADD(HOUR, -10, GETDATE()), NULL, NULL, NULL,
-     NULL, NULL, NULL, 1, 2, DATEADD(DAY, 2, GETDATE()), N'Điều chuyển thép cho kho Hà Nội', NULL, DATEADD(DAY, -1, GETDATE())),
+     NULL, NULL, NULL, 1, 2, NULL, DATEADD(DAY, 2, GETDATE()), N'Điều chuyển thép cho kho Hà Nội', NULL, DATEADD(DAY, -1, GETDATE())),
 
     (5, N'Internal', N'Created', 2, NULL, NULL, NULL, NULL, NULL,
-     NULL, NULL, NULL, 1, NULL, DATEADD(DAY, 1, GETDATE()), N'Chuyển gạch từ khu lưu trữ ra khu picking', N'Bổ sung khu soạn hàng', DATEADD(HOUR, -3, GETDATE())),
+     NULL, NULL, NULL, 1, NULL, NULL, DATEADD(DAY, 1, GETDATE()), N'Chuyển gạch từ khu lưu trữ ra khu picking', N'Bổ sung khu soạn hàng', DATEADD(HOUR, -3, GETDATE())),
 
     (6, N'Inbound', N'Rejected', 5, NULL, NULL, 5, DATEADD(HOUR, -2, GETDATE()), N'Số lượng đề nghị vượt sức chứa khu staging',
-     NULL, NULL, NULL, NULL, 2, DATEADD(DAY, 3, GETDATE()), N'Đề nghị nhập hàng sơn từ kho trung tâm', NULL, DATEADD(HOUR, -12, GETDATE()));
+     NULL, NULL, NULL, NULL, 2, 4, DATEADD(DAY, 3, GETDATE()), N'Đề nghị nhập hàng sơn từ kho trung tâm', NULL, DATEADD(HOUR, -12, GETDATE()));
 
 SET IDENTITY_INSERT Requests OFF;
 
@@ -263,6 +277,9 @@ PRINT N'Số tồn kho: ' + CAST(@Count AS NVARCHAR(20));
 
 SELECT @Count = COUNT(*) FROM Customers;
 PRINT N'Số khách hàng: ' + CAST(@Count AS NVARCHAR(20));
+
+SELECT @Count = COUNT(*) FROM Providers;
+PRINT N'Số nhà cung cấp: ' + CAST(@Count AS NVARCHAR(20));
 
 SELECT @Count = COUNT(*) FROM SalesOrders;
 PRINT N'Số đơn bán: ' + CAST(@Count AS NVARCHAR(20));

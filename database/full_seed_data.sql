@@ -26,6 +26,7 @@ DELETE FROM Locations;
 DELETE FROM Products;
 DELETE FROM Categories;
 DELETE FROM Customers;
+DELETE FROM Providers;
 DELETE FROM Warehouses;
 
 SET IDENTITY_INSERT Categories ON;
@@ -252,6 +253,21 @@ INSERT INTO Customers (Id, Code, Name, ContactInfo, Status) VALUES
 (10, 'CUS-010', 'Urban Development Partners', 'Tel: 024-4444-5555 | Email: procurement@urbandev.vn | Address: 120 Xuan Thuy, Cau Giay, Hanoi', 'Active');
 
 SET IDENTITY_INSERT Customers OFF;
+
+-- =====================================================
+-- 5A. PROVIDERS
+-- =====================================================
+PRINT 'Inserting Providers...';
+
+SET IDENTITY_INSERT Providers ON;
+
+INSERT INTO Providers (Id, Code, Name, ContactInfo, Status) VALUES
+(1, 'PRV-001', 'Holcim Cement Group', 'Tel: 028-1111-2222 | Email: order@holcim.com | Address: 123 Cement Ave', 'Active'),
+(2, 'PRV-002', 'Hoa Phat Steel', 'Tel: 028-3333-4444 | Email: sales@hoaphat.com.vn | Address: 456 Steel St', 'Active'),
+(3, 'PRV-003', 'Prime Tiles', 'Tel: 028-5555-6666 | Email: contact@prime.vn | Address: 789 Ceramic Blvd', 'Active'),
+(4, 'PRV-004', 'Dulux Vietnam', 'Tel: 028-7777-8888 | Email: supply@dulux.vn | Address: 321 Paint Rd', 'Inactive');
+
+SET IDENTITY_INSERT Providers OFF;
 
 -- =====================================================
 -- 6. INVENTORY (Stock in Warehouses)
@@ -528,66 +544,66 @@ PRINT 'Inserting Requests...';
 
 SET IDENTITY_INSERT Requests ON;
 
-INSERT INTO Requests (Id, Type, Status, CreatedBy, ApprovedBy, ApprovedDate, RejectedBy, RejectedDate, RejectionReason, CompletedBy, CompletedDate, SalesOrderId, SourceWarehouseId, DestinationWarehouseId, ExpectedDate, Notes, Reason, CreatedAt) VALUES
+INSERT INTO Requests (Id, Type, Status, CreatedBy, ApprovedBy, ApprovedDate, RejectedBy, RejectedDate, RejectionReason, CompletedBy, CompletedDate, SalesOrderId, SourceWarehouseId, DestinationWarehouseId, ProviderId, ExpectedDate, Notes, Reason, CreatedAt) VALUES
 -- INBOUND REQUESTS
 -- Completed Inbound (restocking)
-(1, 'Inbound', 'Completed', 2, 1, '2025-01-03 10:00:00', NULL, NULL, NULL, 3, '2025-01-04 14:00:00', NULL, NULL, 1, '2025-01-04', 'Monthly cement restocking from supplier', NULL, '2025-01-02 09:00:00'),
-(2, 'Inbound', 'Completed', 2, 1, '2025-01-06 11:00:00', NULL, NULL, NULL, 3, '2025-01-07 16:00:00', NULL, NULL, 1, '2025-01-07', 'Steel and rebar delivery', NULL, '2025-01-05 10:30:00'),
-(3, 'Inbound', 'Completed', 2, 1, '2025-01-10 09:30:00', NULL, NULL, NULL, 3, '2025-01-11 15:00:00', NULL, NULL, 2, '2025-01-11', 'North warehouse initial stock', NULL, '2025-01-09 08:00:00'),
+(1, 'Inbound', 'Completed', 2, 1, '2025-01-03 10:00:00', NULL, NULL, NULL, 3, '2025-01-04 14:00:00', NULL, NULL, 1, 1, '2025-01-04', 'Monthly cement restocking from supplier', NULL, '2025-01-02 09:00:00'),
+(2, 'Inbound', 'Completed', 2, 1, '2025-01-06 11:00:00', NULL, NULL, NULL, 3, '2025-01-07 16:00:00', NULL, NULL, 1, 2, '2025-01-07', 'Steel and rebar delivery', NULL, '2025-01-05 10:30:00'),
+(3, 'Inbound', 'Completed', 2, 1, '2025-01-10 09:30:00', NULL, NULL, NULL, 3, '2025-01-11 15:00:00', NULL, NULL, 2, NULL, '2025-01-11', 'North warehouse initial stock', NULL, '2025-01-09 08:00:00'),
 
 -- Approved Inbound (waiting execution)
-(4, 'Inbound', 'Approved', 2, 1, '2025-01-25 14:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2025-02-01', 'Tiles and flooring materials', NULL, '2025-01-24 11:00:00'),
-(5, 'Inbound', 'Approved', 2, 1, '2025-01-28 10:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, '2025-02-05', 'South warehouse restocking', NULL, '2025-01-27 09:00:00'),
+(4, 'Inbound', 'Approved', 2, 1, '2025-01-25 14:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 3, '2025-02-01', 'Tiles and flooring materials', NULL, '2025-01-24 11:00:00'),
+(5, 'Inbound', 'Approved', 2, 1, '2025-01-28 10:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 3, NULL, '2025-02-05', 'South warehouse restocking', NULL, '2025-01-27 09:00:00'),
 
 -- InProgress Inbound
-(6, 'Inbound', 'InProgress', 2, 1, '2025-01-29 15:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2025-01-31', 'Electrical supplies shipment - being received', NULL, '2025-01-28 14:00:00'),
+(6, 'Inbound', 'InProgress', 2, 1, '2025-01-29 15:00:00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2025-01-31', 'Electrical supplies shipment - being received', NULL, '2025-01-28 14:00:00'),
 
 -- Created Inbound (pending approval)
-(7, 'Inbound', 'Created', 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, '2025-02-10', 'Paint and coating materials from new supplier', NULL, '2025-01-30 10:00:00'),
-(8, 'Inbound', 'Created', 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4, '2025-02-15', 'Construction site materials', NULL, '2025-01-30 16:00:00'),
+(7, 'Inbound', 'Created', 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 4, '2025-02-10', 'Paint and coating materials from new supplier', NULL, '2025-01-30 10:00:00'),
+(8, 'Inbound', 'Created', 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4, NULL, '2025-02-15', 'Construction site materials', NULL, '2025-01-30 16:00:00'),
 
 -- OUTBOUND REQUESTS (Sales-driven)
 -- Completed Outbound (linked to completed sales orders)
-(9, 'Outbound', 'Completed', 2, 1, '2025-01-05 15:00:00', NULL, NULL, NULL, 3, '2025-01-06 11:00:00', 1, 1, NULL, '2025-01-06', 'Delivery for SO-2025-0001', NULL, '2025-01-05 14:30:00'),
-(10, 'Outbound', 'Completed', 2, 1, '2025-01-08 17:00:00', NULL, NULL, NULL, 3, '2025-01-09 10:00:00', 2, 1, NULL, '2025-01-09', 'Delivery for SO-2025-0002', NULL, '2025-01-08 16:30:00'),
-(11, 'Outbound', 'Completed', 2, 1, '2025-01-10 16:00:00', NULL, NULL, NULL, 3, '2025-01-11 09:30:00', 3, 1, NULL, '2025-01-11', 'Delivery for SO-2025-0003', NULL, '2025-01-10 15:45:00'),
+(9, 'Outbound', 'Completed', 2, 1, '2025-01-05 15:00:00', NULL, NULL, NULL, 3, '2025-01-06 11:00:00', 1, 1, NULL, NULL, '2025-01-06', 'Delivery for SO-2025-0001', NULL, '2025-01-05 14:30:00'),
+(10, 'Outbound', 'Completed', 2, 1, '2025-01-08 17:00:00', NULL, NULL, NULL, 3, '2025-01-09 10:00:00', 2, 1, NULL, NULL, '2025-01-09', 'Delivery for SO-2025-0002', NULL, '2025-01-08 16:30:00'),
+(11, 'Outbound', 'Completed', 2, 1, '2025-01-10 16:00:00', NULL, NULL, NULL, 3, '2025-01-11 09:30:00', 3, 1, NULL, NULL, '2025-01-11', 'Delivery for SO-2025-0003', NULL, '2025-01-10 15:45:00'),
 
 -- Approved Outbound (waiting execution)
-(12, 'Outbound', 'Approved', 2, 1, '2025-01-22 15:00:00', NULL, NULL, NULL, NULL, NULL, 7, 1, NULL, '2025-01-24', 'Plumbing delivery for Delta Engineering', NULL, '2025-01-22 14:45:00'),
-(13, 'Outbound', 'Approved', 2, 1, '2025-01-25 15:30:00', NULL, NULL, NULL, NULL, NULL, 8, 1, NULL, '2025-01-27', 'Interior materials for Harmony', NULL, '2025-01-25 15:15:00'),
+(12, 'Outbound', 'Approved', 2, 1, '2025-01-22 15:00:00', NULL, NULL, NULL, NULL, NULL, 7, 1, NULL, NULL, '2025-01-24', 'Plumbing delivery for Delta Engineering', NULL, '2025-01-22 14:45:00'),
+(13, 'Outbound', 'Approved', 2, 1, '2025-01-25 15:30:00', NULL, NULL, NULL, NULL, NULL, 8, 1, NULL, NULL, '2025-01-27', 'Interior materials for Harmony', NULL, '2025-01-25 15:15:00'),
 
 -- Created Outbound (pending approval)
-(14, 'Outbound', 'Created', 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, '2025-02-02', 'Pending sales order fulfillment', NULL, '2025-01-30 11:00:00'),
+(14, 'Outbound', 'Created', 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2025-02-02', 'Pending sales order fulfillment', NULL, '2025-01-30 11:00:00'),
 
 -- INTERNAL OUTBOUND (Non-sales)
 -- Completed Internal Outbound
-(15, 'Outbound', 'Completed', 2, 1, '2025-01-15 10:00:00', NULL, NULL, NULL, 3, '2025-01-15 14:00:00', NULL, 1, NULL, NULL, 'Damaged materials disposal - water damaged cement bags', 'Damage/Disposal', '2025-01-14 16:00:00'),
+(15, 'Outbound', 'Completed', 2, 1, '2025-01-15 10:00:00', NULL, NULL, NULL, 3, '2025-01-15 14:00:00', NULL, 1, NULL, NULL, NULL, 'Damaged materials disposal - water damaged cement bags', 'Damage/Disposal', '2025-01-14 16:00:00'),
 
 -- Approved Internal Outbound
-(16, 'Outbound', 'Approved', 2, 1, '2025-01-29 11:00:00', NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, 'Sample materials for trade show', 'Sample/Demo', '2025-01-28 15:00:00'),
+(16, 'Outbound', 'Approved', 2, 1, '2025-01-29 11:00:00', NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'Sample materials for trade show', 'Sample/Demo', '2025-01-28 15:00:00'),
 
 -- Created Internal Outbound
-(17, 'Outbound', 'Created', 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, 'Return defective switches to supplier', 'Return to Supplier', '2025-01-30 09:00:00'),
+(17, 'Outbound', 'Created', 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'Return defective switches to supplier', 'Return to Supplier', '2025-01-30 09:00:00'),
 
 -- TRANSFER REQUESTS (Inter-warehouse)
 -- Completed Transfer
-(18, 'Transfer', 'Completed', 2, 1, '2025-01-12 10:00:00', NULL, NULL, NULL, 3, '2025-01-13 16:00:00', NULL, 1, 2, '2025-01-13', 'Stock transfer to North warehouse', NULL, '2025-01-11 14:00:00'),
+(18, 'Transfer', 'Completed', 2, 1, '2025-01-12 10:00:00', NULL, NULL, NULL, 3, '2025-01-13 16:00:00', NULL, 1, 2, NULL, '2025-01-13', 'Stock transfer to North warehouse', NULL, '2025-01-11 14:00:00'),
 
 -- InProgress Transfer
-(19, 'Transfer', 'InProgress', 2, 1, '2025-01-27 09:00:00', NULL, NULL, NULL, NULL, NULL, NULL, 1, 3, '2025-01-30', 'Emergency stock to South warehouse', NULL, '2025-01-26 11:00:00'),
+(19, 'Transfer', 'InProgress', 2, 1, '2025-01-27 09:00:00', NULL, NULL, NULL, NULL, NULL, NULL, 1, 3, NULL, '2025-01-30', 'Emergency stock to South warehouse', NULL, '2025-01-26 11:00:00'),
 
 -- Approved Transfer
-(20, 'Transfer', 'Approved', 2, 1, '2025-01-30 10:00:00', NULL, NULL, NULL, NULL, NULL, NULL, 1, 4, '2025-02-05', 'Materials for construction site', NULL, '2025-01-29 14:00:00'),
+(20, 'Transfer', 'Approved', 2, 1, '2025-01-30 10:00:00', NULL, NULL, NULL, NULL, NULL, NULL, 1, 4, NULL, '2025-02-05', 'Materials for construction site', NULL, '2025-01-29 14:00:00'),
 
 -- Created Transfer (pending approval)
-(21, 'Transfer', 'Created', 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2, 3, '2025-02-10', 'Rebalancing stock between regional warehouses', NULL, '2025-01-30 15:00:00'),
+(21, 'Transfer', 'Created', 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 2, 3, NULL, '2025-02-10', 'Rebalancing stock between regional warehouses', NULL, '2025-01-30 15:00:00'),
 
 -- REJECTED REQUEST (example)
-(22, 'Inbound', 'Rejected', 2, NULL, NULL, 1, '2025-01-20 11:00:00', 'Supplier not approved. Please use authorized vendor list.', NULL, NULL, NULL, NULL, 1, '2025-01-25', 'Attempt to order from non-approved supplier', NULL, '2025-01-19 10:00:00'),
+(22, 'Inbound', 'Rejected', 2, NULL, NULL, 1, '2025-01-20 11:00:00', 'Supplier not approved. Please use authorized vendor list.', NULL, NULL, NULL, NULL, 1, 4, '2025-01-25', 'Attempt to order from non-approved supplier', NULL, '2025-01-19 10:00:00'),
 
 -- INTERNAL MOVEMENT (within same warehouse)
-(23, 'Internal', 'Completed', 3, 2, '2025-01-17 09:00:00', NULL, NULL, NULL, 3, '2025-01-17 11:00:00', NULL, NULL, NULL, NULL, 'Reorganizing cement storage from A to C zone', NULL, '2025-01-16 16:00:00'),
-(24, 'Internal', 'Created', 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Moving overflow tiles to new location', NULL, '2025-01-30 14:00:00');
+(23, 'Internal', 'Completed', 3, 2, '2025-01-17 09:00:00', NULL, NULL, NULL, 3, '2025-01-17 11:00:00', NULL, NULL, NULL, NULL, NULL, 'Reorganizing cement storage from A to C zone', NULL, '2025-01-16 16:00:00'),
+(24, 'Internal', 'Created', 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Moving overflow tiles to new location', NULL, '2025-01-30 14:00:00');
 
 SET IDENTITY_INSERT Requests OFF;
 
@@ -746,6 +762,7 @@ PRINT '  - Products: 75';
 PRINT '  - Warehouses: 4';
 PRINT '  - Locations: 44';
 PRINT '  - Customers: 10';
+PRINT '  - Providers: 4';
 PRINT '  - Inventory records: 100+';
 PRINT '  - Sales Orders: 11';
 PRINT '  - Requests: 24 (various types and statuses)';

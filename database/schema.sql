@@ -100,6 +100,20 @@ GO
    3. Inventory & Request
    ===================================================== */
 
+-- Provider
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Providers')
+BEGIN
+    CREATE TABLE Providers (
+        Id BIGINT IDENTITY(1,1) PRIMARY KEY,
+        Code NVARCHAR(50) NOT NULL UNIQUE,
+        Name NVARCHAR(255) NOT NULL,
+        ContactInfo NVARCHAR(500),
+        Status NVARCHAR(50) DEFAULT 'Active'
+    );
+END
+GO
+
+
 -- Inventory
 IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Inventory')
 BEGIN
@@ -134,13 +148,15 @@ BEGIN
         SalesOrderId BIGINT NULL,
         SourceWarehouseId BIGINT NULL, -- For Transfer requests
         DestinationWarehouseId BIGINT NULL, -- For Transfer requests
+        ProviderId BIGINT NULL, -- For Inbound requests
         ExpectedDate DATETIME2 NULL,
         Notes NVARCHAR(500) NULL,
         Reason NVARCHAR(100) NULL, -- For Internal Outbound
         CreatedAt DATETIME2 DEFAULT GETDATE(),
         CONSTRAINT FK_Request_CreatedBy FOREIGN KEY (CreatedBy) REFERENCES Users(Id),
         CONSTRAINT FK_Request_SourceWarehouse FOREIGN KEY (SourceWarehouseId) REFERENCES Warehouses(Id),
-        CONSTRAINT FK_Request_DestWarehouse FOREIGN KEY (DestinationWarehouseId) REFERENCES Warehouses(Id)
+        CONSTRAINT FK_Request_DestWarehouse FOREIGN KEY (DestinationWarehouseId) REFERENCES Warehouses(Id),
+        CONSTRAINT FK_Request_Provider FOREIGN KEY (ProviderId) REFERENCES Providers(Id)
     );
 
     CREATE INDEX IDX_Request_Status ON Requests(Status);

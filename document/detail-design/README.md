@@ -103,6 +103,14 @@ Each use case document includes:
 | UC-CUS-003 | Toggle Customer Status | [UC-CUS-003-Toggle-Customer-Status.md](UC-CUS-003-Toggle-Customer-Status.md) |
 | UC-CUS-004 | View Customer List | [UC-CUS-004-View-Customer-List.md](UC-CUS-004-View-Customer-List.md) |
 
+### Provider Management (UC-PRO)
+| ID | Name | File |
+|----|------|------|
+| UC-PRO-001 | Create Provider | [UC-PRO-001-Create-Provider.md](UC-PRO-001-Create-Provider.md) |
+| UC-PRO-002 | Update Provider | [UC-PRO-002-Update-Provider.md](UC-PRO-002-Update-Provider.md) |
+| UC-PRO-003 | Toggle Provider Status | [UC-PRO-003-Toggle-Provider-Status.md](UC-PRO-003-Toggle-Provider-Status.md) |
+| UC-PRO-004 | View Provider List | [UC-PRO-004-View-Provider-List.md](UC-PRO-004-View-Provider-List.md) |
+
 ### User Management (UC-USER)
 | ID | Name | File |
 |----|------|------|

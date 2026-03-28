@@ -27,6 +27,7 @@
   - Destination Warehouse (dropdown, required)
     - **If Manager:** Auto-selected to Manager's assigned warehouse (read-only)
     - **If Admin:** All active warehouses shown
+  - Provider (dropdown, optional) - Select the supplier for the inbound receipt
   - Expected Delivery Date (date picker, optional)
   - Notes/Description (text area, optional)
   - Request Items section (add products)
@@ -61,6 +62,7 @@
   - Request Type: "Inbound"
   - Status: "Created"
   - Destination Warehouse ID
+  - Provider ID (if provided)
   - Created By: Current Manager's User ID
   - Created Date: Current timestamp
   - Expected Date (if provided)
