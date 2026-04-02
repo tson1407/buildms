@@ -204,17 +204,21 @@ Smart WMS is a standalone academic system. Sales and warehouse operations are lo
 
 ### 3.8 Location Management
 
-**Description:** Manage storage locations (bins) within warehouses.
+**Description:** Manage storage locations (bins) within warehouses with optional category-based restrictions.
 
 **Primary Actor:** Admin, Manager
 
 **Functional Requirements:**
 
 * Admin/Manager shall create locations within a warehouse.
-* Admin/Manager shall update location details (code, type).
+* Admin/Manager shall update location details (code, type, category restriction).
 * Admin/Manager shall activate or deactivate locations.
 * Location types include: Storage, Picking, Staging.
+* Admin/Manager shall optionally assign a category restriction to a location.
+* If a category restriction is set, only products belonging to that category can be stored at the location.
 * System shall prevent deactivation of locations with inventory.
+* System shall enforce category compatibility when placing inventory into locations (Inbound, Movement, Transfer Inbound).
+* System shall prevent changing a location's category restriction if it has inventory from a different category.
 
 ---
 

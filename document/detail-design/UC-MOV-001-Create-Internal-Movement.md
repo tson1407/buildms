@@ -51,6 +51,7 @@
   - Quantity must be positive
   - Quantity cannot exceed available at source location
   - Locations must be within same warehouse
+  - **Destination location must be compatible with product's category** (BR-MOV-007)
 - If validation fails → **Alternative Flow A2**
 
 ### Step 7: Submit Request
@@ -96,6 +97,7 @@
      - "Source and destination locations must be different"
      - "Quantity exceeds available at source location"
      - "Locations must be in the same warehouse"
+     - "Destination location '[code]' only accepts [category name] products"
   2. Return to Step 5
 
 ---
@@ -109,6 +111,7 @@
 | BR-MOV-004 | Quantity limited by source availability |
 | BR-MOV-005 | Total warehouse inventory unchanged |
 | BR-MOV-006 | Staff and Manager are restricted to their assigned warehouse for movements |
+| BR-MOV-007 | Destination location must be compatible with the product's category. If destination has a CategoryId restriction, the product's category must match |
 
 ---
 
@@ -138,6 +141,7 @@ Warehouse
 ## UI Requirements
 - Warehouse selection or auto-detection (auto for Staff and Manager)
 - Location dropdowns filtered by warehouse
+- **Destination location dropdown filtered by category compatibility** — only shows locations with matching category or unrestricted locations
 - Product search with location-specific inventory
 - Quantity validation against source
 - Visual representation of from/to locations

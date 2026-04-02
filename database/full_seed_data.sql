@@ -173,63 +173,63 @@ PRINT 'Inserting Locations...';
 SET IDENTITY_INSERT Locations ON;
 
 -- Central Distribution Center (Warehouse 1) - Large facility with multiple zones
-INSERT INTO Locations (Id, WarehouseId, Code, Type, IsActive) VALUES
+INSERT INTO Locations (Id, WarehouseId, Code, Type, IsActive, CategoryId) VALUES
 -- Storage Zone A (Heavy materials - Cement, Steel)
-(1, 1, 'A-01-01', 'Storage', 1),
-(2, 1, 'A-01-02', 'Storage', 1),
-(3, 1, 'A-01-03', 'Storage', 1),
-(4, 1, 'A-02-01', 'Storage', 1),
-(5, 1, 'A-02-02', 'Storage', 1),
-(6, 1, 'A-02-03', 'Storage', 1),
+(1, 1, 'A-01-01', 'Storage', 1, 1),
+(2, 1, 'A-01-02', 'Storage', 1, 1),
+(3, 1, 'A-01-03', 'Storage', 1, 1),
+(4, 1, 'A-02-01', 'Storage', 1, 3),
+(5, 1, 'A-02-02', 'Storage', 1, 3),
+(6, 1, 'A-02-03', 'Storage', 1, 3),
 -- Storage Zone B (Bricks, Blocks, Tiles)
-(7, 1, 'B-01-01', 'Storage', 1),
-(8, 1, 'B-01-02', 'Storage', 1),
-(9, 1, 'B-02-01', 'Storage', 1),
-(10, 1, 'B-02-02', 'Storage', 1),
+(7, 1, 'B-01-01', 'Storage', 1, 2),
+(8, 1, 'B-01-02', 'Storage', 1, 2),
+(9, 1, 'B-02-01', 'Storage', 1, 2),
+(10, 1, 'B-02-02', 'Storage', 1, 4),
 -- Storage Zone C (Timber, Plywood)
-(11, 1, 'C-01-01', 'Storage', 1),
-(12, 1, 'C-01-02', 'Storage', 1),
-(13, 1, 'C-02-01', 'Storage', 1),
+(11, 1, 'C-01-01', 'Storage', 1, 5),
+(12, 1, 'C-01-02', 'Storage', 1, 5),
+(13, 1, 'C-02-01', 'Storage', 1, 5),
 -- Storage Zone D (Paints, Electrical, Small Items)
-(14, 1, 'D-01-01', 'Storage', 1),
-(15, 1, 'D-01-02', 'Storage', 1),
-(16, 1, 'D-02-01', 'Storage', 1),
-(17, 1, 'D-02-02', 'Storage', 1),
+(14, 1, 'D-01-01', 'Storage', 1, 6),
+(15, 1, 'D-01-02', 'Storage', 1, 6),
+(16, 1, 'D-02-01', 'Storage', 1, 7),
+(17, 1, 'D-02-02', 'Storage', 1, 8),
 -- Picking Zone
-(18, 1, 'PICK-01', 'Picking', 1),
-(19, 1, 'PICK-02', 'Picking', 1),
-(20, 1, 'PICK-03', 'Picking', 1),
+(18, 1, 'PICK-01', 'Picking', 1, NULL),
+(19, 1, 'PICK-02', 'Picking', 1, NULL),
+(20, 1, 'PICK-03', 'Picking', 1, NULL),
 -- Staging Area
-(21, 1, 'STAGE-IN', 'Staging', 1),
-(22, 1, 'STAGE-OUT', 'Staging', 1),
+(21, 1, 'STAGE-IN', 'Staging', 1, NULL),
+(22, 1, 'STAGE-OUT', 'Staging', 1, NULL),
 
 -- North Region Warehouse (Warehouse 2)
-(23, 2, 'N-A-01', 'Storage', 1),
-(24, 2, 'N-A-02', 'Storage', 1),
-(25, 2, 'N-A-03', 'Storage', 1),
-(26, 2, 'N-B-01', 'Storage', 1),
-(27, 2, 'N-B-02', 'Storage', 1),
-(28, 2, 'N-C-01', 'Storage', 1),
-(29, 2, 'N-C-02', 'Storage', 1),
-(30, 2, 'N-PICK-01', 'Picking', 1),
-(31, 2, 'N-PICK-02', 'Picking', 1),
-(32, 2, 'N-STAGE', 'Staging', 1),
+(23, 2, 'N-A-01', 'Storage', 1, 1),
+(24, 2, 'N-A-02', 'Storage', 1, 2),
+(25, 2, 'N-A-03', 'Storage', 1, 3),
+(26, 2, 'N-B-01', 'Storage', 1, 4),
+(27, 2, 'N-B-02', 'Storage', 1, 5),
+(28, 2, 'N-C-01', 'Storage', 1, 6),
+(29, 2, 'N-C-02', 'Storage', 1, 8),
+(30, 2, 'N-PICK-01', 'Picking', 1, NULL),
+(31, 2, 'N-PICK-02', 'Picking', 1, NULL),
+(32, 2, 'N-STAGE', 'Staging', 1, NULL),
 
 -- South Region Warehouse (Warehouse 3)
-(33, 3, 'S-A-01', 'Storage', 1),
-(34, 3, 'S-A-02', 'Storage', 1),
-(35, 3, 'S-A-03', 'Storage', 1),
-(36, 3, 'S-B-01', 'Storage', 1),
-(37, 3, 'S-B-02', 'Storage', 1),
-(38, 3, 'S-C-01', 'Storage', 1),
-(39, 3, 'S-PICK-01', 'Picking', 1),
-(40, 3, 'S-STAGE', 'Staging', 1),
+(33, 3, 'S-A-01', 'Storage', 1, 1),
+(34, 3, 'S-A-02', 'Storage', 1, 2),
+(35, 3, 'S-A-03', 'Storage', 1, 3),
+(36, 3, 'S-B-01', 'Storage', 1, 4),
+(37, 3, 'S-B-02', 'Storage', 1, 5),
+(38, 3, 'S-C-01', 'Storage', 1, 6),
+(39, 3, 'S-PICK-01', 'Picking', 1, NULL),
+(40, 3, 'S-STAGE', 'Staging', 1, NULL),
 
 -- Construction Site Storage (Warehouse 4) - Smaller temporary storage
-(41, 4, 'SITE-01', 'Storage', 1),
-(42, 4, 'SITE-02', 'Storage', 1),
-(43, 4, 'SITE-03', 'Storage', 1),
-(44, 4, 'SITE-STAGE', 'Staging', 1);
+(41, 4, 'SITE-01', 'Storage', 1, 1),
+(42, 4, 'SITE-02', 'Storage', 1, 3),
+(43, 4, 'SITE-03', 'Storage', 1, NULL),
+(44, 4, 'SITE-STAGE', 'Staging', 1, NULL);
 
 SET IDENTITY_INSERT Locations OFF;
 

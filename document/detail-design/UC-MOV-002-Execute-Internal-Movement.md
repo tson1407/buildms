@@ -116,6 +116,7 @@
 | BR-MXE-002 | Total warehouse inventory unchanged |
 | BR-MXE-003 | Only location quantities change |
 | BR-MXE-004 | Movement history recorded for traceability |
+| BR-MXE-005 | On completion, system re-validates destination location is still compatible with the product's category (defensive check) |
 
 ---
 

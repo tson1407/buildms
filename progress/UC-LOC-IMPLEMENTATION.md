@@ -16,6 +16,7 @@
   - Warehouse dropdown (pre-select if passed via param)
   - Location code input
   - Type selection (Storage, Picking, Staging) with visual radio buttons
+  - **Category restriction dropdown (optional, "No Restriction" default)**
   - Duplicate code validation within warehouse
   - Help cards with type descriptions and naming conventions
 
@@ -26,6 +27,7 @@
 - **Features:**
   - Warehouse shown as read-only
   - Code and type editing
+  - **Category restriction editing with conflict detection**
   - Status card with toggle action
   - Inventory count display
   - Quick actions (view warehouse locations, view inventory, add new)
@@ -43,10 +45,11 @@
 - **View:** `/WEB-INF/views/location/list.jsp`
 - **Access:** Admin, Manager, Staff
 - **Features:**
-  - Table with Code, Warehouse, Type, Inventory count, Status
-  - Filter by warehouse, type, status
+  - Table with Code, Warehouse, Type, **Category**, Inventory count, Status
+  - Filter by warehouse, type, **category**, status
   - Search by code keyword
   - Type badges with icons (Storage/Picking/Staging)
+  - **Category badge (shows category name or "Any")**
   - Toggle status modal
   - Disabled toggle button if location has inventory
 
@@ -83,11 +86,14 @@
 | `findByStatus(boolean)` | Get active/inactive locations |
 | `findActiveByWarehouse(int)` | Get active locations in warehouse |
 | `search(Integer, String, String, Boolean)` | Advanced search with filters |
-| `update(Location)` | Update location |
+| `searchPaginated(...)` | Paginated search with filters (incl. category) |
+| `update(Location)` | Update location (incl. CategoryId) |
 | `toggleStatus(int, boolean)` | Toggle active status |
 | `delete(int)` | Delete location |
 | `hasInventory(int)` | Check if location has inventory |
 | `getInventoryCount(int)` | Count inventory items |
+| `findByCategoryId(Long)` | Find all locations restricted to a category |
+| `findActiveByWarehouseAndCategory(Long, Long)` | Find compatible locations |
 
 ---
 
@@ -110,6 +116,8 @@
 | `hasInventory(int)` | Check for inventory |
 | `getInventoryCount(int)` | Get inventory count |
 | `isValidType(String)` | Validate location type |
+| `getCompatibleLocations(Long, Long)` | Get locations compatible with a category |
+| `isLocationCompatibleWithProduct(Long, Long)` | Check category compatibility |
 
 ---
 
@@ -130,6 +138,8 @@
 2. **Code:** Required, max 50 characters, unique within warehouse
 3. **Type:** Required, must be "Storage", "Picking", or "Staging"
 4. **Deactivation:** Blocked if location has inventory
+5. **CategoryId:** Optional and nullable. If provided, must reference a valid Categories record
+6. **Category Change:** Blocked if location has inventory from a different category
 
 ---
 
@@ -150,3 +160,6 @@
 - Deactivating a location with inventory is prevented at service layer
 - List page shows inventory count for each location
 - Edit page provides quick actions for related operations
+- **Category restriction is optional (NULL = any product allowed)**
+- **Category enforcement is applied in Inbound Execute, Movement Create/Execute, and Transfer Inbound**
+- **Deleting a category is blocked if any location references it**

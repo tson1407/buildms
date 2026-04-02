@@ -19,13 +19,15 @@
 | Step | Actor | System |
 |------|-------|--------|
 | 1 | User clicks "Edit" on a location | System retrieves location data |
-| 2 | | System displays edit form with current values |
+| 2 | | System displays edit form with current values (including current category restriction if any) |
 | 3 | User modifies location code | System validates code format |
 | 4 | User modifies location type | System validates type selection |
-| 5 | User clicks "Save" | System validates all fields |
-| 6 | | System updates location record |
-| 7 | | System displays success message |
-| 8 | | System redirects to location list |
+| 5 | User optionally changes category restriction | System validates category selection |
+| 6 | User clicks "Save" | System validates all fields |
+| 7 | | System checks for inventory conflicts if category is changed |
+| 8 | | System updates location record |
+| 9 | | System displays success message |
+| 10 | | System redirects to location list |
 
 ---
 
@@ -45,7 +47,14 @@
 | 5b | System displays error: "Location code already exists in this warehouse" |
 | 5c | User corrects the code and resubmits |
 
-### AF-3: Cancel Operation
+### AF-3: Category Conflict with Existing Inventory
+| Step | Description |
+|------|-------------|
+| 7a | System detects location has inventory from a category different than the newly selected one |
+| 7b | System displays error: "Cannot set category restriction. Location has inventory from a different category. Please move inventory first." |
+| 7c | User corrects selection or moves inventory before retrying |
+
+### AF-4: Cancel Operation
 | Step | Description |
 |------|-------------|
 | 3a | User clicks "Cancel" |
@@ -61,6 +70,8 @@
 | BR-LOC-002 | Location code is required |
 | BR-LOC-003 | Location type must be one of: Storage, Picking, Staging |
 | BR-LOC-005 | Warehouse assignment cannot be changed after creation |
+| BR-LOC-011 | Category restriction is optional. If set, only products from that category can be stored at this location |
+| BR-LOC-012 | Cannot change category restriction if location has inventory from a different category |
 
 ---
 
@@ -82,6 +93,7 @@
 |-------|------|----------|------------|
 | Code | String (100) | Yes | Not empty, unique per warehouse |
 | Type | String (50) | Yes | Must be: Storage, Picking, or Staging |
+| CategoryId | Long | No | If provided, must exist in Categories table. System validates against existing inventory |
 
 ### Read-Only Fields
 | Field | Description |
@@ -98,6 +110,8 @@
 
 - Use form layout template from `template/html/form-layouts-vertical.html`
 - Display warehouse name as read-only field
-- Pre-populate form with existing location data
+- Pre-populate form with existing location data (including current category restriction)
+- Category restriction dropdown with "No Restriction (Any Product)" option
+- Warning indicator if changing category would conflict with existing inventory
 - Display validation errors inline
 - Include "Save" and "Cancel" buttons

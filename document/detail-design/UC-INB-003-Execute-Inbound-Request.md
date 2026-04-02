@@ -46,13 +46,17 @@
   - Staff physically receives the goods
   - Staff enters actual received quantity
   - Staff confirms or updates target location
+    - **Location dropdown only shows locations compatible with the product's category** (BR-EXE-006)
+    - Locations with a different category restriction are excluded
   - Staff can add notes (e.g., condition, discrepancies)
 
 ### Step 6: Validate Received Quantities
 - **Validation Rules:**
   - Received quantity must be >= 0
   - Received quantity should match expected (warning if different)
+  - Selected location must be compatible with product's category (BR-EXE-006)
 - If quantities differ → **Alternative Flow A1**
+- If location is incompatible → **Alternative Flow A3**
 
 ### Step 7: Complete Execution
 - Staff clicks "Complete" button
@@ -104,6 +108,13 @@
   4. Staff can return later to complete remaining items
   5. When all items received, proceed to Step 9
 
+### A3: Location Category Incompatible
+- **Trigger:** Selected location has a category restriction that does not match the product's category
+- **Steps:**
+  1. System displays error: "Location [code] only accepts [category name] products. Product [name] belongs to [product category]"
+  2. Staff selects a compatible location
+  3. Return to Step 5
+
 ---
 
 ## Business Rules
@@ -114,6 +125,7 @@
 | BR-EXE-003 | Inventory increases only upon completion |
 | BR-EXE-004 | All inventory changes through Request execution |
 | BR-EXE-005 | Staff cannot manually adjust inventory quantities |
+| BR-EXE-006 | Location selected for receiving must be compatible with the product's category. If location has a CategoryId, the product's category must match |
 
 ---
 
@@ -145,6 +157,7 @@ In Progress → Completed (Staff completes all items)
 ## UI Requirements
 - Clear list of items to receive
 - Editable quantity fields for actual received amounts
+- Location dropdown **filtered by category compatibility** — only shows locations with matching category or unrestricted locations
 - Location confirmation/update option
 - Notes field for discrepancies
 - Progress indicator for multi-item requests

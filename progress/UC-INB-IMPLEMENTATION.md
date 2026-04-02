@@ -36,6 +36,7 @@
 - BR-INB-003: Quantity must be positive
 - BR-INB-004: Product must be active
 - BR-INB-005: Location must belong to selected warehouse
+- BR-INB-007: **Target location must be compatible with product's category (if location has category restriction)**
 
 **Access Control:**
 - Admin, Manager, Staff
@@ -92,6 +93,7 @@
 **Inventory Update Logic:**
 ```
 For each RequestItem:
+  - Validate location is compatible with product's category (BR-EXE-006)
   - Find or create Inventory record (ProductId, WarehouseId, LocationId)
   - Add received quantity to existing quantity
   - Update lastUpdated timestamp
@@ -101,6 +103,7 @@ For each RequestItem:
 - BR-INB-009: Only "Approved" requests can be executed
 - BR-INB-010: All items must be processed
 - BR-INB-011: Quantities must match or be adjusted with notes
+- BR-EXE-006: **Location must be compatible with product's category. Location dropdown filtered to show only compatible locations**
 
 **Access Control:**
 - Admin, Manager, Staff

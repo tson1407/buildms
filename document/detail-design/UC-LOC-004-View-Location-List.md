@@ -19,10 +19,11 @@
 | Step | Actor | System |
 |------|-------|--------|
 | 1 | User clicks "Locations" menu | System retrieves all locations |
-| 2 | | System displays location list with columns: Code, Warehouse, Type, Status |
+| 2 | | System displays location list with columns: Code, Warehouse, Type, Category, Inventory Count, Status |
 | 3 | User optionally selects warehouse filter | System filters locations by selected warehouse |
-| 4 | User views location information | |
-| 5 | User optionally clicks action buttons | System navigates to respective function |
+| 4 | User optionally selects category filter | System filters locations by selected category |
+| 5 | User views location information | |
+| 6 | User optionally clicks action buttons | System navigates to respective function |
 
 ---
 
@@ -56,6 +57,13 @@
 | 3b | System filters locations by type |
 | 3c | System updates the displayed list |
 
+### AF-5: Filter by Category
+| Step | Description |
+|------|-------------|
+| 4a | User selects category filter (specific category/All) |
+| 4b | System filters locations by assigned category |
+| 4c | System updates the displayed list |
+
 ---
 
 ## 4. Business Rules
@@ -86,6 +94,7 @@
 | Code | Location code/identifier |
 | Warehouse | Parent warehouse name |
 | Type | Storage, Picking, or Staging |
+| Category | Assigned category name, or "Any" if no restriction |
 | Status | Active or Inactive |
 | Inventory Count | Number of products at this location |
 
@@ -97,8 +106,10 @@
 - Display locations in a data table
 - Include warehouse dropdown filter
 - Include type filter dropdown
+- Include category filter dropdown
 - Include status filter (Active/Inactive/All)
 - Show "Add Location" button for Admin/Manager
 - Show "Edit" and status toggle action buttons
+- Display category badge per location ("Any" for unrestricted)
 - Visual indicator for inactive locations (greyed out or badge)
 - Support pagination

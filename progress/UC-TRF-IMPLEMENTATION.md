@@ -82,6 +82,7 @@ Source WH creates → Dest WH approves → Source WH executes outbound → Dest 
   - Admin can execute for any transfer
   - **Destination warehouse marks the transfer as "Completed"**
 - **Inventory Impact:** Increases inventory at destination warehouse at user-selected locations
+- **Category Enforcement:** BR-TRI-009 — **Destination location must be compatible with product's category. Location dropdown filtered to show only compatible locations**
 - **Key Fix (previous):** `completeInboundExecution()` changed to accept `Map<Long, Long>` (productId → locationId) for per-item location assignment.
 
 ## Supporting Changes

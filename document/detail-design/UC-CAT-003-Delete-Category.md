@@ -37,6 +37,13 @@
 | 2c | System shows count of associated products |
 | 2d | Operation is cancelled |
 
+### AF-2: Category Assigned to Locations
+| Step | Description |
+|------|-------------|
+| 2a | System detects locations are using this category as a restriction |
+| 2b | System displays error: "Cannot delete category. It is assigned as a restriction to [count] location(s). Please remove the restriction from those locations first." |
+| 2c | Operation is cancelled |
+
 ### AF-2: Cancel Confirmation
 | Step | Description |
 |------|-------------|
@@ -58,6 +65,7 @@
 |---------|-------------|
 | BR-CAT-004 | Cannot delete category with associated products |
 | BR-CAT-005 | Deletion is permanent and cannot be undone |
+| BR-CAT-006 | Cannot delete category that is assigned as a restriction to any location |
 
 ---
 
@@ -78,6 +86,7 @@
 | Check | Query |
 |-------|-------|
 | Has Products | SELECT COUNT(*) FROM Products WHERE CategoryId = ? |
+| Has Locations | SELECT COUNT(*) FROM Locations WHERE CategoryId = ? |
 
 ### Database Changes
 - DELETE from `Categories` table

@@ -24,6 +24,7 @@ Implementation of Internal Movement use cases for Smart WMS.
 - Source location dropdown shows only locations with inventory
 - Available quantity display when selecting source location
 - Destination location validation (must be different from source)
+- **Destination location filtered by category compatibility (BR-MOV-007)**
 - Quantity validation against source availability
 - Optional notes field
 - Client-side and server-side validation
@@ -34,6 +35,7 @@ Implementation of Internal Movement use cases for Smart WMS.
 - ✅ BR-MOV-003: Source and destination must be different
 - ✅ BR-MOV-004: Quantity limited by source availability
 - ✅ BR-MOV-005: Total warehouse inventory unchanged (enforced on execution)
+- ✅ BR-MOV-007: **Destination location must be compatible with product's category**
 
 **Access Control:**
 - ✅ Admin: Can create movements
@@ -79,6 +81,7 @@ Implementation of Internal Movement use cases for Smart WMS.
 - ✅ Source Location: Decrease quantity by moved amount
 - ✅ Destination Location: Increase quantity by moved amount
 - ✅ Warehouse Total: No change
+- ✅ BR-MXE-005: **Re-validate destination location category compatibility on completion (defensive check)**
 
 **Access Control:**
 - ✅ Admin: Can execute movements

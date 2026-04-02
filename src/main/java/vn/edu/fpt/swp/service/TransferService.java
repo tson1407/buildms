@@ -407,6 +407,14 @@ public class TransferService {
                 return false;
             }
             
+            // BR-TRI-009: Validate destination location category compatibility
+            if (location.getCategoryId() != null) {
+                Product product = productDAO.findById(item.getProductId());
+                if (product == null || !location.getCategoryId().equals(product.getCategoryId())) {
+                    return false; // Category mismatch at destination
+                }
+            }
+            
             int qtyToReceive = receivedQuantities.getOrDefault(item.getProductId(), item.getQuantity());
             
             // Add to destination warehouse at specified location

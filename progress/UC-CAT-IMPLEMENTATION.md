@@ -50,6 +50,8 @@ Category Management use cases implementation status.
 - ✅ Block deletion if products exist
 - ✅ Disabled delete button for categories with products
 - ✅ Success/error messages
+- ✅ **Check for associated locations (category used as location restriction)**
+- ✅ **Block deletion if locations reference this category (BR-CAT-006)**
 
 #### UC-CAT-004: View Category List
 - ✅ Search by name or description

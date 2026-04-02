@@ -53,6 +53,8 @@
   - Staff counts quantity
   - Staff enters received quantity
   - Staff assigns/selects storage location at destination warehouse
+    - **Location dropdown only shows locations compatible with the product's category** (BR-TRI-009)
+    - Locations with a different category restriction are excluded
   - Staff notes any issues (damage, missing items)
 
 ### Step 5: Validate Received Quantities
@@ -60,8 +62,10 @@
   - Received quantity >= 0
   - Each item must have a destination location assigned
   - Location must be active and belong to destination warehouse
+  - **Location must be compatible with the product's category** (BR-TRI-009)
   - Warning if received quantity differs from expected (dispatched)
 - If discrepancy → **Alternative Flow A1**
+- If location category incompatible → **Alternative Flow A5**
 
 ### Step 6: Complete Receiving & Complete Transfer
 - Staff confirms all items received and locations assigned
@@ -122,6 +126,13 @@
   1. System displays error: "Source warehouse must complete outbound before inbound can be executed"
   2. Redirect to transfer detail
 
+### A5: Location Category Incompatible
+- **Trigger:** Selected destination location has a category restriction that does not match the product's category
+- **Steps:**
+  1. System displays error: "Location [code] only accepts [category name] products. Product [name] belongs to [product category]"
+  2. Staff selects a compatible location
+  3. Return to Step 4
+
 ---
 
 ## Business Rules
@@ -135,6 +146,7 @@
 | BR-TRI-006 | **Destination warehouse completes the entire transfer** (status → "Completed") |
 | BR-TRI-007 | Each item must be assigned a storage location at the destination warehouse |
 | BR-TRI-008 | Discrepancies between dispatched and received quantities must be documented |
+| BR-TRI-009 | Destination storage location must be compatible with the product's category. If location has a CategoryId, the product's category must match |
 
 ---
 
@@ -196,7 +208,7 @@ If not equal → Discrepancy logged and reported
 - Source warehouse and outbound dispatch info displayed
 - Expected quantities from outbound (actual picked quantities)
 - Editable received quantity per item
-- Location assignment dropdown per item (destination warehouse locations only)
+- Location assignment dropdown per item — **filtered by category compatibility** (only locations with matching category or unrestricted)
 - Discrepancy notes field
 - Completion confirmation with inventory change summary
 - Final completion message indicating the transfer is fully done

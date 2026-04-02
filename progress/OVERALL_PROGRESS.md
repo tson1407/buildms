@@ -153,6 +153,16 @@ All 49 use cases across 13 modules have been fully implemented. The TRF module w
 
 ## Changelog
 
+### April 1, 2026 — Category-Based Location Restriction
+- **Feature:** Added optional `CategoryId` column to `Locations` table (nullable FK → Categories)
+- **Location Module:** Create/Edit forms now include optional category restriction dropdown; List view shows Category column and filter
+- **Inbound Module (UC-INB-001, UC-INB-003):** Target location validated against product category on create; Execute page filters locations by compatibility (BR-INB-007, BR-EXE-006)
+- **Movement Module (UC-MOV-001, UC-MOV-002):** Destination location validated against product category on create (BR-MOV-007); Re-validated on execution (BR-MXE-005)
+- **Transfer Module (UC-TRF-004):** Inbound execution filters destination locations by category compatibility (BR-TRI-009)
+- **Category Module (UC-CAT-003):** Delete blocked if category is assigned to any location (BR-CAT-006)
+- **SRS:** Updated Section 3.8 (Location Management) to include category restriction requirements
+- **Documents Updated:** UC-LOC-001/002/004, UC-INB-001/003, UC-MOV-001/002, UC-TRF-004, UC-CAT-003, SRS, all related IMPLEMENTATION docs
+
 ### March 1, 2026 — Navigation Simplification
 - **Removed** Suppliers menu from Administration section (feature was never implemented)
 - **Removed** "Add X" shortcut sub-menu items from all catalog items (Products, Categories,

@@ -51,6 +51,7 @@
   - Product must be selected and active
   - Quantity must be positive integer
   - No duplicate products in same request
+  - If target location is specified, location must be compatible with the product's category (BR-INB-007)
 - If validation fails → **Alternative Flow A2**
 
 ### Step 7: Submit Request
@@ -111,6 +112,7 @@
 | BR-INB-004 | Request is created with status "Created" |
 | BR-INB-005 | Manager can only create inbound requests for their assigned warehouse |
 | BR-INB-006 | Manager can only view/list inbound requests for their assigned warehouse |
+| BR-INB-007 | If a target location has a category restriction, only products from that category can be assigned to it |
 
 ---
 
