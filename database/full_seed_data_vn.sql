@@ -43,14 +43,14 @@ PRINT N'Thêm danh mục...';
 
 SET IDENTITY_INSERT Categories ON;
 
-INSERT INTO Categories (Id, Name, Description)
+INSERT INTO Categories (Id, Name, Description, DefaultUnit)
 VALUES
-    (1, N'Xi măng & phụ gia', N'Xi măng PCB/PC và các phụ gia trộn bê tông'),
-    (2, N'Gạch & block', N'Gạch đất nung, gạch không nung, block bê tông'),
-    (3, N'Thép xây dựng', N'Thép cuộn, thép cây vằn và lưới thép'),
-    (4, N'Ốp lát', N'Gạch men, gạch granite, keo và ke ron'),
-    (5, N'Ống nước & phụ kiện', N'Ống PVC/PPR và phụ kiện cấp thoát nước'),
-    (6, N'Sơn & chống thấm', N'Sơn nội ngoại thất và vật tư chống thấm');
+    (1, N'Xi măng & phụ gia', N'Xi măng PCB/PC và các phụ gia trộn bê tông', N'bao'),
+    (2, N'Gạch & block', N'Gạch đất nung, gạch không nung, block bê tông', N'viên'),
+    (3, N'Thép xây dựng', N'Thép cuộn, thép cây vằn và lưới thép', N'cây'),
+    (4, N'Ốp lát', N'Gạch men, gạch granite, keo và ke ron', N'thùng'),
+    (5, N'Ống nước & phụ kiện', N'Ống PVC/PPR và phụ kiện cấp thoát nước', N'cây'),
+    (6, N'Sơn & chống thấm', N'Sơn nội ngoại thất và vật tư chống thấm', N'thùng');
 
 SET IDENTITY_INSERT Categories OFF;
 

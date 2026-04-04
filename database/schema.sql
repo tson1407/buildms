@@ -58,7 +58,8 @@ BEGIN
     CREATE TABLE Categories (
         Id BIGINT IDENTITY(1,1) PRIMARY KEY,
         Name NVARCHAR(255) NOT NULL,
-        Description NVARCHAR(500)
+        Description NVARCHAR(500),
+        DefaultUnit NVARCHAR(50)
     );
 END
 GO

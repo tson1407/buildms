@@ -1,4 +1,4 @@
-# UC-PRD-001: Create Product
+# UC-PRD-001: Create Product (Inherited Unit)
 
 ## 1. Use Case Overview
 
@@ -21,10 +21,10 @@
 | 1 | User clicks "Add Product" button | System displays product creation form |
 | 2 | User enters SKU | System validates SKU format and uniqueness |
 | 3 | User enters product name | System validates input is not empty |
-| 4 | User enters unit of measure | System accepts input (e.g., "pcs", "kg", "box") |
-| 5 | User selects category | System loads category dropdown |
+| 4 | User selects category | System loads category dropdown |
+| 5 | | System auto-populates the "Unit of Measure" field based on the selected category |
 | 6 | User clicks "Save" | System validates all fields |
-| 7 | | System creates product record with IsActive = true |
+| 7 | | System creates product record with IsActive = true. The unit is inherited directly from the category's DefaultUnit on the server. |
 | 8 | | System displays success message |
 | 9 | | System redirects to product list |
 
@@ -69,6 +69,7 @@
 | BR-PRD-002 | SKU and Name are required fields |
 | BR-PRD-003 | Product must belong to exactly one category |
 | BR-PRD-004 | New products are active by default |
+| BR-PRD-005 | Product unit is strictly inherited from the selected category and cannot be manually overridden |
 
 ---
 
@@ -90,8 +91,8 @@
 |-------|------|----------|------------|
 | SKU | String (100) | Yes | Not empty, unique, alphanumeric with hyphens |
 | Name | String (255) | Yes | Not empty |
-| Unit | String (50) | No | Common units: pcs, kg, box, carton, etc. |
 | CategoryId | Long | Yes | Must exist in Categories table |
+| Unit | String (50) | Auto | Inherited from category's `DefaultUnit` (view-only on frontend, validated on backend) |
 
 ### Database Changes
 - INSERT into `Products` table
@@ -101,8 +102,9 @@
 ## 7. UI Requirements
 
 - Use form layout template from `template/html/form-layouts-vertical.html`
-- Category dropdown pre-populated with all categories
-- Unit field with common unit suggestions
+- Category dropdown pre-populated with all categories, each having a `data-unit` attribute
+- Unit field is `readonly` and visually disabled/greyed out
+- Javascript dynamically updates the `readonly` Unit field when a Category is selected
 - SKU field with format hint
 - Display validation errors inline
 - Include "Save" and "Cancel" buttons

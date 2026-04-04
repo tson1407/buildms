@@ -540,8 +540,8 @@ public class TransferController extends HttpServlet {
                 }
             }
             
-            // Must be Approved or InProgress
-            if (!"Approved".equals(transfer.getStatus()) && !"InProgress".equals(transfer.getStatus())) {
+            // Must be Approved (execution is now instant)
+            if (!"Approved".equals(transfer.getStatus())) {
                 request.setAttribute("errorMessage", "Transfer must be approved before execution");
                 viewTransfer(request, response);
                 return;
@@ -566,7 +566,7 @@ public class TransferController extends HttpServlet {
     }
     
     /**
-     * UC-TRF-003: Start outbound execution
+     * UC-TRF-003: Auto-execute outbound (validate inventory + deduct + transition to InTransit)
      */
     private void startOutbound(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -581,21 +581,23 @@ public class TransferController extends HttpServlet {
                 if (transfer == null || userWarehouseId == null 
                         || !userWarehouseId.equals(transfer.getSourceWarehouseId())) {
                     request.setAttribute("errorMessage", 
-                        "Only source warehouse staff can start transfer outbound.");
+                        "Only source warehouse staff can execute transfer outbound.");
                     listTransfers(request, response);
                     return;
                 }
             }
             
-            boolean success = transferService.startOutboundExecution(requestId);
+            String error = transferService.autoExecuteOutbound(requestId, currentUser.getId());
             
-            if (success) {
-                request.getSession().setAttribute("successMessage", "Outbound picking started");
+            if (error == null) {
+                request.getSession().setAttribute("successMessage", 
+                    "Outbound completed successfully. Goods are now in transit.");
+                response.sendRedirect(request.getContextPath() + 
+                    "/transfer?action=view&id=" + requestId);
+            } else {
+                request.getSession().setAttribute("errorMessage", error);
                 response.sendRedirect(request.getContextPath() + 
                     "/transfer?action=execute-outbound&id=" + requestId);
-            } else {
-                request.setAttribute("errorMessage", "Failed to start outbound execution");
-                showOutboundExecutionForm(request, response);
             }
             
         } catch (NumberFormatException e) {

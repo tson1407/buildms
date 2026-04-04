@@ -31,17 +31,17 @@ DELETE FROM Warehouses;
 
 SET IDENTITY_INSERT Categories ON;
 
-INSERT INTO Categories (Id, Name, Description) VALUES
-(1, 'Cement & Concrete', 'Portland cement, ready-mix, concrete additives and mixing materials'),
-(2, 'Bricks & Blocks', 'Clay bricks, concrete blocks, hollow blocks, AAC blocks'),
-(3, 'Steel & Rebar', 'Reinforcement bars, steel sections, wire mesh, structural steel'),
-(4, 'Tiles & Flooring', 'Ceramic tiles, porcelain, vinyl, floor tiles, wall tiles'),
-(5, 'Timber & Plywood', 'Lumber, plywood sheets, timber products, MDF, particleboard'),
-(6, 'Paints & Coatings', 'Interior/exterior paints, primers, coatings, varnishes'),
-(7, 'Roofing & Gutters', 'Roof sheets, tiles, guttering, flashings, waterproofing'),
-(8, 'Plumbing & Pipes', 'PVC/HDPE/Steel pipes, fittings, valves, plumbing fixtures'),
-(9, 'Electrical', 'Cables, conduits, switches, fittings, circuit breakers'),
-(10, 'Fasteners & Fixings', 'Nails, screws, bolts, anchors, adhesives');
+INSERT INTO Categories (Id, Name, Description, DefaultUnit) VALUES
+(1, 'Cement & Concrete', 'Portland cement, ready-mix, concrete additives and mixing materials', 'bag'),
+(2, 'Bricks & Blocks', 'Clay bricks, concrete blocks, hollow blocks, AAC blocks', 'pcs'),
+(3, 'Steel & Rebar', 'Reinforcement bars, steel sections, wire mesh, structural steel', 'm'),
+(4, 'Tiles & Flooring', 'Ceramic tiles, porcelain, vinyl, floor tiles, wall tiles', 'box'),
+(5, 'Timber & Plywood', 'Lumber, plywood sheets, timber products, MDF, particleboard', 'sheet'),
+(6, 'Paints & Coatings', 'Interior/exterior paints, primers, coatings, varnishes', 'can'),
+(7, 'Roofing & Gutters', 'Roof sheets, tiles, guttering, flashings, waterproofing', 'sheet'),
+(8, 'Plumbing & Pipes', 'PVC/HDPE/Steel pipes, fittings, valves, plumbing fixtures', 'm'),
+(9, 'Electrical', 'Cables, conduits, switches, fittings, circuit breakers', 'roll'),
+(10, 'Fasteners & Fixings', 'Nails, screws, bolts, anchors, adhesives', 'box');
 
 SET IDENTITY_INSERT Categories OFF;
 

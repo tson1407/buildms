@@ -259,6 +259,74 @@ public class TransferService {
     // ========== UC-TRF-003: Execute Transfer Outbound ==========
     
     /**
+     * Auto-execute outbound: validate inventory, deduct, and transition to InTransit in one step.
+     * @param requestId Request ID
+     * @param userId User performing execution
+     * @return null on success, error message on failure
+     */
+    public String autoExecuteOutbound(Long requestId, Long userId) {
+        if (requestId == null || userId == null) {
+            return "Invalid request or user.";
+        }
+        
+        Request request = getTransferRequestById(requestId);
+        if (request == null) {
+            return "Transfer request not found.";
+        }
+        if (!"Approved".equals(request.getStatus())) {
+            return "Request must be in 'Approved' status to execute outbound.";
+        }
+        
+        Long sourceWarehouseId = request.getSourceWarehouseId();
+        if (sourceWarehouseId == null) {
+            return "No source warehouse assigned.";
+        }
+        
+        List<RequestItem> items = requestItemDAO.findByRequestId(requestId);
+        if (items.isEmpty()) {
+            return "No items found in this request.";
+        }
+        
+        // Validate ALL items have sufficient inventory
+        StringBuilder shortageInfo = new StringBuilder();
+        boolean hasShortage = false;
+        for (RequestItem item : items) {
+            int available = inventoryDAO.getTotalQuantityByProductAndWarehouse(item.getProductId(), sourceWarehouseId);
+            if (available < item.getQuantity()) {
+                hasShortage = true;
+                Product product = productDAO.findById(item.getProductId());
+                String productName = product != null ? product.getName() : "Product #" + item.getProductId();
+                shortageInfo.append(productName)
+                    .append(": need ").append(item.getQuantity())
+                    .append(", available ").append(available).append(". ");
+            }
+        }
+        
+        if (hasShortage) {
+            return "Insufficient inventory: " + shortageInfo.toString();
+        }
+        
+        // Start execution
+        boolean started = requestDAO.startExecution(requestId);
+        if (!started) {
+            return "Failed to start execution.";
+        }
+        
+        // Auto-complete: deduct inventory using full requested quantities
+        Map<Long, Integer> pickedQuantities = new HashMap<>();
+        for (RequestItem item : items) {
+            pickedQuantities.put(item.getProductId(), item.getQuantity());
+        }
+        
+        boolean completed = completeOutboundExecution(requestId, userId, pickedQuantities);
+        if (!completed) {
+            return "Failed to complete outbound execution.";
+        }
+        
+        return null; // Success
+    }
+    
+    /**
      * Start outbound execution (picking)
      * @param requestId Request ID
      * @return true if successful

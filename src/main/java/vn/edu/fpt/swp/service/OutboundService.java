@@ -177,6 +177,78 @@ public class OutboundService {
     }
     
     /**
+     * UC-OUT-002: Auto-execute an approved outbound request.
+     * Validates all items have sufficient inventory, auto-sets pickedQuantity = requested,
+     * and completes the execution in one step.
+     * @param requestId Request ID
+     * @param userId User performing execution
+     * @return null on success, error message string on failure
+     */
+    public String autoExecute(Long requestId, Long userId) {
+        if (requestId == null || userId == null) {
+            return "Invalid request or user.";
+        }
+        
+        // Verify request exists and is Approved
+        Request request = requestDAO.findById(requestId);
+        if (request == null || !"Outbound".equals(request.getType())) {
+            return "Outbound request not found.";
+        }
+        if (!"Approved".equals(request.getStatus())) {
+            return "Request must be in 'Approved' status to execute.";
+        }
+        
+        Long warehouseId = request.getSourceWarehouseId();
+        if (warehouseId == null) {
+            return "No source warehouse assigned to this request.";
+        }
+        
+        // Get all items
+        List<RequestItem> items = requestItemDAO.findByRequestId(requestId);
+        if (items.isEmpty()) {
+            return "No items found in this request.";
+        }
+        
+        // Validate ALL items have sufficient inventory before proceeding
+        StringBuilder shortageInfo = new StringBuilder();
+        boolean hasShortage = false;
+        for (RequestItem item : items) {
+            int available = inventoryDAO.getTotalQuantityByProductAndWarehouse(item.getProductId(), warehouseId);
+            if (available < item.getQuantity()) {
+                hasShortage = true;
+                Product product = productDAO.findById(item.getProductId());
+                String productName = product != null ? product.getName() : "Product #" + item.getProductId();
+                shortageInfo.append(productName)
+                    .append(": need ").append(item.getQuantity())
+                    .append(", available ").append(available).append(". ");
+            }
+        }
+        
+        if (hasShortage) {
+            return "Insufficient inventory: " + shortageInfo.toString();
+        }
+        
+        // All items available — start execution
+        boolean started = requestDAO.startExecution(requestId);
+        if (!started) {
+            return "Failed to start execution.";
+        }
+        
+        // Auto-set pickedQuantity = quantity for all items
+        for (RequestItem item : items) {
+            requestItemDAO.updatePickedQuantity(requestId, item.getProductId(), item.getQuantity());
+        }
+        
+        // Complete execution (deduct inventory, update SO)
+        boolean completed = completeExecution(requestId, userId);
+        if (!completed) {
+            return "Failed to complete execution after picking.";
+        }
+        
+        return null; // Success
+    }
+    
+    /**
      * UC-OUT-002: Start execution of an approved outbound request
      * @param requestId Request ID
      * @return true if successful
