@@ -168,14 +168,12 @@ public class OutboundService {
             return false;
         }
         
-        boolean rejected = requestDAO.reject(requestId, rejectorId, reason);
-        
-        // If outbound is linked to a sales order, revert SO status to Confirmed
-        if (rejected && request.getSalesOrderId() != null) {
-            salesOrderDAO.updateStatus(request.getSalesOrderId(), "Confirmed");
+        // Sales-driven outbound requests cannot be rejected
+        if (request.getSalesOrderId() != null) {
+            return false;
         }
         
-        return rejected;
+        return requestDAO.reject(requestId, rejectorId, reason);
     }
     
     /**

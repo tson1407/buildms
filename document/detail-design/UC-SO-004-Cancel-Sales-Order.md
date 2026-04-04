@@ -34,9 +34,8 @@
 ### Step 4: Verify Cancellation is Allowed
 - System checks order status:
   - Draft: Can cancel
-  - Confirmed: Can cancel
-  - Fulfillment Requested: Can cancel (with warning)
-  - Partially Shipped: Can cancel remaining (with warning)
+  - Confirmed: Can cancel (only if no outbound requests are generated)
+  - Fulfillment Requested: Cannot cancel → **Alternative Flow A2**
   - Completed: Cannot cancel → **Alternative Flow A1**
 
 ### Step 5: Initiate Cancellation
@@ -56,11 +55,9 @@
 - User confirms cancellation
 
 ### Step 8: Handle Related Outbound Requests
-- If order has related outbound requests in "Created" status:
-  - System cancels those requests automatically
-- If requests are "Approved" or "In Progress":
-  - System displays warning
-  - Admin/Sales must manually handle those requests
+- If the order has any related outbound requests (in any status):
+  - System blocks the cancellation process.
+  - Sales Order cannot be cancelled after an outbound request has been generated.
 
 ### Step 9: Update Sales Order Status
 - System updates SalesOrder record:
@@ -84,13 +81,12 @@
   2. User may need to process a return instead (out of scope)
   3. Return to order detail page
 
-### A2: Has Active Outbound Requests
-- **Trigger:** Order has outbound requests that are Approved/In Progress
+### A2: Has Outbound Requests
+- **Trigger:** Order has ANY outbound requests generated from it.
 - **Steps:**
-  1. System displays warning: "This order has active outbound requests"
-  2. Lists the active requests
-  3. User must handle requests first
-  4. OR user can force cancel with acknowledgment
+  1. System blocks cancellation.
+  2. System displays error: "Sales orders with generated outbound requests cannot be cancelled."
+  3. Return to order detail page.
 
 ---
 
@@ -100,9 +96,9 @@
 | BR-CAN-001 | Sales and Admin can cancel orders |
 | BR-CAN-002 | Completed orders cannot be cancelled |
 | BR-CAN-003 | Cancellation reason is required |
-| BR-CAN-004 | Related "Created" outbound requests are auto-cancelled |
-| BR-CAN-005 | Active requests require manual handling |
-| BR-CAN-006 | Cancellation does not affect already shipped inventory |
+| BR-CAN-004 | Sales Orders with generated outbound requests cannot be cancelled |
+| BR-CAN-005 | Active requests block cancellation entirely |
+| BR-CAN-006 | Cancellation does not affect already shipped inventory (N/A since shipping blocks cancellation) |
 
 ---
 
@@ -117,11 +113,10 @@
 ---
 
 ## State Transition
-```
 Draft → Cancelled
-Confirmed → Cancelled
-Fulfillment Requested → Cancelled
-Partially Shipped → Cancelled (remaining items only)
+Confirmed (no outbound) → Cancelled
+Confirmed (with outbound) → (Cannot cancel)
+Fulfillment Requested → (Cannot cancel)
 Completed → (Cannot cancel)
 ```
 

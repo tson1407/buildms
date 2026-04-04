@@ -77,7 +77,7 @@
                                     </a>
                                 </c:if>
                                 
-                                <c:if test="${order.status != 'Completed' && order.status != 'Cancelled' && (currentUser.role == 'Admin' || currentUser.role == 'Sales')}">
+                                <c:if test="${order.status != 'Completed' && order.status != 'Cancelled' && empty relatedRequests && (currentUser.role == 'Admin' || currentUser.role == 'Sales')}">
                                     <a href="${contextPath}/sales-order?action=cancel&id=${order.id}" class="btn btn-outline-danger">
                                         <i class="bx bx-x-circle me-1"></i> Cancel Order
                                     </a>

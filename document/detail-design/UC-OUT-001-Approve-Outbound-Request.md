@@ -8,7 +8,7 @@
 | **Primary Actor** | Manager |
 | **Description** | Review and approve an outbound request for execution |
 | **Preconditions** | Manager is logged in; Outbound request exists with status "Created" |
-| **Postconditions** | Request status changed to "Approved" or "Rejected" |
+| **Postconditions** | Request status changed to "Approved" (or "Rejected" if internal request) |
 
 ---
 
@@ -53,7 +53,7 @@
 ### Step 6: Approval Decision
 - Manager chooses action:
   - "Approve" → Continue to Step 7
-  - "Reject" → **Alternative Flow A1**
+  - "Reject" → **Alternative Flow A1** (Only available for Internal requests)
 - If insufficient inventory → **Alternative Flow A2**
 
 ### Step 7: Confirm Approval
@@ -74,20 +74,20 @@
 
 ## Alternative Flows
 
-### A1: Reject Request
-- **Trigger:** Manager decides to reject the request
+### A1: Reject Request (Internal Only)
+- **Trigger:** Manager decides to reject an INTERNAL request
 - **Steps:**
-  1. Manager clicks "Reject" button
-  2. System displays rejection form:
+  1. Manager checks if request is Internal. If Sales-driven, system prevents rejection.
+  2. Manager clicks "Reject" button (if visible)
+  3. System displays rejection form:
      - Rejection Reason (text area, required)
-  3. Manager enters rejection reason
-  4. Manager confirms rejection
-  5. System updates request record:
+  4. Manager enters rejection reason
+  5. Manager confirms rejection
+  6. System updates request record:
      - Status: "Rejected"
      - Rejected By: Current Manager's ID
      - Rejected Date: Current timestamp
      - Rejection Reason: Entered text
-  6. If sales-driven, update SalesOrder status back to "Confirmed"
   7. System displays message: "Outbound Request [ID] has been rejected"
 
 ### A2: Insufficient Inventory
@@ -111,7 +111,7 @@
 | BR-APO-002 | Only "Created" requests can be approved |
 | BR-APO-003 | Rejection requires a reason |
 | BR-APO-004 | Inventory check is displayed but not enforced |
-| BR-APO-005 | Rejected sales-driven requests revert SO status |
+| BR-APO-005 | Sales-driven outbound requests cannot be rejected |
 | BR-APO-006 | Manager can only approve/reject outbound requests for their assigned warehouse |
 | BR-APO-007 | Manager can only view/list outbound requests for their assigned warehouse |
 
@@ -139,7 +139,8 @@ Created → Rejected (Manager rejects)
 - Clear display of all request details
 - Inventory status indicators (sufficient/insufficient)
 - Sales order reference link (if sales-driven)
-- Approve and Reject buttons
+- Approve button available for all requests
+- Reject button available ONLY for Internal requests
 - Confirmation dialog before approval
 - Rejection reason is mandatory
 - Visual inventory warnings
