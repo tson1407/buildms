@@ -93,6 +93,7 @@ BEGIN
         Type NVARCHAR(50) NOT NULL, -- Storage / Picking / Staging
         IsActive BIT DEFAULT 1,
         CategoryId BIGINT NULL,
+        MaxQuantity INT NULL,
         CONSTRAINT FK_Location_Warehouse FOREIGN KEY (WarehouseId) REFERENCES Warehouses(Id),
         CONSTRAINT FK_Location_Category FOREIGN KEY (CategoryId) REFERENCES Categories(Id)
     );

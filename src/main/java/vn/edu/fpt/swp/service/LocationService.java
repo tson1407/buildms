@@ -1,6 +1,7 @@
 package vn.edu.fpt.swp.service;
 
 import vn.edu.fpt.swp.dao.LocationDAO;
+import vn.edu.fpt.swp.dao.InventoryDAO;
 import vn.edu.fpt.swp.model.Location;
 import vn.edu.fpt.swp.util.PageRequest;
 import vn.edu.fpt.swp.util.PageResult;
@@ -14,9 +15,11 @@ import java.util.Map;
  */
 public class LocationService {
     private final LocationDAO locationDAO;
+    private final InventoryDAO inventoryDAO;
     
     public LocationService() {
         this.locationDAO = new LocationDAO();
+        this.inventoryDAO = new InventoryDAO();
     }
     
     /**
@@ -97,9 +100,11 @@ public class LocationService {
      * @param warehouseId Warehouse ID
      * @param code Location code
      * @param type Location type (Storage, Picking, Staging)
+     * @param categoryId Category ID for restriction (optional)
+     * @param maxQuantity Maximum quantity capacity (optional)
      * @return Created location with generated ID, null if failed
      */
-    public Location createLocation(Long warehouseId, String code, String type, Long categoryId) {
+    public Location createLocation(Long warehouseId, String code, String type, Long categoryId, Integer maxQuantity) {
         // Validate input
         if (warehouseId == null || warehouseId <= 0 ||
             code == null || code.trim().isEmpty() ||
@@ -121,6 +126,7 @@ public class LocationService {
         Location location = new Location(warehouseId, code.trim(), type.trim());
         location.setActive(true); // New locations are active by default
         location.setCategoryId(categoryId);
+        location.setMaxQuantity(maxQuantity);
         return locationDAO.create(location);
     }
     
@@ -129,18 +135,15 @@ public class LocationService {
      * @param id Location ID
      * @param code New code
      * @param type New type
+     * @param categoryId New category restriction
+     * @param maxQuantity New maximum quantity capacity
      * @return true if update successful, false otherwise
      */
-    public boolean updateLocation(Long id, String code, String type, Long categoryId) {
+    public boolean updateLocation(Long id, String code, String type, Long categoryId, Integer maxQuantity) {
         // Validate input
         if (id == null || id <= 0 ||
             code == null || code.trim().isEmpty() ||
             type == null || type.trim().isEmpty()) {
-            return false;
-        }
-        
-        // Validate type
-        if (!isValidType(type)) {
             return false;
         }
         
@@ -165,12 +168,176 @@ public class LocationService {
             }
         }
         
-        // Update location (preserve warehouseId and status)
+        // BR-LOC-013: Block max quantity reduction if it would be less than current total quantity
+        if (maxQuantity != null) {
+            int currentTotal = inventoryDAO.getTotalQuantityAtLocation(id);
+            if (maxQuantity < currentTotal) {
+                return false; // Conflict: new max quantity below current usage
+            }
+        }
+        
+        // Update location
         Location location = new Location(existing.getWarehouseId(), code.trim(), type.trim());
         location.setId(id);
         location.setActive(existing.isActive());
         location.setCategoryId(categoryId);
+        location.setMaxQuantity(maxQuantity);
         return locationDAO.update(location);
+    }
+
+    /**
+     * Get total quantity of all items at a location
+     */
+    public int getCurrentTotalQuantity(Long locationId) {
+        return inventoryDAO.getTotalQuantityAtLocation(locationId);
+    }
+
+    /**
+     * Get total quantities (sum of qty) for ALL locations in a map.
+     */
+    public Map<Long, Integer> getAllLocationTotalQuantities() {
+        return inventoryDAO.getAllLocationTotalQuantities();
+    }
+
+    /**
+     * Check if a location can accept a certain quantity of items
+     */
+    public boolean canAcceptQuantity(Long locationId, int incomingQuantity) {
+        Location loc = locationDAO.findById(locationId);
+        if (loc == null) return false;
+        if (loc.getMaxQuantity() == null) return true; // Unlimited
+        
+        int currentTotal = inventoryDAO.getTotalQuantityAtLocation(locationId);
+        return (currentTotal + incomingQuantity) <= loc.getMaxQuantity();
+    }
+
+    /**
+     * Get remaining capacity for a location
+     * @return remaining capacity, or null if unlimited
+     */
+    public Integer getRemainingCapacity(Long locationId, int incomingQuantity) {
+        Location loc = locationDAO.findById(locationId);
+        if (loc == null || loc.getMaxQuantity() == null) return null;
+        
+        int currentTotal = inventoryDAO.getTotalQuantityAtLocation(locationId);
+        return loc.getMaxQuantity() - currentTotal - incomingQuantity;
+    }
+    /**
+     * UC-LOC-003: Toggle location status (Active/Inactive)
+     * @param id Location ID
+     * @return true if successful, false otherwise
+     */
+    public boolean toggleLocationStatus(Long id) {
+        if (id == null || id <= 0) {
+            return false;
+        }
+        
+        Location location = locationDAO.findById(id);
+        if (location == null) {
+            return false;
+        }
+        
+        // Block deactivation if location has inventory
+        if (location.isActive() && locationDAO.hasInventory(id)) {
+            return false;
+        }
+        
+        location.setActive(!location.isActive());
+        return locationDAO.update(location);
+    }
+    
+    /**
+     * Delete a location
+     * @param id Location ID
+     * @return true if deletion successful, false otherwise
+     */
+    public boolean deleteLocation(Long id) {
+        if (id == null || id <= 0) {
+            return false;
+        }
+        
+        if (locationDAO.findById(id) == null) {
+            return false;
+        }
+        
+        // Check if location has inventory
+        if (locationDAO.hasInventory(id)) {
+            return false; // Cannot delete location with inventory
+        }
+        
+        return locationDAO.delete(id);
+    }
+    
+    /**
+     * Check if location has inventory
+     * @param locationId Location ID
+     * @return true if has inventory, false otherwise
+     */
+    public boolean hasInventory(Long locationId) {
+        return locationDAO.hasInventory(locationId);
+    }
+    
+    /**
+     * Get inventory count at a location
+     * @param locationId Location ID
+     * @return Number of inventory items
+     */
+    public int getInventoryCount(Long locationId) {
+        return locationDAO.getInventoryCount(locationId);
+    }
+
+    /**
+     * Get inventory item counts for ALL locations in one DB round-trip.
+     * Use this on the location list page instead of calling getInventoryCount() per location.
+     *
+     * @return Map of locationId -> inventory item count
+     */
+    public Map<Long, Integer> getAllLocationInventoryCounts() {
+        Map<Long, Integer> result = locationDAO.getAllLocationInventoryCounts();
+        return result != null ? result : Collections.emptyMap();
+    }
+    
+    /**
+     * Validate location type
+     * @param type Type to validate
+     * @return true if valid, false otherwise
+     */
+    private boolean isValidType(String type) {
+        if (type == null) return false;
+        String t = type.trim();
+        return "Storage".equalsIgnoreCase(t) || 
+               "Picking".equalsIgnoreCase(t) || 
+               "Staging".equalsIgnoreCase(t);
+    }
+
+    /**
+     * Get active locations in a warehouse that are compatible with a product's category.
+     * Returns locations where CategoryId IS NULL OR CategoryId = product's categoryId.
+     */
+    public List<Location> getCompatibleLocations(Long warehouseId, Long productCategoryId) {
+        return locationDAO.findActiveByWarehouseAndCategory(warehouseId, productCategoryId);
+    }
+
+    /**
+     * Check if a location accepts a product of the given category.
+     */
+    public boolean isLocationCompatibleWithCategory(Long locationId, Long productCategoryId) {
+        Location location = locationDAO.findById(locationId);
+        if (location == null) return false;
+        if (location.getCategoryId() == null) return true; // Unrestricted
+        return location.getCategoryId().equals(productCategoryId);
+    }
+}
+    
+    /**
+     * Get total quantities (sum of all product qty) for ALL locations in one DB round-trip.
+     * Use this on the location list page for capacity visualization.
+     *
+     * @return Map of locationId -> total quantity
+     */
+    public Map<Long, Integer> getAllLocationTotalQuantities() {
+        Map<Long, Integer> result = locationDAO.getAllLocationTotalQuantities();
+        return result != null ? result : Collections.emptyMap();
     }
     
     /**

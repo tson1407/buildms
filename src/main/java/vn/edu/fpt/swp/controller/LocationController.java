@@ -249,6 +249,10 @@ public class LocationController extends HttpServlet {
         // Fetch all inventory counts in ONE query instead of N per-location queries
         java.util.Map<Long, Integer> inventoryCountMap = locationService.getAllLocationInventoryCounts();
         request.setAttribute("inventoryCountMap", inventoryCountMap);
+        
+        // Fetch total quantities (sum of qty) for capacity display
+        java.util.Map<Long, Integer> totalQuantityMap = locationService.getAllLocationTotalQuantities();
+        request.setAttribute("totalQuantityMap", totalQuantityMap);
 
         // Category data for display and filtering
         List<Category> categories = categoryService.getAllCategories();
@@ -355,6 +359,17 @@ public class LocationController extends HttpServlet {
             }
         }
         
+        String maxQuantityStr = request.getParameter("maxQuantity");
+        Integer maxQuantity = null;
+        if (maxQuantityStr != null && !maxQuantityStr.trim().isEmpty()) {
+            try {
+                maxQuantity = Integer.parseInt(maxQuantityStr.trim());
+                if (maxQuantity < 0) maxQuantity = null;
+            } catch (NumberFormatException e) {
+                // Ignore invalid
+            }
+        }
+        
         // Validate required fields
         boolean hasError = false;
         StringBuilder errorMsg = new StringBuilder();
@@ -398,6 +413,7 @@ public class LocationController extends HttpServlet {
             request.setAttribute("code", code);
             request.setAttribute("type", type);
             request.setAttribute("categoryId", categoryId);
+            request.setAttribute("maxQuantity", maxQuantity);
             request.setAttribute("warehouses", warehouseService.getAllWarehouses());
             request.setAttribute("categories", categoryService.getAllCategories());
             request.getRequestDispatcher("/WEB-INF/views/location/add.jsp").forward(request, response);
@@ -405,7 +421,7 @@ public class LocationController extends HttpServlet {
         }
         
         // Create location
-        Location created = locationService.createLocation(warehouseId, code.trim(), type.trim(), categoryId);
+        Location created = locationService.createLocation(warehouseId, code.trim(), type.trim(), categoryId, maxQuantity);
         
         if (created == null) {
             // AF-1: Duplicate Location Code
@@ -470,12 +486,15 @@ public class LocationController extends HttpServlet {
             // Get warehouse for display
             Warehouse warehouse = warehouseService.getWarehouseById(location.getWarehouseId());
             
-            // Get inventory count
+            // Get inventory count (number of products)
             int inventoryCount = locationService.getInventoryCount(id);
+            // Get total quantity (sum of units)
+            int totalQuantity = locationService.getCurrentTotalQuantity(id);
             
             request.setAttribute("location", location);
             request.setAttribute("warehouse", warehouse);
             request.setAttribute("inventoryCount", inventoryCount);
+            request.setAttribute("totalQuantity", totalQuantity);
             List<Category> categories = categoryService.getAllCategories();
             request.setAttribute("categories", categories);
             request.getRequestDispatcher("/WEB-INF/views/location/edit.jsp").forward(request, response);
@@ -504,9 +523,16 @@ public class LocationController extends HttpServlet {
         String categoryIdStr = request.getParameter("categoryId");
         Long categoryId = null;
         if (categoryIdStr != null && !categoryIdStr.trim().isEmpty()) {
-            try {
-                categoryId = Long.parseLong(categoryIdStr.trim());
             } catch (NumberFormatException e) { /* no restriction */ }
+        }
+        
+        String maxQuantityStr = request.getParameter("maxQuantity");
+        Integer maxQuantity = null;
+        if (maxQuantityStr != null && !maxQuantityStr.trim().isEmpty()) {
+            try {
+                maxQuantity = Integer.parseInt(maxQuantityStr.trim());
+                if (maxQuantity < 0) maxQuantity = null;
+            } catch (NumberFormatException e) { /* ignore invalid */ }
         }
         
         // Validate ID
@@ -555,6 +581,7 @@ public class LocationController extends HttpServlet {
                     request.setAttribute("inventoryCount", locationService.getInventoryCount(id));
                 }
                 request.setAttribute("categoryId", categoryId);
+                request.setAttribute("maxQuantity", maxQuantity);
                 request.setAttribute("categories", categoryService.getAllCategories());
                 request.getRequestDispatcher("/WEB-INF/views/location/edit.jsp").forward(request, response);
                 return;
@@ -565,7 +592,7 @@ public class LocationController extends HttpServlet {
             Long warehouseId = existing != null ? existing.getWarehouseId() : null;
             
             // Update location
-            boolean updated = locationService.updateLocation(id, code.trim(), type.trim(), categoryId);
+            boolean updated = locationService.updateLocation(id, code.trim(), type.trim(), categoryId, maxQuantity);
             
             if (!updated) {
                 // Could be duplicate code, location not found, or category conflict
@@ -573,9 +600,11 @@ public class LocationController extends HttpServlet {
                 if (loc == null) {
                     request.getSession().setAttribute("errorMessage", "Location not found");
                 } else {
-                    request.setAttribute("errorMessage", "Could not update location. Ensure location code is unique and there is no category conflict with existing inventory");
+                    request.setAttribute("errorMessage", "Could not update location. Ensure location code is unique, " +
+                        "new capacity is not less than current inventory, and there is no category conflict.");
                     loc.setCode(code);
                     loc.setType(type);
+                    loc.setMaxQuantity(maxQuantity);
                     request.setAttribute("location", loc);
                     request.setAttribute("warehouse", warehouseService.getWarehouseById(loc.getWarehouseId()));
                     request.setAttribute("inventoryCount", locationService.getInventoryCount(id));

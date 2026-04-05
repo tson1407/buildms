@@ -28,7 +28,7 @@ public class LocationDAO {
             return null;
         }
         
-        String sql = "INSERT INTO Locations (WarehouseId, Code, Type, IsActive, CategoryId) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Locations (WarehouseId, Code, Type, IsActive, CategoryId, MaxQuantity) VALUES (?, ?, ?, ?, ?, ?)";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -41,6 +41,11 @@ public class LocationDAO {
                 stmt.setLong(5, location.getCategoryId());
             } else {
                 stmt.setNull(5, java.sql.Types.BIGINT);
+            }
+            if (location.getMaxQuantity() != null) {
+                stmt.setInt(6, location.getMaxQuantity());
+            } else {
+                stmt.setNull(6, java.sql.Types.INTEGER);
             }
             
             int affectedRows = stmt.executeUpdate();
@@ -70,7 +75,7 @@ public class LocationDAO {
             return null;
         }
         
-        String sql = "SELECT Id, WarehouseId, Code, Type, IsActive, CategoryId FROM Locations WHERE Id = ?";
+        String sql = "SELECT Id, WarehouseId, Code, Type, IsActive, CategoryId, MaxQuantity FROM Locations WHERE Id = ?";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -100,7 +105,7 @@ public class LocationDAO {
             return null;
         }
         
-        String sql = "SELECT Id, WarehouseId, Code, Type, IsActive, CategoryId FROM Locations " +
+        String sql = "SELECT Id, WarehouseId, Code, Type, IsActive, CategoryId, MaxQuantity FROM Locations " +
                      "WHERE WarehouseId = ? AND Code = ?";
         
         try (Connection conn = DBConnection.getConnection();
@@ -127,7 +132,7 @@ public class LocationDAO {
      */
     public List<Location> getAll() {
         List<Location> locations = new ArrayList<>();
-        String sql = "SELECT Id, WarehouseId, Code, Type, IsActive, CategoryId FROM Locations ORDER BY WarehouseId, Code";
+        String sql = "SELECT Id, WarehouseId, Code, Type, IsActive, CategoryId, MaxQuantity FROM Locations ORDER BY WarehouseId, Code";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -154,7 +159,7 @@ public class LocationDAO {
         }
         
         List<Location> locations = new ArrayList<>();
-        String sql = "SELECT Id, WarehouseId, Code, Type, IsActive, CategoryId FROM Locations " +
+        String sql = "SELECT Id, WarehouseId, Code, Type, IsActive, CategoryId, MaxQuantity FROM Locations " +
                      "WHERE WarehouseId = ? ORDER BY Code";
         
         try (Connection conn = DBConnection.getConnection();
@@ -185,7 +190,7 @@ public class LocationDAO {
         }
         
         List<Location> locations = new ArrayList<>();
-        String sql = "SELECT Id, WarehouseId, Code, Type, IsActive, CategoryId FROM Locations " +
+        String sql = "SELECT Id, WarehouseId, Code, Type, IsActive, CategoryId, MaxQuantity FROM Locations " +
                      "WHERE Type = ? ORDER BY WarehouseId, Code";
         
         try (Connection conn = DBConnection.getConnection();
@@ -212,7 +217,7 @@ public class LocationDAO {
      */
     public List<Location> findByStatus(boolean isActive) {
         List<Location> locations = new ArrayList<>();
-        String sql = "SELECT Id, WarehouseId, Code, Type, IsActive, CategoryId FROM Locations " +
+        String sql = "SELECT Id, WarehouseId, Code, Type, IsActive, CategoryId, MaxQuantity FROM Locations " +
                      "WHERE IsActive = ? ORDER BY WarehouseId, Code";
         
         try (Connection conn = DBConnection.getConnection();
@@ -243,7 +248,7 @@ public class LocationDAO {
         }
         
         List<Location> locations = new ArrayList<>();
-        String sql = "SELECT Id, WarehouseId, Code, Type, IsActive, CategoryId FROM Locations " +
+        String sql = "SELECT Id, WarehouseId, Code, Type, IsActive, CategoryId, MaxQuantity FROM Locations " +
                      "WHERE WarehouseId = ? AND IsActive = 1 ORDER BY Code";
         
         try (Connection conn = DBConnection.getConnection();
@@ -274,7 +279,7 @@ public class LocationDAO {
         }
         
         List<Location> locations = new ArrayList<>();
-        String sql = "SELECT Id, WarehouseId, Code, Type, IsActive, CategoryId FROM Locations " +
+        String sql = "SELECT Id, WarehouseId, Code, Type, IsActive, CategoryId, MaxQuantity FROM Locations " +
                      "WHERE Code LIKE ? ORDER BY WarehouseId, Code";
         
         try (Connection conn = DBConnection.getConnection();
@@ -307,7 +312,7 @@ public class LocationDAO {
             return false;
         }
         
-        String sql = "UPDATE Locations SET Code = ?, Type = ?, IsActive = ?, CategoryId = ? WHERE Id = ?";
+        String sql = "UPDATE Locations SET Code = ?, Type = ?, IsActive = ?, CategoryId = ?, MaxQuantity = ? WHERE Id = ?";
         
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -320,7 +325,12 @@ public class LocationDAO {
             } else {
                 stmt.setNull(4, java.sql.Types.BIGINT);
             }
-            stmt.setLong(5, location.getId());
+            if (location.getMaxQuantity() != null) {
+                stmt.setInt(5, location.getMaxQuantity());
+            } else {
+                stmt.setNull(5, java.sql.Types.INTEGER);
+            }
+            stmt.setLong(6, location.getId());
             
             int affectedRows = stmt.executeUpdate();
             return affectedRows > 0;
@@ -465,6 +475,59 @@ public class LocationDAO {
 
         return result;
     }
+    
+    /**
+     * Get total quantity of all products at a specific location.
+     * @param locationId Location ID
+     * @return Sum of all quantities
+     */
+    public int getTotalQuantityAtLocation(Long locationId) {
+        if (locationId == null || locationId <= 0) {
+            return 0;
+        }
+        
+        String sql = "SELECT SUM(Quantity) as total FROM Inventory WHERE LocationId = ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setLong(1, locationId);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("total");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return 0;
+    }
+    
+    /**
+     * Get total quantities (sum of all product qty) per location.
+     * Used for the location list page capacity display.
+     *
+     * @return Map of locationId -> total quantity
+     */
+    public Map<Long, Integer> getAllLocationTotalQuantities() {
+        Map<Long, Integer> result = new HashMap<>();
+        String sql = "SELECT LocationId, SUM(Quantity) AS total FROM Inventory GROUP BY LocationId";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            while (rs.next()) {
+                result.put(rs.getLong("LocationId"), rs.getInt("total"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return result;
+    }
 
     public PageResult<Location> searchPaginated(Long warehouseId, String type, Boolean isActive, String keyword,
                                                 Long categoryId, PageRequest pageRequest) {
@@ -498,7 +561,7 @@ public class LocationDAO {
         }
 
         String countSql = "SELECT COUNT(*)" + fromClause;
-        String dataSql = "SELECT Id, WarehouseId, Code, Type, IsActive, CategoryId" + fromClause
+        String dataSql = "SELECT Id, WarehouseId, Code, Type, IsActive, CategoryId, MaxQuantity" + fromClause
             + " ORDER BY WarehouseId, Code OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
         long totalItems = 0L;
@@ -550,6 +613,9 @@ public class LocationDAO {
         long catId = rs.getLong("CategoryId");
         location.setCategoryId(rs.wasNull() ? null : catId);
         
+        int maxQty = rs.getInt("MaxQuantity");
+        location.setMaxQuantity(rs.wasNull() ? null : maxQty);
+        
         return location;
     }
     
@@ -563,7 +629,7 @@ public class LocationDAO {
         }
         
         List<Location> locations = new ArrayList<>();
-        String sql = "SELECT Id, WarehouseId, Code, Type, IsActive, CategoryId FROM Locations " +
+        String sql = "SELECT Id, WarehouseId, Code, Type, IsActive, CategoryId, MaxQuantity FROM Locations " +
                      "WHERE WarehouseId = ? AND IsActive = 1 AND (CategoryId IS NULL OR CategoryId = ?) " +
                      "ORDER BY Code";
         

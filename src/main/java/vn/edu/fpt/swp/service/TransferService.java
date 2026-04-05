@@ -485,6 +485,14 @@ public class TransferService {
             
             int qtyToReceive = receivedQuantities.getOrDefault(item.getProductId(), item.getQuantity());
             
+            // BR-TRI-010: Validate destination location capacity
+            if (location.getMaxQuantity() != null) {
+                int currentTotal = inventoryDAO.getTotalQuantityAtLocation(locationId);
+                if (currentTotal + qtyToReceive > location.getMaxQuantity()) {
+                    return false; // Capacity exceeded at destination
+                }
+            }
+            
             // Add to destination warehouse at specified location
             boolean success = inventoryDAO.increaseQuantity(
                 item.getProductId(),

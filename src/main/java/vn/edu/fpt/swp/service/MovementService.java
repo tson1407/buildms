@@ -98,10 +98,14 @@ public class MovementService {
                 return null; // Invalid destination location or not in same warehouse
             }
             
-            // BR-MOV-007: Destination location must be compatible with product's category
-            if (destLocation.getCategoryId() != null) {
-                if (product == null || !destLocation.getCategoryId().equals(product.getCategoryId())) {
-                    return null; // Destination restricted to different category
+                }
+            }
+            
+            // BR-MOV-010: Destination location capacity check
+            if (destLocation.getMaxQuantity() != null) {
+                int currentTotal = inventoryDAO.getTotalQuantityAtLocation(item.getDestinationLocationId());
+                if (currentTotal + item.getQuantity() > destLocation.getMaxQuantity()) {
+                    return null; // Capacity exceeded
                 }
             }
             
@@ -209,6 +213,14 @@ public class MovementService {
             return "Quantity exceeds available at source location (" + available + " available)";
         }
         
+        // Capacity check
+        if (destLocation.getMaxQuantity() != null) {
+            int currentDestTotal = inventoryDAO.getTotalQuantityAtLocation(destinationLocationId);
+            if (currentDestTotal + quantity > destLocation.getMaxQuantity()) {
+                return "Destination location capacity exceeded (" + (destLocation.getMaxQuantity() - currentDestTotal) + " space remaining)";
+            }
+        }
+        
         return null; // Valid
     }
     
@@ -311,6 +323,29 @@ public class MovementService {
             return "Insufficient inventory: " + shortageInfo.toString();
         }
         
+        // Validate ALL items have sufficient capacity at destination location
+        StringBuilder capacityInfo = new StringBuilder();
+        boolean hasOvercapacity = false;
+        for (RequestItem item : items) {
+            Location destLoc = locationDAO.findById(item.getDestinationLocationId());
+            if (destLoc != null && destLoc.getMaxQuantity() != null) {
+                int currentDestTotal = inventoryDAO.getTotalQuantityAtLocation(item.getDestinationLocationId());
+                if (currentDestTotal + item.getQuantity() > destLoc.getMaxQuantity()) {
+                    hasOvercapacity = true;
+                    Product product = productDAO.findById(item.getProductId());
+                    String productName = product != null ? product.getName() : "Product #" + item.getProductId();
+                    String locCode = destLoc.getCode();
+                    capacityInfo.append(productName).append(" to ").append(locCode)
+                        .append(": need ").append(item.getQuantity())
+                        .append(", available ").append(destLoc.getMaxQuantity() - currentDestTotal).append(". ");
+                }
+            }
+        }
+        
+        if (hasOvercapacity) {
+            return "Destination capacity exceeded: " + capacityInfo.toString();
+        }
+        
         // Start execution
         boolean started = requestDAO.startExecution(requestId);
         if (!started) {
@@ -387,6 +422,14 @@ public class MovementService {
                 Product product = productDAO.findById(item.getProductId());
                 if (product == null || !destLoc.getCategoryId().equals(product.getCategoryId())) {
                     return false; // Category changed since creation — block
+                }
+            }
+            
+            // BR-MXE-010: Defensive re-validation of destination capacity
+            if (destLoc != null && destLoc.getMaxQuantity() != null) {
+                int currentDestTotal = inventoryDAO.getTotalQuantityAtLocation(item.getDestinationLocationId());
+                if (currentDestTotal + item.getQuantity() > destLoc.getMaxQuantity()) {
+                    return false; // Capacity changed/filled since creation — block
                 }
             }
         }

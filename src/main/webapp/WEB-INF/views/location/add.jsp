@@ -155,6 +155,24 @@
                                                 </div>
                                             </div>
                                             
+                                            <!-- Max Quantity Capacity -->
+                                            <div class="mb-4">
+                                                <label for="maxQuantity" class="form-label">
+                                                    Max Quantity <span class="text-muted">(Optional)</span>
+                                                </label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="bx bx-tachometer"></i></span>
+                                                    <input type="number" class="form-control" id="maxQuantity" name="maxQuantity" 
+                                                           placeholder="Enter max capacity (e.g., 500)" 
+                                                           value="<c:out value='${maxQuantity}'/>" 
+                                                           min="1" />
+                                                </div>
+                                                <div class="form-text">
+                                                    <i class="bx bx-info-circle me-1"></i>
+                                                    Maximum total quantity of all items combined that this location can hold. Leave empty for unlimited.
+                                                </div>
+                                            </div>
+                                            
                                             <!-- Category Restriction -->
                                             <div class="mb-4">
                                                 <label for="categoryId" class="form-label">

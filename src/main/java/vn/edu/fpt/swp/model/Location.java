@@ -14,6 +14,7 @@ public class Location implements Serializable {
     private String type; // Storage / Picking / Staging
     private boolean isActive;
     private Long categoryId; // NULL = no restriction (any product), non-NULL = restricted to this category
+    private Integer maxQuantity; // NULL = unlimited capacity
     
     // Default constructor
     public Location() {
@@ -77,6 +78,14 @@ public class Location implements Serializable {
         this.categoryId = categoryId;
     }
     
+    public Integer getMaxQuantity() {
+        return maxQuantity;
+    }
+    
+    public void setMaxQuantity(Integer maxQuantity) {
+        this.maxQuantity = maxQuantity;
+    }
+    
     @Override
     public String toString() {
         return "Location{" +
@@ -85,6 +94,7 @@ public class Location implements Serializable {
                 ", code='" + code + '\'' +
                 ", type='" + type + '\'' +
                 ", categoryId=" + categoryId +
+                ", maxQuantity=" + maxQuantity +
                 ", isActive=" + isActive +
                 '}';
     }

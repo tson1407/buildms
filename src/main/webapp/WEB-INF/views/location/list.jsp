@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="currentUser" value="${sessionScope.user}" />
 
@@ -168,6 +169,7 @@
                                             <th>Warehouse</th>
                                             <th>Type</th>
                                             <th style="width: 150px;">Restriction</th>
+                                            <th style="width: 180px;">Capacity</th>
                                             <th style="width: 120px;">Inventory</th>
                                             <th style="width: 100px;">Status</th>
                                             <c:if test="${currentUser.role == 'Admin' || currentUser.role == 'Manager'}">
@@ -179,7 +181,7 @@
                                         <c:choose>
                                             <c:when test="${empty locations}">
                                                 <tr>
-                                                    <td colspan="${(currentUser.role == 'Admin' || currentUser.role == 'Manager') ? 8 : 7}" 
+                                                    <td colspan="${(currentUser.role == 'Admin' || currentUser.role == 'Manager') ? 9 : 8}" 
                                                         class="text-center py-5">
                                                         <div class="text-muted">
                                                             <i class="bx bx-map bx-lg mb-3 d-block"></i>
@@ -197,6 +199,9 @@
                                                 <c:forEach var="location" items="${locations}" varStatus="loop">
                                                     <c:set var="warehouseName" value="${warehouseMap[location.warehouseId]}" />
                                                     <c:set var="inventoryCount" value="${inventoryCountMap[location.id]}" />
+                                                    <c:set var="totalQuantity" value="${totalQuantityMap[location.id] != null ? totalQuantityMap[location.id] : 0}" />
+                                                    <c:set var="maxQuantity" value="${location.maxQuantity}" />
+                                                    
                                                     <tr class="${!location.active ? 'table-secondary' : ''}">
                                                         <td><strong><c:out value="${(currentPage - 1) * pageSize + loop.index + 1}"/></strong></td>
                                                         <td>
@@ -239,6 +244,32 @@
                                                                 </c:when>
                                                                 <c:otherwise>
                                                                     <span class="text-muted"><i class="bx bx-globe me-1"></i>None</span>
+                                                                </c:otherwise>
+                                                        </td>
+                                                        <td>
+                                                            <c:choose>
+                                                                <c:when test="${maxQuantity != null}">
+                                                                    <c:set var="occupancyPercent" value="${maxQuantity > 0 ? (totalQuantity * 100 / maxQuantity) : (totalQuantity > 0 ? 100 : 0)}" />
+                                                                    <div class="d-flex flex-column" style="min-width: 120px;">
+                                                                        <div class="d-flex justify-content-between mb-1">
+                                                                            <small class="fw-medium">${totalQuantity} / ${maxQuantity}</small>
+                                                                            <small class="text-muted"><fmt:formatNumber value="${occupancyPercent}" maxFractionDigits="0"/>%</small>
+                                                                        </div>
+                                                                        <div class="progress" style="height: 6px;">
+                                                                            <div class="progress-bar ${occupancyPercent >= 90 ? 'bg-danger' : (occupancyPercent >= 75 ? 'bg-warning' : 'bg-primary')}" 
+                                                                                 role="progressbar" 
+                                                                                 style="width: ${occupancyPercent > 100 ? 100 : occupancyPercent}%" 
+                                                                                 aria-valuenow="${occupancyPercent}" 
+                                                                                 aria-valuemin="0" 
+                                                                                 aria-valuemax="100"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <div class="d-flex flex-column text-muted">
+                                                                        <small class="fw-medium">${totalQuantity} items</small>
+                                                                        <small><i class="bx bx-infinite me-1"></i>Unlimited</small>
+                                                                    </div>
                                                                 </c:otherwise>
                                                             </c:choose>
                                                         </td>

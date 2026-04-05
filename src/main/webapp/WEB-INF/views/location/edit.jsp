@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <c:set var="contextPath" value="${pageContext.request.contextPath}" />
 <c:set var="currentUser" value="${sessionScope.user}" />
 
@@ -149,6 +150,24 @@
                                                 </div>
                                             </div>
                                             
+                                            <!-- Max Quantity Capacity -->
+                                            <div class="mb-4">
+                                                <label for="maxQuantity" class="form-label">
+                                                    Max Quantity <span class="text-muted">(Optional)</span>
+                                                </label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="bx bx-tachometer"></i></span>
+                                                    <input type="number" class="form-control" id="maxQuantity" name="maxQuantity" 
+                                                           placeholder="Enter max capacity (e.g., 500)" 
+                                                           value="<c:out value='${maxQuantity != null ? maxQuantity : location.maxQuantity}'/>" 
+                                                           min="1" />
+                                                </div>
+                                                <div class="form-text">
+                                                    <i class="bx bx-info-circle me-1"></i>
+                                                    Maximum total quantity of all items combined that this location can hold. Leave empty for unlimited.
+                                                </div>
+                                            </div>
+                                            
                                             <!-- Category Restriction -->
                                             <div class="mb-4">
                                                 <label for="categoryId" class="form-label">
@@ -209,8 +228,33 @@
                                         <div class="d-flex align-items-center mb-3">
                                             <span class="me-3">Inventory Items:</span>
                                             <span class="badge bg-label-${inventoryCount > 0 ? 'success' : 'secondary'}">
-                                                <c:out value="${inventoryCount}"/>
+                                                <c:out value="${inventoryCount}"/> products
                                             </span>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                                <span>Capacity Usage:</span>
+                                                <c:choose>
+                                                    <c:when test="${location.maxQuantity != null}">
+                                                        <c:set var="occupancyPercent" value="${location.maxQuantity > 0 ? (totalQuantity * 100 / location.maxQuantity) : (totalQuantity > 0 ? 100 : 0)}" />
+                                                        <span class="fw-medium">${totalQuantity} / ${location.maxQuantity} (<fmt:formatNumber value="${occupancyPercent}" maxFractionDigits="0"/>%)</span>
+                                                    </c:when>
+                                                    <c:otherwise>
+                                                        <span class="text-muted">${totalQuantity} / &infin; (Unlimited)</span>
+                                                    </c:otherwise>
+                                                </c:choose>
+                                            </div>
+                                            <c:if test="${location.maxQuantity != null}">
+                                                <div class="progress" style="height: 8px;">
+                                                    <div class="progress-bar ${occupancyPercent >= 90 ? 'bg-danger' : (occupancyPercent >= 75 ? 'bg-warning' : 'bg-primary')}" 
+                                                         role="progressbar" 
+                                                         style="width: ${occupancyPercent > 100 ? 100 : occupancyPercent}%" 
+                                                         aria-valuenow="${occupancyPercent}" 
+                                                         aria-valuemin="0" 
+                                                         aria-valuemax="100"></div>
+                                                </div>
+                                            </c:if>
                                         </div>
                                         
                                         <hr />

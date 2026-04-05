@@ -426,6 +426,35 @@ public class InventoryDAO {
     }
 
     /**
+     * Get total quantity of all products stored at a specific location
+     * @param locationId Location ID
+     * @return Sum of all quantities at this location
+     */
+    public int getTotalQuantityAtLocation(Long locationId) {
+        if (locationId == null || locationId <= 0) {
+            return 0;
+        }
+        
+        String sql = "SELECT COALESCE(SUM(Quantity), 0) as TotalQty FROM Inventory WHERE LocationId = ?";
+        
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            
+            stmt.setLong(1, locationId);
+            
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("TotalQty");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return 0;
+    }
+
+    /**
      * Map ResultSet to Inventory object
      */
     private Inventory mapResultSetToInventory(ResultSet rs) throws SQLException {

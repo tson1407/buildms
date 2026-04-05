@@ -90,6 +90,13 @@ public class InboundService {
                         return null; // Location restricted to different category
                     }
                 }
+                // Capacity check
+                if (location.getMaxQuantity() != null) {
+                    int currentTotal = inventoryDAO.getTotalQuantityAtLocation(item.getLocationId());
+                    if (currentTotal + item.getQuantity() > location.getMaxQuantity()) {
+                        return null; // Location capacity exceeded
+                    }
+                }
             }
         }
         
@@ -259,23 +266,48 @@ public class InboundService {
             
             Long locationId = item.getLocationId();
             if (locationId == null) {
-                // Get first active location compatible with product's category
+                // Get all active locations compatible with product's category
                 Product product = productDAO.findById(item.getProductId());
                 Long productCatId = (product != null) ? product.getCategoryId() : null;
-                List<Location> compatibleLocations = locationDAO.findActiveByWarehouseAndCategory(warehouseId, productCatId);
-                if (!compatibleLocations.isEmpty()) {
-                    locationId = compatibleLocations.get(0).getId();
+                List<Location> compatibleLocs = locationDAO.findActiveByWarehouseAndCategory(warehouseId, productCatId);
+                
+                // Find first compatible location with sufficient capacity
+                for (Location loc : compatibleLocs) {
+                    if (loc.getMaxQuantity() == null) {
+                        locationId = loc.getId(); // Unlimited
+                        break;
+                    } else {
+                        int currentTotal = inventoryDAO.getTotalQuantityAtLocation(loc.getId());
+                        if (currentTotal + receivedQty <= loc.getMaxQuantity()) {
+                            locationId = loc.getId();
+                            break;
+                        }
+                    }
                 }
+                
                 if (locationId == null) {
-                    return false; // No compatible location
+                    return false; // No compatible location has enough capacity
                 }
             } else {
-                // BR-EXE-006: Validate the specified location is compatible
+                // Validate specified location
                 Location loc = locationDAO.findById(locationId);
-                if (loc != null && loc.getCategoryId() != null) {
+                if (loc == null || !loc.isActive() || !loc.getWarehouseId().equals(warehouseId)) {
+                    return false; // Invalid location
+                }
+                
+                // BR-EXE-006: Category restriction check
+                if (loc.getCategoryId() != null) {
                     Product product = productDAO.findById(item.getProductId());
                     if (product == null || !loc.getCategoryId().equals(product.getCategoryId())) {
                         return false; // Category mismatch
+                    }
+                }
+                
+                // Capacity check
+                if (loc.getMaxQuantity() != null) {
+                    int currentTotal = inventoryDAO.getTotalQuantityAtLocation(locationId);
+                    if (currentTotal + receivedQty > loc.getMaxQuantity()) {
+                        return false; // Capacity exceeded
                     }
                 }
             }
