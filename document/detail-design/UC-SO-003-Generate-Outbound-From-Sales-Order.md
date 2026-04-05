@@ -48,15 +48,15 @@
 ### Step 6: Configure Outbound Request
 - Sales/Admin specifies:
   - Source Warehouse (dropdown, required)
-  - Quantities to fulfill for each item (defaults to remaining)
+  - Quantities to fulfill for each item (fixed to remaining quantity, read-only)
   - Shipping notes (optional)
-- Sales/Admin can adjust quantities (partial fulfillment allowed)
+- Sales/Admin reviews fixed fulfillment quantities before generating request
 
 ### Step 7: Validate Outbound Request
 - **Validation Rules:**
   - Source warehouse must be selected
   - At least one item must have quantity > 0
-  - Fulfillment quantities cannot exceed remaining order quantities
+  - Fulfillment quantities are system-derived from remaining order quantities and cannot be manually reduced or overridden
   - Inventory availability is checked (warning if insufficient)
 - If critical validation fails → **Alternative Flow A1**
 - If inventory warning → **Alternative Flow A2**
@@ -106,18 +106,17 @@
 - **Steps:**
   1. System displays warning: "Insufficient inventory for [Product]. Available: [X], Requested: [Y]"
   2. Sales/Admin can:
-     - Reduce quantity to available amount
      - Proceed anyway (back-order scenario)
      - Cancel and wait for inventory
   3. If proceeding, continue to Step 8
 
 ### A3: Partial Fulfillment
-- **Trigger:** Sales/Admin chooses to fulfill only part of order
+- **Trigger:** Warehouse executes outbound with picked quantity lower than requested
 - **Steps:**
-  1. Sales/Admin adjusts quantities for partial fulfillment
-  2. System validates partial quantities
-  3. Continue to Step 8
-  4. Sales Order status becomes "Partially Shipped" after execution
+  1. Outbound request is generated for full remaining quantity
+  2. During execution, warehouse may pick less than requested
+  3. System updates fulfilled quantity based on actual picked quantity
+  4. Sales Order remains not completed until all items are fully fulfilled
 
 ---
 
@@ -128,8 +127,9 @@
 | BR-GEN-002 | Only "Confirmed" orders can have outbound generated |
 | BR-GEN-003 | Outbound request must reference the sales order |
 | BR-GEN-004 | Sales/Admin manually checks inventory availability |
-| BR-GEN-005 | Partial fulfillment is allowed |
-| BR-GEN-006 | Inventory is NOT reduced at this stage |
+| BR-GEN-005 | Fulfillment quantity at generation is fixed to each item's remaining quantity |
+| BR-GEN-006 | Partial fulfillment, if any, is handled during outbound execution based on picked quantity |
+| BR-GEN-007 | Inventory is NOT reduced at this stage |
 
 ---
 
@@ -161,7 +161,7 @@ Confirmed → Fulfillment Requested (Outbound request generated)
 - Display order items with fulfillment status
 - Inventory availability indicators per product
 - Warehouse selection dropdown
-- Editable quantities for partial fulfillment
+- Read-only fulfillment quantities (fixed to remaining order quantity)
 - Clear warnings for inventory shortages
 - Generate button with confirmation
 - Link back to sales order from request

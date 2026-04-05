@@ -116,7 +116,12 @@
                                 
                                 <div class="card mb-4">
                                     <div class="card-header">
-                                        <h5 class="mb-0">Step 2: Review Availability & Specify Quantities</h5>
+                                        <h5 class="mb-0">Step 2: Review Availability & Confirm Quantities</h5>
+                                    </div>
+                                    <div class="card-body pb-0">
+                                        <p class="text-muted mb-0">
+                                            Fulfill Qty is fixed to remaining order quantity and cannot be edited.
+                                        </p>
                                     </div>
                                     <div class="table-responsive">
                                         <table class="table">
@@ -152,12 +157,10 @@
                                                             </c:choose>
                                                         </td>
                                                         <td class="text-end" style="width: 120px;">
-                                                            <input type="number" 
-                                                                   name="fulfillQuantity[]" 
-                                                                   class="form-control form-control-sm text-end" 
-                                                                   min="0" 
-                                                                   max="${avail.requested}"
-                                                                   value="<c:out value='${avail.available >= avail.requested ? avail.requested : avail.available}'/>">
+                                                            <input type="text"
+                                                                class="form-control form-control-sm text-end bg-lighter text-muted"
+                                                                value="<c:out value='${avail.requested}'/>"
+                                                                readonly>
                                                         </td>
                                                         <td>
                                                             <c:choose>

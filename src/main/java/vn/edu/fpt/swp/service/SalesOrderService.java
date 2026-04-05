@@ -239,9 +239,10 @@ public class SalesOrderService {
             // Get total available quantity at warehouse
             int available = inventoryDAO.getTotalQuantityByProductAndWarehouse(
                 item.getProductId(), warehouseId);
+            int requested = item.getRemainingQuantity();
             availability.put("available", available);
-            availability.put("requested", item.getQuantity());
-            availability.put("sufficient", available >= item.getQuantity());
+            availability.put("requested", requested);
+            availability.put("sufficient", available >= requested);
             
             result.add(availability);
         }
@@ -254,11 +255,9 @@ public class SalesOrderService {
      * @param salesOrderId Sales Order ID
      * @param warehouseId Source warehouse ID
      * @param createdBy User who generates the request
-     * @param quantities Map of productId -> quantity to fulfill
      * @return Created Request, null if failed
      */
-    public Request generateOutboundRequest(Long salesOrderId, Long warehouseId, 
-                                           Long createdBy, Map<Long, Integer> quantities) {
+    public Request generateOutboundRequest(Long salesOrderId, Long warehouseId, Long createdBy) {
         if (salesOrderId == null || warehouseId == null || createdBy == null) {
             return null;
         }
@@ -284,15 +283,8 @@ public class SalesOrderService {
         // Build request items
         List<RequestItem> requestItems = new ArrayList<>();
         for (SalesOrderItem orderItem : orderItems) {
-            Integer qtyToFulfill = quantities != null ? 
-                quantities.get(orderItem.getProductId()) : orderItem.getQuantity();
-            
+            Integer qtyToFulfill = orderItem.getRemainingQuantity();
             if (qtyToFulfill != null && qtyToFulfill > 0) {
-                // Validate quantity doesn't exceed order quantity
-                if (qtyToFulfill > orderItem.getQuantity()) {
-                    return null;
-                }
-                
                 RequestItem requestItem = new RequestItem();
                 requestItem.setProductId(orderItem.getProductId());
                 requestItem.setQuantity(qtyToFulfill);

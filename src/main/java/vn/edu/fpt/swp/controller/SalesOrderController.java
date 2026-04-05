@@ -426,25 +426,9 @@ public class SalesOrderController extends HttpServlet {
         try {
             Long orderId = Long.parseLong(request.getParameter("id"));
             Long warehouseId = Long.parseLong(request.getParameter("warehouseId"));
-            
-            // Parse quantities (optional custom quantities)
-            Map<Long, Integer> quantities = new HashMap<>();
-            String[] productIds = request.getParameterValues("productId[]");
-            String[] qtyValues = request.getParameterValues("fulfillQuantity[]");
-            
-            if (productIds != null && qtyValues != null) {
-                for (int i = 0; i < productIds.length; i++) {
-                    Long productId = Long.parseLong(productIds[i]);
-                    Integer qty = Integer.parseInt(qtyValues[i]);
-                    if (qty > 0) {
-                        quantities.put(productId, qty);
-                    }
-                }
-            }
-            
+
             Request outboundRequest = salesOrderService.generateOutboundRequest(
-                orderId, warehouseId, currentUser.getId(), 
-                quantities.isEmpty() ? null : quantities);
+                orderId, warehouseId, currentUser.getId());
             
             if (outboundRequest != null) {
                 request.getSession().setAttribute("successMessage", 

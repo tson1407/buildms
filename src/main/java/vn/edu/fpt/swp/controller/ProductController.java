@@ -277,16 +277,35 @@ public class ProductController extends HttpServlet {
             return;
         }
         
-        // Inherit exact unit from selected category
+        // Validate category exists and inherit exact unit from selected category
         Category category = categoryService.getCategoryById(categoryId);
+        if (category == null) {
+            request.setAttribute("errorMessage", "Selected category does not exist.");
+            request.setAttribute("sku", sku);
+            request.setAttribute("name", name);
+            request.setAttribute("categoryId", categoryId);
+            request.setAttribute("categories", categoryService.getAllCategories());
+            request.getRequestDispatcher("/WEB-INF/views/product/add.jsp").forward(request, response);
+            return;
+        }
+
+        if (productService.getProductBySku(sku.trim()) != null) {
+            request.setAttribute("errorMessage", "SKU already exists. Please use a unique SKU.");
+            request.setAttribute("sku", sku);
+            request.setAttribute("name", name);
+            request.setAttribute("categoryId", categoryId);
+            request.setAttribute("categories", categoryService.getAllCategories());
+            request.getRequestDispatcher("/WEB-INF/views/product/add.jsp").forward(request, response);
+            return;
+        }
+
         String unit = category != null ? category.getDefaultUnit() : null;
         
         // Create product
         Product created = productService.createProduct(sku.trim(), name.trim(), unit, categoryId);
         
         if (created == null) {
-            // AF-1: Duplicate SKU
-            request.setAttribute("errorMessage", "SKU already exists. Please use a unique SKU.");
+            request.setAttribute("errorMessage", "Failed to create product. Please verify your input and try again.");
             request.setAttribute("sku", sku);
             request.setAttribute("name", name);
             request.setAttribute("categoryId", categoryId);

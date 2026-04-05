@@ -41,6 +41,18 @@ public class ProductService {
     public Product getProductById(Long id) {
         return productDAO.findById(id);
     }
+
+    /**
+     * Get product by SKU
+     * @param sku Product SKU
+     * @return Product object if found, null otherwise
+     */
+    public Product getProductBySku(String sku) {
+        if (sku == null || sku.trim().isEmpty()) {
+            return null;
+        }
+        return productDAO.findBySku(sku.trim());
+    }
     
     /**
      * Get all products
